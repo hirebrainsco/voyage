@@ -41,6 +41,7 @@ class Application
         $this->application->add(new MakeCommand());
         $this->application->add(new RollbackCommand());
         $this->application->add(new ApplyCommand());
+        $this->application->add(new ResetCommand());
     }
 }
 
