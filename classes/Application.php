@@ -35,7 +35,11 @@ class Application
         $this->application->setName(self::Name);
         $this->application->setVersion(self::Version);
         $this->application->find('list')->setHidden(true);
+
         $this->application->add(new InitCommand());
+        $this->application->add(new StatusCommand());
+        $this->application->add(new MakeCommand());
+        $this->application->add(new RollbackCommand());
     }
 }
 

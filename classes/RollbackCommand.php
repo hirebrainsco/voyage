@@ -13,6 +13,6 @@ class RollbackCommand extends Command
 
         parent::__construct();
 
-        $this->addArgument('migration', 'm', 'Rollback a migration and apply changes to current database. If no parameters set the command will return to previous migration.', InputOption::VALUE_OPTIONAL);
+        $this->addOption('migration', 'm', InputOption::VALUE_OPTIONAL, 'Rollback a migration and apply changes to current database. If no parameters set the command will return to previous migration.');
     }
 }
