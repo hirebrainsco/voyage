@@ -1,8 +1,10 @@
 <?php
 
-namespace Voyage;
+namespace Voyage\Commands;
 
-class ApplyCommand extends Command
+use Voyage\Core\Command;
+
+class Apply extends Command
 {
     public function __construct()
     {

@@ -4,7 +4,7 @@
 require __DIR__.'/vendor/autoload.php';
 require __DIR__.'/lib/bootstrap.php';
 
-use Voyage\Application;
+use Voyage\Core\Application;
 
 $application = new Application();
 $application->run();

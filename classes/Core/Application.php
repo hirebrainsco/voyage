@@ -1,6 +1,6 @@
 <?php
 
-namespace Voyage;
+namespace Voyage\Core;
 
 use \Symfony\Component\Console\Application as SymfonyApplication;
 
@@ -36,13 +36,13 @@ class Application
         $this->application->setVersion(self::Version);
         $this->application->find('list')->setHidden(true);
 
-        $this->application->add(new InitCommand());
-        $this->application->add(new StatusCommand());
-        $this->application->add(new MakeCommand());
-        $this->application->add(new RollbackCommand());
-        $this->application->add(new ApplyCommand());
-        $this->application->add(new ResetCommand());
-        $this->application->add(new ListCommand());
+        $this->application->add(new \Voyage\Commands\Init());
+        $this->application->add(new \Voyage\Commands\Status());
+        $this->application->add(new \Voyage\Commands\Make());
+        $this->application->add(new \Voyage\Commands\Rollback());
+        $this->application->add(new \Voyage\Commands\Apply());
+        $this->application->add(new \Voyage\Commands\Reset());
+        $this->application->add(new \Voyage\Commands\ListCommand());
     }
 }
 

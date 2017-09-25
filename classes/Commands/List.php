@@ -1,6 +1,6 @@
 <?php
 
-namespace Voyage;
+namespace Voyage\Commands;
 
 use Symfony\Component\Console\Helper\DescriptorHelper;
 use Symfony\Component\Console\Input\InputDefinition;

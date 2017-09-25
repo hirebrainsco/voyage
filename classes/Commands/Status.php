@@ -1,8 +1,10 @@
 <?php
 
-namespace Voyage;
+namespace Voyage\Commands;
 
-class StatusCommand extends Command
+use Voyage\Core\Command;
+
+class Status extends Command
 {
     public function __construct()
     {

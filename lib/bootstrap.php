@@ -9,9 +9,9 @@ function voyageAutoload($className)
         return;
     }
 
-    $pathToClass = VOYAGE_CLASS_DIR.str_replace($namespace, '', $className).'.php';
+    $pathToClass = VOYAGE_CLASS_DIR . str_replace([$namespace, '\\'], ['', '/'], $className) . '.php';
     if(file_exists($pathToClass)) {
-        require_once $pathToClass;
+        require_once($pathToClass);
     }
 }
 

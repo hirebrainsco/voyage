@@ -1,8 +1,10 @@
 <?php
 
-namespace Voyage;
+namespace Voyage\Commands;
 
-class ResetCommand extends Command
+use Voyage\Core\Command;
+
+class Reset extends Command
 {
     public function __construct()
     {

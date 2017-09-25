@@ -1,10 +1,11 @@
 <?php
 
-namespace Voyage;
+namespace Voyage\Commands;
 
 use Symfony\Component\Console\Input\InputOption;
+use Voyage\Core\Command;
 
-class RollbackCommand extends Command
+class Rollback extends Command
 {
     public function __construct()
     {
