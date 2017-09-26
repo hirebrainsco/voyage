@@ -52,7 +52,12 @@ class WordPress extends PlatformConfiguration
 
     private function extract()
     {
-        $result = [];
+        $result = [
+            'name' => null,
+            'host' => null,
+            'user' => null,
+            'pass' => null
+        ];
         $contents = file_get_contents($this->pathToConfig);
 
         if (empty($contents)) {
