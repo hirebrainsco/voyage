@@ -77,9 +77,9 @@ class Init extends Command
      */
     private function checkDatabaseConnection()
     {
-        $dbConnectionPrompt = new DatabaseSettingsPrompt($this, $this->getInput(), $this->getOutput(), $this->databaseSettings);
-        $dbConnectionPrompt->prompt();
-        unset($dbConnectionPrompt);
+        $dbSettingsPrompt = new DatabaseSettingsPrompt($this, $this->getInput(), $this->getOutput(), $this->databaseSettings);
+        $dbSettingsPrompt->prompt();
+        unset($dbSettingsPrompt);
 
         $this->writeln('---------------------');
         $this->writeln('Host: ' . $this->databaseSettings->getHost());
@@ -95,7 +95,13 @@ class Init extends Command
     private function checkConfigValue()
     {
         $configurationName = $this->getInput()->getOption('config');
-        if (!PlatformConfigurations::isAllowed($configurationName)) {
+
+        if ($configurationName == PlatformConfigurations::None || $configurationName == PlatformConfigurations::AutoDetect) {
+            return;
+        }
+
+        $configurations = new PlatformConfigurations();
+        if (true !== $configurations->exists($configurationName)) {
             $this->writeln("Fatal error: Configuration '" . $configurationName . "' is not supported.");
             exit(1);
         }

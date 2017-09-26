@@ -1,8 +1,10 @@
 #!/usr/bin/env php
 <?php
 
-require __DIR__.'/vendor/autoload.php';
-require __DIR__.'/lib/bootstrap.php';
+define('VOYAGE_WORKING_DIR', __DIR__);
+
+require VOYAGE_WORKING_DIR . '/vendor/autoload.php';
+require VOYAGE_WORKING_DIR . '/lib/bootstrap.php';
 
 use Voyage\Core\Application;
 

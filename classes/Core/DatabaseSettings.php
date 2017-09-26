@@ -28,7 +28,7 @@ class DatabaseSettings
     /**
      * @var string
      */
-    private $host = DatabaseSettings::DefaultHost;
+    private $host = '';
     /**
      * @var int
      */
@@ -59,6 +59,17 @@ class DatabaseSettings
      */
     public function setHost($host)
     {
+        if (empty($host)) {
+            $host = DatabaseSettings::DefaultHost;
+        } else {
+            if (strpos($host, ':') !== false) {
+                $result = explode(':', $host);
+
+                $host = $result[0];
+                $this->setPort($result[1]);
+            }
+        }
+
         $this->host = $host;
     }
 
@@ -75,7 +86,12 @@ class DatabaseSettings
      */
     public function setPort($port)
     {
-        $this->port = intval($port);
+        $port = intval($port);
+        if ($port < 0) {
+            $port = DatabaseSettings::DefaultPort;
+        }
+
+        $this->port = $port;
     }
 
     /**
@@ -124,5 +140,25 @@ class DatabaseSettings
     public function setDatabaseName($databaseName)
     {
         $this->databaseName = $databaseName;
+    }
+
+    public function copy(DatabaseSettings $source)
+    {
+        $this->setHost($source->getHost());
+        $this->setPort($source->getPort());
+        $this->setDatabaseName($source->getDatabaseName());
+        $this->setUsername($source->getUsername());
+        $this->setPassword($source->getPassword());
+    }
+
+    public function toArray()
+    {
+        return [
+            'name' => $this->getDatabaseName(),
+            'user' => $this->getUsername(),
+            'pass' => $this->getPassword(),
+            'host' => $this->getHost(),
+            'port' => $this->getPort()
+        ];
     }
 }

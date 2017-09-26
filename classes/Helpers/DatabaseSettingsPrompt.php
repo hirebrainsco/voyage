@@ -56,8 +56,8 @@ class DatabaseSettingsPrompt
 
     public function prompt()
     {
-        $this->fillFromInput();
         $this->fillFromConfig();
+        $this->fillFromInput();
         $this->promptMissingData();
     }
 
@@ -66,12 +66,23 @@ class DatabaseSettingsPrompt
      */
     private function fillFromInput()
     {
-        $hostAndPort = $this->getHostAndPort($this->input->getOption('host'));
-        $this->databaseSettings->setHost($hostAndPort[0]);
-        $this->databaseSettings->setPort($hostAndPort[1]);
-        $this->databaseSettings->setUsername($this->input->getOption('user'));
-        $this->databaseSettings->setPassword($this->input->getOption('pass'));
-        $this->databaseSettings->setDatabaseName($this->input->getOption('db'));
+        if (!is_null($this->input->getOption('host'))) {
+            $hostAndPort = $this->getHostAndPort($this->input->getOption('host'));
+            $this->databaseSettings->setHost($hostAndPort[0]);
+            $this->databaseSettings->setPort($hostAndPort[1]);
+        }
+
+        if (!is_null($this->input->getOption('user'))) {
+            $this->databaseSettings->setUsername($this->input->getOption('user'));
+        }
+
+        if (!is_null($this->input->getOption('pass'))) {
+            $this->databaseSettings->setPassword($this->input->getOption('pass'));
+        }
+
+        if (!is_null($this->input->getOption('db'))) {
+            $this->databaseSettings->setDatabaseName($this->input->getOption('db'));
+        }
     }
 
     /**
@@ -79,10 +90,14 @@ class DatabaseSettingsPrompt
      */
     private function fillFromConfig()
     {
-        $configValue = $this->input->getOption('config');
-        if ($configValue == 'none') {
+        $configurationName = $this->input->getOption('config');
+        if ($configurationName == PlatformConfigurations::None) {
             return;
         }
+
+        $configurations = new PlatformConfigurations();
+        $configurations->read($this->databaseSettings, $configurationName);
+        unset($configurations);
     }
 
     /**
@@ -93,7 +108,7 @@ class DatabaseSettingsPrompt
         $helper = $this->sender->getHelper('question');
 
         // Database host
-        if (empty($this->input->getOption('host'))) {
+        if ($this->databaseSettings->getHost() == '' || $this->databaseSettings->getPort() < 0) {
             $question = new Question('Database host and port (press ENTER for localhost:3306) ', 'localhost:3306');
             $answer = $helper->ask($this->input, $this->output, $question);
             $hostAndPort = $this->getHostAndPort($answer);
@@ -104,7 +119,7 @@ class DatabaseSettingsPrompt
         }
 
         // Username
-        if (empty($this->input->getOption('user'))) {
+        if ($this->databaseSettings->getUsername() == '') {
             $question = new Question('Database username: ');
             $question->setValidator(function ($answer) {
                 $answer = trim($answer);
@@ -121,7 +136,7 @@ class DatabaseSettingsPrompt
         }
 
         // Password
-        if (empty($this->input->getOption('pass'))) {
+        if ($this->databaseSettings->getPassword() == '') {
             $question = new Question('Database password (press ENTER if password is empty): ');
             $question->setHidden(true);
             $question->setNormalizer(function ($answer) {
@@ -134,7 +149,7 @@ class DatabaseSettingsPrompt
         }
 
         // Database name
-        if (empty($this->input->getOption('db'))) {
+        if ($this->databaseSettings->getDatabaseName() == '') {
             $question = new Question('Database name: ');
             $question->setValidator(function ($answer) {
                 $answer = trim($answer);
@@ -161,10 +176,6 @@ class DatabaseSettingsPrompt
         if (strpos($host, ':') !== false) {
             $result = explode(':', $host);
             return [$result[0], intval($result[1])];
-        }
-
-        if (empty($host)) {
-            $host = DatabaseSettings::DefaultHost;
         }
 
         return [$host, DatabaseSettings::DefaultPort];
