@@ -95,6 +95,17 @@ class DatabaseSettings
     /**
      * @return string
      */
+    public function getDsn()
+    {
+        return sprintf('mysql:host=%s;port=%s;database=%s',
+            $this->getHost(),
+            $this->getPort(),
+            $this->getDatabaseName());
+    }
+
+    /**
+     * @return string
+     */
     public function getUsername()
     {
         return $this->username;

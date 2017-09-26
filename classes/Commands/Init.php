@@ -52,7 +52,8 @@ class Init extends Command
         $this->displayAppName();
         $this->checkConfigValue();
         $this->checkIfAlreadyInitialized();
-        $this->checkDatabaseConnection();
+        $this->initDatabaseConnection();
+        $this->connectToDatabase();
     }
 
     /**
@@ -75,18 +76,20 @@ class Init extends Command
     /**
      * Check and initialize database connection.
      */
-    private function checkDatabaseConnection()
+    private function initDatabaseConnection()
     {
         $dbSettingsPrompt = new DatabaseSettingsPrompt($this, $this->getInput(), $this->getOutput(), $this->databaseSettings);
         $dbSettingsPrompt->prompt();
         unset($dbSettingsPrompt);
+    }
 
-//        $this->writeln('---------------------');
-//        $this->writeln('Host: ' . $this->databaseSettings->getHost());
-//        $this->writeln('Port: ' . $this->databaseSettings->getPort());
-//        $this->writeln('User: ' . $this->databaseSettings->getUsername());
-//        $this->writeln('Pass: ' . $this->databaseSettings->getPassword());
-//        $this->writeln('Name: ' . $this->databaseSettings->getDatabaseName());
+    private function connectToDatabase()
+    {
+        try {
+            $connection = new \PDO($this->databaseSettings->getDsn(), $this->databaseSettings->getUsername(), $this->databaseSettings->getPassword());
+        } catch (\Exception $exception) {
+            $this->writeln('Fatal error: ' . $exception->getMessage());
+        }
     }
 
     /**
