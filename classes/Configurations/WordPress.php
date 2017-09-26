@@ -29,6 +29,9 @@ class WordPress extends PlatformConfiguration
         $this->pathToConfig = VOYAGE_WORKING_DIR . '/wp-config.php';
     }
 
+    /**
+     * @return null|DatabaseSettings
+     */
     public function getDatabaseSettings()
     {
         if (!$this->configFileExists()) {
@@ -50,6 +53,9 @@ class WordPress extends PlatformConfiguration
         return $settings;
     }
 
+    /**
+     * @return array
+     */
     private function extract()
     {
         $result = [
