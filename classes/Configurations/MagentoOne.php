@@ -59,12 +59,11 @@ class MagentoOne extends PlatformConfiguration
                             }
 
                             break;
-                        }
-                    }
-                }
-            }
-        }
-
+                        } // if connection is active
+                    } // if isset connection
+                } // foreach resource
+            } // foreach resources
+        } // if not empty resources
 
         return $result;
     }

@@ -25,7 +25,8 @@ class PlatformConfigurations
      */
     private $configurations = [
         'wordpress' => ['class' => \Voyage\Configurations\WordPress::class, 'name' => 'WordPress'],
-        'magento1' => ['class' => \Voyage\Configurations\MagentoOne::class, 'name' => 'Magento version 1.x']
+        'magento1' => ['class' => \Voyage\Configurations\MagentoOne::class, 'name' => 'Magento version 1.x'],
+        'magento2' => ['class' => \Voyage\Configurations\MagentoTwo::class, 'name' => 'Magento version 2.x'],
     ];
 
     /**
