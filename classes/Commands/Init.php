@@ -81,12 +81,12 @@ class Init extends Command
         $dbSettingsPrompt->prompt();
         unset($dbSettingsPrompt);
 
-        $this->writeln('---------------------');
-        $this->writeln('Host: ' . $this->databaseSettings->getHost());
-        $this->writeln('Port: ' . $this->databaseSettings->getPort());
-        $this->writeln('User: ' . $this->databaseSettings->getUsername());
-        $this->writeln('Pass: ' . $this->databaseSettings->getPassword());
-        $this->writeln('Name: ' . $this->databaseSettings->getDatabaseName());
+//        $this->writeln('---------------------');
+//        $this->writeln('Host: ' . $this->databaseSettings->getHost());
+//        $this->writeln('Port: ' . $this->databaseSettings->getPort());
+//        $this->writeln('User: ' . $this->databaseSettings->getUsername());
+//        $this->writeln('Pass: ' . $this->databaseSettings->getPassword());
+//        $this->writeln('Name: ' . $this->databaseSettings->getDatabaseName());
     }
 
     /**
