@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputInterface;
  * Class DatabaseConnection
  * @package Voyage\Core
  */
-class DatabaseConnection
+class DatabaseSettings
 {
     /**
      * Default MySQL server port.
@@ -28,11 +28,11 @@ class DatabaseConnection
     /**
      * @var string
      */
-    private $host = DatabaseConnection::DefaultHost;
+    private $host = DatabaseSettings::DefaultHost;
     /**
      * @var int
      */
-    private $port = DatabaseConnection::DefaultPort;
+    private $port = DatabaseSettings::DefaultPort;
     /**
      * @var string
      */
