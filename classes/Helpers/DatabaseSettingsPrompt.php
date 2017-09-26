@@ -99,8 +99,12 @@ class DatabaseSettingsPrompt
         }
 
         $configurations = new PlatformConfigurations();
-        $configurations->read($this->databaseSettings, $configurationName);
+        $platformName = $configurations->read($this->databaseSettings, $configurationName);
         unset($configurations);
+
+        if (!empty($platformName) && !$this->output->isQuiet()) {
+            $this->output->writeln('Detected platform: ' . $platformName . '. Successfully read configuration file.');
+        }
     }
 
     /**

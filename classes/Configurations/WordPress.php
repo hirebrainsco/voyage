@@ -17,11 +17,6 @@ use Voyage\Core\PlatformConfiguration;
 class WordPress extends PlatformConfiguration
 {
     /**
-     * @var string
-     */
-    protected $pathToConfig = '';
-
-    /**
      * WordPress constructor.
      */
     public function __construct()
@@ -30,40 +25,11 @@ class WordPress extends PlatformConfiguration
     }
 
     /**
-     * @return null|DatabaseSettings
-     */
-    public function getDatabaseSettings()
-    {
-        if (!$this->configFileExists()) {
-            return null;
-        }
-
-        $result = $this->extract();
-        if (empty($result)) {
-            return null;
-        }
-
-        $settings = new DatabaseSettings();
-
-        $settings->setUsername($result['user']);
-        $settings->setPassword($result['pass']);
-        $settings->setDatabaseName($result['name']);
-        $settings->setHost($result['host']);
-
-        return $settings;
-    }
-
-    /**
      * @return array
      */
-    private function extract()
+    protected function extract()
     {
-        $result = [
-            'name' => null,
-            'host' => null,
-            'user' => null,
-            'pass' => null
-        ];
+        $result = parent::extract();
         $contents = file_get_contents($this->pathToConfig);
 
         if (empty($contents)) {

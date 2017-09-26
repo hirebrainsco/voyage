@@ -24,9 +24,8 @@ class PlatformConfigurations
      * @var array
      */
     private $configurations = [
-        'wordpress' => '\\Voyage\\Configurations\\WordPress',
-        'magento1' => '\\Voyage\\Configurations\\MagentoOne',
-        'magento2' => '\\Voyage\\Configurations\\MagentoTwo'
+        'wordpress' => ['class' => \Voyage\Configurations\WordPress::class, 'name' => 'WordPress'],
+        'magento1' => ['class' => \Voyage\Configurations\MagentoOne::class, 'name' => 'Magento version 1.x']
     ];
 
     /**
@@ -51,40 +50,48 @@ class PlatformConfigurations
             throw new \Exception("Configuration '" . $configurationName . "' doesn't exist!");
         }
 
-        return new $this->configurations[$configurationName]();
+        $className = $this->configurations[$configurationName]['class'];
+        return new $className();
     }
 
     /**
      * Read configuration and fill database setting with read settings.
      * @param DatabaseSettings $databaseSettings
      * @param string $configurationName
+     * @return string
      */
     public function read(DatabaseSettings $databaseSettings, $configurationName = PlatformConfigurations::AutoDetect)
     {
+        $platformName = '';
+
         if ($configurationName !== PlatformConfigurations::AutoDetect) {
             if (!$this->exists($configurationName)) {
-                return;
+                return '';
             }
 
             $configurationInstance = $this->getConfigurationInstance($configurationName);
             $settings = $configurationInstance->getDatabaseSettings();
             if (is_object($settings)) {
                 $databaseSettings->copy($settings);
+                $platformName = $this->configurations[$configurationName]['name'];
             }
 
             unset($configurationInstance, $settings);
         } else {
             // Auto-detection
-            foreach ($this->configurations as $name => $className) {
+            foreach ($this->configurations as $name => $data) {
                 $configurationInstance = $this->getConfigurationInstance($name);
                 $settings = $configurationInstance->getDatabaseSettings();
+                unset($configurationInstance);
+
                 if (is_object($settings)) {
                     $databaseSettings->copy($settings);
-                    return;
+                    $platformName = $data['name'];
+                    break;
                 }
-
-                unset($configurationInstance);
             }
         }
+
+        return $platformName;
     }
 }
