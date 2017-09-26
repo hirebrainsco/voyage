@@ -1,12 +1,24 @@
 <?php
+/**
+ * Copyright (c) 2017 HireBrains
+ * Author: Dmitry Martynenko
+ * Email: dmitry@hirebrains.co
+ */
 
 namespace Voyage\Commands;
 
 use Symfony\Component\Console\Input\InputOption;
 use Voyage\Core\Command;
 
+/**
+ * Class Rollback
+ * @package Voyage\Commands
+ */
 class Rollback extends Command
 {
+    /**
+     * Rollback constructor.
+     */
     public function __construct()
     {
         $this->setName('rollback');

@@ -1,11 +1,23 @@
 <?php
+/**
+ * Copyright (c) 2017 HireBrains
+ * Author: Dmitry Martynenko
+ * Email: dmitry@hirebrains.co
+ */
 
 namespace Voyage\Commands;
 
 use Voyage\Core\Command;
 
+/**
+ * Class Status
+ * @package Voyage\Commands
+ */
 class Status extends Command
 {
+    /**
+     * Status constructor.
+     */
     public function __construct()
     {
         $this->setName('status');

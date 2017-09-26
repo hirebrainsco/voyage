@@ -1,4 +1,9 @@
 <?php
+/**
+ * Copyright (c) 2017 HireBrains
+ * Author: Dmitry Martynenko
+ * Email: dmitry@hirebrains.co
+ */
 
 namespace Voyage\Commands;
 
@@ -6,9 +11,15 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Voyage\Core\Command;
+use Voyage\Core\DatabaseConnection;
 
 class Init extends Command
 {
+    /**
+     * @var DatabaseConnection
+     */
+    private $databaseConnection;
+
     public function __construct()
     {
         $this->setName('init');
@@ -26,25 +37,27 @@ class Init extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->displayAppName($output);
-        $this->checkIfAlreadyInitialized($input, $output);
-        $this->checkDatabaseConnection($input, $output);
+        parent::execute($input, $output);
+
+        $this->displayAppName();
+        $this->checkIfAlreadyInitialized();
+        $this->checkDatabaseConnection();
     }
 
-    protected function checkDatabaseConnection(InputInterface $input, OutputInterface $output)
+    protected function checkDatabaseConnection()
     {
 
     }
 
-    protected function checkIfAlreadyInitialized(InputInterface $input, OutputInterface $output)
+    protected function checkIfAlreadyInitialized()
     {
         if ($this->getConfiguration()->isVoyageDirExist()) {
-            if (true !== $input->getOption('force')) {
-                $output->writeln("Fatal error: Voyage has been already initialized in the current directory. Use --force or -f option to overwrite current Voyage data and settings.");
+            if (true !== $this->getInput()->getOption('force')) {
+                $this->writeln("Fatal error: Voyage has been already initialized in the current directory. Use --force or -f option to overwrite current Voyage data and settings.");
                 exit(1);
             } else {
-                if (!$output->isQuiet()) {
-                    $output->writeln("<info>Voyage has been already initialized in the current directory. Overwriting existing data and settings.</info>");
+                if (!$this->isQuiet()) {
+                    $this->writeln("<info>Voyage has been already initialized in the current directory. Overwriting existing data and settings.</info>");
                 }
             }
         }

@@ -1,21 +1,50 @@
 <?php
+/**
+ * Copyright (c) 2017 HireBrains
+ * Author: Dmitry Martynenko
+ * Email: dmitry@hirebrains.co
+ */
 
 namespace Voyage\Core;
 
 use Symfony\Component\Console\Input\InputInterface;
 
+/**
+ * Class DatabaseConnection
+ * @package Voyage\Core
+ */
 class DatabaseConnection
 {
-    private $host = 'localhost';
-    private $port = 3306;
+    /**
+     * Default MySQL server port.
+     */
+    const DefaultPort = 3306;
+
+    /**
+     * Default MySQL host.
+     */
+    const DefaultHost = 'localhost';
+
+    /**
+     * @var string
+     */
+    private $host = DatabaseConnection::DefaultHost;
+    /**
+     * @var int
+     */
+    private $port = DatabaseConnection::DefaultPort;
+    /**
+     * @var string
+     */
     private $username = '';
+    /**
+     * @var string
+     */
     private $password = '';
+    /**
+     * @var string
+     */
     private $databaseName = '';
-
-    public function initiFromInput(InputInterface $input)
-    {
-
-    }
 
     /**
      * @return string
@@ -46,7 +75,7 @@ class DatabaseConnection
      */
     public function setPort($port)
     {
-        $this->port = $port;
+        $this->port = intval($port);
     }
 
     /**

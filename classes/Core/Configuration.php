@@ -1,23 +1,47 @@
 <?php
+/**
+ * Copyright (c) 2017 HireBrains
+ * Author: Dmitry Martynenko
+ * Email: dmitry@hirebrains.co
+ */
 
 namespace Voyage\Core;
 
+/**
+ * Class Configuration
+ * @package Voyage\Core
+ */
 class Configuration
 {
+    /**
+     * @var string
+     */
     private $dirname = '.voyage';
+    /**
+     * @var string
+     */
     private $lockFile = 'voyage.lock';
 
+    /**
+     * Check if Voyage has been initialized and not locked.
+     */
     public function checkIntegrity()
     {
         $this->checkVoyageDirectory();
         $this->checkLockFile();
     }
 
+    /**
+     * @return string
+     */
     public function getLockFilePath()
     {
         return $this->dirname . '/' . $this->lockFile;
     }
 
+    /**
+     * @return bool
+     */
     public function isVoyageDirExist()
     {
         $path = $this->getVoyageDir();
@@ -26,11 +50,18 @@ class Configuration
         return $result;
     }
 
+    /**
+     * @return string
+     */
     private function getVoyageDir()
     {
         return './' . $this->dirname;
     }
 
+    /**
+     * Check if Voyage is locked (another Voyage process is running).
+     * @throws \Exception
+     */
     private function checkLockFile()
     {
         $path = realpath($this->getLockFilePath());
@@ -39,6 +70,10 @@ class Configuration
         }
     }
 
+    /**
+     * Check if Voyage directory exists.
+     * @throws \Exception
+     */
     private function checkVoyageDirectory()
     {
         if (false === $this->isVoyageDirExist()) {
