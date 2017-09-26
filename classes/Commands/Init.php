@@ -75,12 +75,16 @@ class Init extends Command
      */
     private function checkDatabaseConnection()
     {
-        $dbConnectionPrompt = new DatabaseSettingsPrompt($this->getInput(), $this->databaseSettings);
+        $dbConnectionPrompt = new DatabaseSettingsPrompt($this, $this->getInput(), $this->getOutput(), $this->databaseSettings);
         $dbConnectionPrompt->prompt();
         unset($dbConnectionPrompt);
 
+        $this->writeln('---------------------');
         $this->writeln('Host: ' . $this->databaseSettings->getHost());
         $this->writeln('Port: ' . $this->databaseSettings->getPort());
+        $this->writeln('User: ' . $this->databaseSettings->getUsername());
+        $this->writeln('Pass: ' . $this->databaseSettings->getPassword());
+        $this->writeln('Name: ' . $this->databaseSettings->getDatabaseName());
     }
 
     /**
@@ -90,7 +94,7 @@ class Init extends Command
     {
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Continue execution and overwrite existing .voyage configuration and clean existing migrations.');
         $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Specify a platform, in this case Voyage will detect database connection settings automatically. For example: --config=wordpress.', 'wordpress');
-        $this->addOption('host', '', InputOption::VALUE_REQUIRED, 'Database host (and port, port is optional)', 'localhost:3306');
+        $this->addOption('host', '', InputOption::VALUE_REQUIRED, 'Database host (and port, port is optional, for example: localhost:3306)');
         $this->addOption('user', 'u', InputOption::VALUE_REQUIRED, 'Database username');
         $this->addOption('pass', 'p', InputOption::VALUE_REQUIRED, 'Database password');
         $this->addOption('db', 'd', InputOption::VALUE_REQUIRED, 'Database name');
