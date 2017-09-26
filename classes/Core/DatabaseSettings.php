@@ -7,8 +7,6 @@
 
 namespace Voyage\Core;
 
-use Symfony\Component\Console\Input\InputInterface;
-
 /**
  * Class DatabaseConnection
  * @package Voyage\Core
@@ -142,6 +140,10 @@ class DatabaseSettings
         $this->databaseName = $databaseName;
     }
 
+    /**
+     * Copy values from another object.
+     * @param DatabaseSettings $source
+     */
     public function copy(DatabaseSettings $source)
     {
         $this->setHost($source->getHost());
@@ -151,6 +153,10 @@ class DatabaseSettings
         $this->setPassword($source->getPassword());
     }
 
+    /**
+     * Get database access info as an array.
+     * @return array
+     */
     public function toArray()
     {
         return [

@@ -54,6 +54,9 @@ class DatabaseSettingsPrompt
         $this->databaseSettings = $databaseSettings;
     }
 
+    /**
+     * Get database access info.
+     */
     public function prompt()
     {
         $this->fillFromConfig();
