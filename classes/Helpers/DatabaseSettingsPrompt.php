@@ -79,7 +79,10 @@ class DatabaseSettingsPrompt
      */
     private function fillFromConfig()
     {
-        // TODO
+        $configValue = $this->input->getOption('config');
+        if ($configValue == 'none') {
+            return;
+        }
     }
 
     /**

@@ -13,6 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Voyage\Core\Command;
 use Voyage\Core\DatabaseSettings;
 use Voyage\Helpers\DatabaseSettingsPrompt;
+use Voyage\Helpers\PlatformConfigurations;
 
 /**
  * Class Init
@@ -49,6 +50,7 @@ class Init extends Command
         parent::execute($input, $output);
 
         $this->displayAppName();
+        $this->checkConfigValue();
         $this->checkIfAlreadyInitialized();
         $this->checkDatabaseConnection();
     }
@@ -88,12 +90,24 @@ class Init extends Command
     }
 
     /**
+     * Check value of --config | -c option.
+     */
+    private function checkConfigValue()
+    {
+        $configurationName = $this->getInput()->getOption('config');
+        if (!PlatformConfigurations::isAllowed($configurationName)) {
+            $this->writeln("Fatal error: Configuration '" . $configurationName . "' is not supported.");
+            exit(1);
+        }
+    }
+
+    /**
      * Add options for 'init' command.
      */
     private function addCommandOptions()
     {
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Continue execution and overwrite existing .voyage configuration and clean existing migrations.');
-        $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Specify a platform, in this case Voyage will detect database connection settings automatically. For example: --config=wordpress.', 'wordpress');
+        $this->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Specify a platform, in this case Voyage will detect database connection settings automatically. For example: --config=wordpress.', 'auto');
         $this->addOption('host', '', InputOption::VALUE_REQUIRED, 'Database host (and port, port is optional, for example: localhost:3306)');
         $this->addOption('user', 'u', InputOption::VALUE_REQUIRED, 'Database username');
         $this->addOption('pass', 'p', InputOption::VALUE_REQUIRED, 'Database password');
