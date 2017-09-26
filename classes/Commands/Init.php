@@ -44,12 +44,12 @@ class Init extends Command
         $this->checkDatabaseConnection();
     }
 
-    protected function checkDatabaseConnection()
+    private function checkDatabaseConnection()
     {
 
     }
 
-    protected function checkIfAlreadyInitialized()
+    private function checkIfAlreadyInitialized()
     {
         if ($this->getConfiguration()->isVoyageDirExist()) {
             if (true !== $this->getInput()->getOption('force')) {
