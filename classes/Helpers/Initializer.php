@@ -44,7 +44,7 @@ class Initializer
     {
         $this->checkIntegrity();
 
-        $fsRoutines = new FileSystemRoutines();
+        $fsRoutines = new FileSystemRoutines($this->sender);
 
         // Remove .voyage directory and all configs if it exists.
         $fsRoutines->clean();

@@ -44,7 +44,7 @@ class Configuration
      */
     public function isVoyageDirExist()
     {
-        $path = $this->getVoyageDir();
+        $path = $this->getPathToVoyage();
         $result = file_exists($path) && is_readable($path) && is_readable($path) && is_dir($path);
 
         return $result;
@@ -53,7 +53,7 @@ class Configuration
     /**
      * @return string
      */
-    private function getVoyageDir()
+    public function getPathToVoyage()
     {
         return './' . $this->directoryName;
     }
