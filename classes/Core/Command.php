@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class Command
  * @package Voyage\Core
  */
-class Command extends \Symfony\Component\Console\Command\Command
+class Command extends \Symfony\Component\Console\Command\Command implements InputOutputInterface
 {
     /**
      * @var InputInterface
@@ -84,16 +84,48 @@ class Command extends \Symfony\Component\Console\Command\Command
      * Wrapper for output isQuiet method.
      * @return bool
      */
-    protected function isQuiet()
+    public function isQuiet()
     {
         return $this->getOutput()->isQuiet();
+    }
+
+    /**
+     * Output an informational message if no quiet parameter present.
+     * @param $message
+     */
+    public function info($message)
+    {
+        $this->report(sprintf('<info>%s</info>', $message));
+    }
+
+    /**
+     * Output a message if no quiet parameter present.
+     * @param $message
+     */
+    public function report($message)
+    {
+        if ($this->isQuiet()) {
+            return;
+        }
+
+        $this->writeln($message);
+    }
+
+    /**
+     * Output fatal error and stop execution.
+     * @param $message
+     */
+    public function fatalError($message)
+    {
+        $this->writeln(sprintf('Fatal error: %s', $message));
+        exit(1);
     }
 
     /**
      * Wrapper for output writeln method.
      * @param $string
      */
-    protected function writeln($string)
+    public function writeln($string)
     {
         $this->getOutput()->writeln($string);
     }

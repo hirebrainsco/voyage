@@ -7,11 +7,11 @@
 
 namespace Voyage\Helpers;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Voyage\Core\DatabaseSettings;
+use Voyage\Core\InputOutputInterface;
 
 /**
  * Class DbConnectionPrompt
@@ -20,7 +20,7 @@ use Voyage\Core\DatabaseSettings;
 class DatabaseSettingsPrompt
 {
     /**
-     * @var Command
+     * @var InputOutputInterface
      */
     private $sender;
 
@@ -41,12 +41,12 @@ class DatabaseSettingsPrompt
 
     /**
      * DbConnectionPrompt constructor.
-     * @param Command $sender
+     * @param InputOutputInterface $sender
      * @param InputInterface $input
      * @param OutputInterface $output
      * @param DatabaseSettings $databaseSettings
      */
-    public function __construct(Command $sender, InputInterface $input, OutputInterface $output, DatabaseSettings $databaseSettings)
+    public function __construct(InputOutputInterface $sender, InputInterface $input, OutputInterface $output, DatabaseSettings $databaseSettings)
     {
         $this->sender = $sender;
         $this->input = $input;
@@ -103,7 +103,7 @@ class DatabaseSettingsPrompt
         unset($configurations);
 
         if (!empty($platformName) && !$this->output->isQuiet()) {
-            $this->output->writeln('Detected platform: ' . $platformName . '. Successfully read configuration file.');
+            $this->sender->report('Detected platform: ' . $platformName . '. Successfully read configuration file.');
         }
     }
 

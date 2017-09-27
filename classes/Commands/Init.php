@@ -12,20 +12,43 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Voyage\Core\Command;
 use Voyage\Core\DatabaseConnection;
+use Voyage\Core\DatabaseConnectionWithIoInterface;
 use Voyage\Core\DatabaseSettings;
 use Voyage\Helpers\DatabaseSettingsPrompt;
+use Voyage\Helpers\Initializer;
 use Voyage\Helpers\PlatformConfigurations;
 
 /**
  * Class Init
  * @package Voyage\Commands
  */
-class Init extends Command
+class Init extends Command implements DatabaseConnectionWithIoInterface
 {
     /**
      * @var DatabaseSettings
      */
     private $databaseSettings;
+
+    /**
+     * @var DatabaseConnection
+     */
+    private $databaseConnection;
+
+    /**
+     * @return DatabaseSettings
+     */
+    public function getDatabaseSettings()
+    {
+        return $this->databaseSettings;
+    }
+
+    /**
+     * @return DatabaseConnection
+     */
+    public function getDatabaseConnection()
+    {
+        return $this->databaseConnection;
+    }
 
     /**
      * Init constructor.
@@ -55,6 +78,18 @@ class Init extends Command
         $this->checkIfAlreadyInitialized();
         $this->retrieveDatabaseSettings();
         $this->connectToDatabase();
+        $this->performInit();
+    }
+
+    private function performInit()
+    {
+        try {
+            $initializer = new Initializer($this);
+            $initializer->run();
+            unset($initializer);
+        } catch (\Exception $exception) {
+            $this->fatalError($exception->getMessage());
+        }
     }
 
     /**
@@ -64,12 +99,9 @@ class Init extends Command
     {
         if ($this->getConfiguration()->isVoyageDirExist()) {
             if (true !== $this->getInput()->getOption('force')) {
-                $this->writeln("Fatal error: Voyage has been already initialized in the current directory. Use --force or -f option to overwrite current Voyage data and settings.");
-                exit(1);
+                $this->fatalError('Voyage has been already initialized in the current directory. Use --force or -f option to overwrite current Voyage data and settings.');
             } else {
-                if (!$this->isQuiet()) {
-                    $this->writeln("<info>Voyage has been already initialized in the current directory. Overwriting existing data and settings.</info>");
-                }
+                $this->info('Voyage has been already initialized in the current directory. Overwriting existing data and settings.');
             }
         }
     }
@@ -90,9 +122,9 @@ class Init extends Command
     private function connectToDatabase()
     {
         try {
-            $connection = new DatabaseConnection($this->databaseSettings);
+            $this->databaseConnection = new DatabaseConnection($this->databaseSettings);
         } catch (\Exception $exception) {
-            $this->writeln('Fatal error: ' . $exception->getMessage());
+            $this->fatalError($exception->getMessage());
         }
     }
 
@@ -109,8 +141,7 @@ class Init extends Command
 
         $configurations = new PlatformConfigurations();
         if (true !== $configurations->exists($configurationName)) {
-            $this->writeln("Fatal error: Configuration '" . $configurationName . "' is not supported.");
-            exit(1);
+            $this->fatalError("Configuration '" . $configurationName . "' is not supported.");
         }
     }
 

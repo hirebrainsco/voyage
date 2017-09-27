@@ -19,9 +19,26 @@ class DatabaseConnection
     private $pdo;
 
     /**
+     * @var bool
+     */
+    private $connected = false;
+
+    /**
      * @var DatabaseSettings
      */
     private $settings;
+
+    /**
+     * @return bool
+     */
+    public function isConnected()
+    {
+        if (!is_object($this->pdo)) {
+            return false;
+        }
+
+        return $this->connected;
+    }
 
     /**
      * DatabaseConnection constructor.
@@ -41,6 +58,8 @@ class DatabaseConnection
         $this->pdo = new \PDO($this->getDsn(), $this->settings->getUsername(), $this->settings->getPassword());
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $this->pdo->query('USE ' . $this->settings->getDatabaseName());
+
+        $this->connected = true;
     }
 
     /**

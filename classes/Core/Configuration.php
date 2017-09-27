@@ -16,11 +16,11 @@ class Configuration
     /**
      * @var string
      */
-    private $dirname = '.voyage';
+    private $directoryName = '.voyage';
     /**
      * @var string
      */
-    private $lockFile = 'voyage.lock';
+    private $lockFilename = 'voyage.lock';
 
     /**
      * Check if Voyage has been initialized and not locked.
@@ -36,7 +36,7 @@ class Configuration
      */
     public function getLockFilePath()
     {
-        return $this->dirname . '/' . $this->lockFile;
+        return $this->directoryName . '/' . $this->lockFilename;
     }
 
     /**
@@ -55,7 +55,7 @@ class Configuration
      */
     private function getVoyageDir()
     {
-        return './' . $this->dirname;
+        return './' . $this->directoryName;
     }
 
     /**
