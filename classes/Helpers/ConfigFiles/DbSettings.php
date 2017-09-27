@@ -7,9 +7,10 @@
 
 namespace Voyage\Helpers\ConfigFiles;
 
-use Voyage\Core\DatabaseConnectionWithIoInterface;
-use Voyage\Core\DatabaseSettings;
-
+/**
+ * Class DbSettings
+ * @package Voyage\Helpers\ConfigFiles
+ */
 class DbSettings extends ConfigFile
 {
     /**

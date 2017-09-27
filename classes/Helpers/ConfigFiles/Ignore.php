@@ -7,10 +7,20 @@
 
 namespace Voyage\Helpers\ConfigFiles;
 
+/**
+ * Class Ignore
+ * @package Voyage\Helpers\ConfigFiles
+ */
 class Ignore extends ConfigFile
 {
+    /**
+     * @var string
+     */
     protected $filename = 'ignore';
 
+    /**
+     * @return string
+     */
     protected function getTemplate()
     {
         $template = '#' . PHP_EOL;

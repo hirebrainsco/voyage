@@ -48,20 +48,14 @@ class Initializer
         // Initialize in filesystem
         $fileSystemRoutines = new FileSystemRoutines($this->sender);
         $fileSystemRoutines->clean(); // Remove .voyage directory and all configs if it exists.
-        $fileSystemRoutines->createConfigFiles();
+        $fileSystemRoutines->createConfigFiles(); // Create Voyage directory and configuration files.
         unset($fileSystemRoutines, $databaseRoutines);
 
         // Initialize in database
         $databaseRoutines = new DatabaseRoutines($this->sender);
-        $databaseRoutines->clean(); // Remove voyage migrations table
-        $databaseRoutines->createTable();
+        $databaseRoutines->clean(); // Remove voyage migrations table.
+        $databaseRoutines->createTable(); // Create voyage migrations table.
         unset($databaseRoutines);
-
-//        $this->createVoyageDirectory();
-//        $this->generateConfig();
-//        $this->createGitIgnore();
-//        $this->createDatabaseTable();
-//        $this->makeFirstDump();
     }
 
     /**

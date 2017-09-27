@@ -9,6 +9,10 @@ namespace Voyage\Helpers\ConfigFiles;
 
 use Voyage\Core\DatabaseConnectionWithIoInterface;
 
+/**
+ * Class ConfigFiles
+ * @package Voyage\Helpers\ConfigFiles
+ */
 class ConfigFiles
 {
     /**
@@ -34,6 +38,12 @@ class ConfigFiles
         $dbSettings->setSender($this->sender);
         $dbSettings->createEmptyFile();
 
-        unset($ignore, $dbSettings);
+        $gitIgnore = new GitIgnore();
+        $gitIgnore->createEmptyFile();
+
+        $apacheConfig = new ApacheConfig();
+        $apacheConfig->createEmptyFile();
+
+        unset($ignore, $dbSettings, $gitIgnore, $apacheConfig);
     }
 }
