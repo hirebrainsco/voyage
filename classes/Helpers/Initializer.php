@@ -45,52 +45,22 @@ class Initializer
     {
         $this->checkIntegrity();
 
+        // Initialize in filesystem
         $fsRoutines = new FileSystemRoutines($this->sender);
-        $dbRoutines = new DatabaseRoutines($this->sender, $this->sender->getDatabaseConnection());
-
-        // Remove .voyage directory and all configs if it exists.
-        $fsRoutines->clean();
-
-        // Remove voyage migrations table
-        $dbRoutines->clean();
-
-        $this->createDirAndConfig();
-        $this->createDatabaseTable();
-        $this->makeFirstDump();
-
+        $fsRoutines->clean(); // Remove .voyage directory and all configs if it exists.
         unset($fsRoutines, $dbRoutines);
-    }
 
-    protected function createDirAndConfig()
-    {
-        $this->createVoyageDirectory();
-        $this->generateConfig();
-        $this->createGitIgnore();
-    }
+        // Initialize in database
+        $dbRoutines = new DatabaseRoutines($this->sender, $this->sender->getDatabaseConnection());
+        $dbRoutines->clean(); // Remove voyage migrations table
+        $dbRoutines->createTable();
+        unset($dbRoutines);
 
-    protected function createVoyageDirectory()
-    {
-
-    }
-
-    protected function createGitIgnore()
-    {
-
-    }
-
-    protected function generateConfig()
-    {
-
-    }
-
-    protected function createDatabaseTable()
-    {
-
-    }
-
-    protected function makeFirstDump()
-    {
-
+//        $this->createVoyageDirectory();
+//        $this->generateConfig();
+//        $this->createGitIgnore();
+//        $this->createDatabaseTable();
+//        $this->makeFirstDump();
     }
 
     /**
