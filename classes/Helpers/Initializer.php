@@ -47,7 +47,7 @@ class Initializer
         $fileSystemRoutines = new FileSystemRoutines($this->sender);
         $fileSystemRoutines->clean(); // Remove .voyage directory and all configs if it exists.
         $fileSystemRoutines->createConfigFiles(); // Create Voyage directory and configuration files.
-        unset($fileSystemRoutines, $databaseRoutines);
+        unset($fileSystemRoutines);
 
         // Initialize in database
         $databaseRoutines = new DatabaseRoutines($this->sender);
