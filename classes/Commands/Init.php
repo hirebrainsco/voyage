@@ -49,9 +49,9 @@ class Init extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         parent::execute($input, $output);
-
         $this->displayAppName();
-        $this->checkConfigValue();
+
+        $this->checkPlatformConfigMode();
         $this->checkIfAlreadyInitialized();
         $this->initDatabaseConnection();
         $this->connectToDatabase();
@@ -99,7 +99,7 @@ class Init extends Command
     /**
      * Check value of --config | -c option.
      */
-    private function checkConfigValue()
+    private function checkPlatformConfigMode()
     {
         $configurationName = $this->getInput()->getOption('config');
 
