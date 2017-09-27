@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Voyage\Core\Command;
+use Voyage\Core\DatabaseConnection;
 use Voyage\Core\DatabaseSettings;
 use Voyage\Helpers\DatabaseSettingsPrompt;
 use Voyage\Helpers\PlatformConfigurations;
@@ -83,10 +84,13 @@ class Init extends Command
         unset($dbSettingsPrompt);
     }
 
+    /*
+     * Try to connect to database.
+     */
     private function connectToDatabase()
     {
         try {
-            $connection = new \PDO($this->databaseSettings->getDsn(), $this->databaseSettings->getUsername(), $this->databaseSettings->getPassword());
+            $connection = new DatabaseConnection($this->databaseSettings);
         } catch (\Exception $exception) {
             $this->writeln('Fatal error: ' . $exception->getMessage());
         }
