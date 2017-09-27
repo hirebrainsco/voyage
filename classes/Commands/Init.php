@@ -53,7 +53,7 @@ class Init extends Command
 
         $this->checkPlatformConfigMode();
         $this->checkIfAlreadyInitialized();
-        $this->initDatabaseConnection();
+        $this->retrieveDatabaseSettings();
         $this->connectToDatabase();
     }
 
@@ -77,7 +77,7 @@ class Init extends Command
     /**
      * Check and initialize database connection.
      */
-    private function initDatabaseConnection()
+    private function retrieveDatabaseSettings()
     {
         $dbSettingsPrompt = new DatabaseSettingsPrompt($this, $this->getInput(), $this->getOutput(), $this->databaseSettings);
         $dbSettingsPrompt->prompt();
