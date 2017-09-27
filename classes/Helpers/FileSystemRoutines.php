@@ -69,5 +69,7 @@ class FileSystemRoutines extends Routines
         $configFiles = new ConfigFiles($this->getSender());
         $configFiles->createEmptyFiles();
         unset($configFiles);
+
+        $this->getSender()->report('Created configuration files.');
     }
 }
