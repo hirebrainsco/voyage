@@ -50,6 +50,11 @@ class DatabaseConnection
         $this->connect();
     }
 
+    /**
+     * Execute SQL query.
+     * @param $sql
+     * @return int
+     */
     public function exec($sql)
     {
         return $this->pdo->exec($sql);

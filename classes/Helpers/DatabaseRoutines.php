@@ -11,6 +11,10 @@ use Voyage\Core\DatabaseConnection;
 use Voyage\Core\InputOutputInterface;
 use Voyage\Core\Routines;
 
+/**
+ * Class DatabaseRoutines
+ * @package Voyage\Helpers
+ */
 class DatabaseRoutines extends Routines
 {
     /**
@@ -18,6 +22,11 @@ class DatabaseRoutines extends Routines
      */
     private $databaseConnection;
 
+    /**
+     * DatabaseRoutines constructor.
+     * @param InputOutputInterface $reporter
+     * @param DatabaseConnection $databaseConnection
+     */
     public function __construct(InputOutputInterface $reporter, DatabaseConnection $databaseConnection)
     {
         parent::__construct($reporter);
