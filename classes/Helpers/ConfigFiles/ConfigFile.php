@@ -8,7 +8,7 @@
 namespace Voyage\Helpers\ConfigFiles;
 
 use Voyage\Core\Configuration;
-use Voyage\Core\DatabaseConnectionWithIoInterface;
+use Voyage\Core\EnvironmentControllerInterface;
 
 /**
  * Class ConfigFile
@@ -26,12 +26,12 @@ abstract class ConfigFile
     protected $filename = '';
 
     /**
-     * @var DatabaseConnectionWithIoInterface
+     * @var EnvironmentControllerInterface
      */
     private $sender;
 
     /**
-     * @return DatabaseConnectionWithIoInterface
+     * @return EnvironmentControllerInterface
      */
     public function getSender()
     {
@@ -39,9 +39,9 @@ abstract class ConfigFile
     }
 
     /**
-     * @param DatabaseConnectionWithIoInterface $sender
+     * @param EnvironmentControllerInterface $sender
      */
-    public function setSender(DatabaseConnectionWithIoInterface $sender)
+    public function setSender(EnvironmentControllerInterface $sender)
     {
         $this->sender = $sender;
     }
@@ -49,7 +49,7 @@ abstract class ConfigFile
     /**
      * @return string
      */
-    final public function getBasePath()
+    public function getBasePath()
     {
         if (!is_null($this->basePath)) {
             return $this->basePath;
@@ -81,7 +81,7 @@ abstract class ConfigFile
     /**
      * Create an empty configuration file.
      */
-    public function createEmptyFile()
+    public function createConfig()
     {
         file_put_contents($this->getFilePath(), $this->getTemplate());
     }

@@ -7,11 +7,9 @@
 
 namespace Voyage\Helpers;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Voyage\Core\DatabaseSettings;
-use Voyage\Core\InputOutputInterface;
+use Voyage\Core\EnvironmentControllerInterface;
 
 /**
  * Class DbConnectionPrompt
@@ -20,38 +18,17 @@ use Voyage\Core\InputOutputInterface;
 class DatabaseSettingsPrompt
 {
     /**
-     * @var InputOutputInterface
+     * @var EnvironmentControllerInterface
      */
     private $sender;
 
     /**
-     * @var DatabaseSettings
-     */
-    private $databaseSettings;
-
-    /**
-     * @var InputInterface
-     */
-    private $input;
-
-    /**
-     * @var OutputInterface
-     */
-    private $output;
-
-    /**
      * DbConnectionPrompt constructor.
-     * @param InputOutputInterface $sender
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @param DatabaseSettings $databaseSettings
+     * @param EnvironmentControllerInterface $sender
      */
-    public function __construct(InputOutputInterface $sender, InputInterface $input, OutputInterface $output, DatabaseSettings $databaseSettings)
+    public function __construct(EnvironmentControllerInterface $sender)
     {
         $this->sender = $sender;
-        $this->input = $input;
-        $this->output = $output;
-        $this->databaseSettings = $databaseSettings;
     }
 
     /**
@@ -69,22 +46,22 @@ class DatabaseSettingsPrompt
      */
     private function fillFromInput()
     {
-        if (!is_null($this->input->getOption('host'))) {
-            $hostAndPort = $this->getHostAndPort($this->input->getOption('host'));
-            $this->databaseSettings->setHost($hostAndPort[0]);
-            $this->databaseSettings->setPort($hostAndPort[1]);
+        if (!is_null($this->sender->getInput()->getOption('host'))) {
+            $hostAndPort = $this->getHostAndPort($this->sender->getInput()->getOption('host'));
+            $this->sender->getDatabaseSettings()->setHost($hostAndPort[0]);
+            $this->sender->getDatabaseSettings()->setPort($hostAndPort[1]);
         }
 
-        if (!is_null($this->input->getOption('user'))) {
-            $this->databaseSettings->setUsername($this->input->getOption('user'));
+        if (!is_null($this->sender->getInput()->getOption('user'))) {
+            $this->sender->getDatabaseSettings()->setUsername($this->sender->getInput()->getOption('user'));
         }
 
-        if (!is_null($this->input->getOption('pass'))) {
-            $this->databaseSettings->setPassword($this->input->getOption('pass'));
+        if (!is_null($this->sender->getInput()->getOption('pass'))) {
+            $this->sender->getDatabaseSettings()->setPassword($this->sender->getInput()->getOption('pass'));
         }
 
-        if (!is_null($this->input->getOption('db'))) {
-            $this->databaseSettings->setDatabaseName($this->input->getOption('db'));
+        if (!is_null($this->sender->getInput()->getOption('db'))) {
+            $this->sender->getDatabaseSettings()->setDatabaseName($this->sender->getInput()->getOption('db'));
         }
     }
 
@@ -93,16 +70,16 @@ class DatabaseSettingsPrompt
      */
     private function fillFromConfig()
     {
-        $configurationName = $this->input->getOption('config');
+        $configurationName = $this->sender->getInput()->getOption('config');
         if ($configurationName == PlatformConfigurations::None) {
             return;
         }
 
         $configurations = new PlatformConfigurations();
-        $platformName = $configurations->read($this->databaseSettings, $configurationName);
+        $platformName = $configurations->read($this->sender->getDatabaseSettings(), $configurationName);
         unset($configurations);
 
-        if (!empty($platformName) && !$this->output->isQuiet()) {
+        if (!empty($platformName)) {
             $this->sender->report('Detected platform: ' . $platformName . '. Successfully read configuration file.');
         }
     }
@@ -115,18 +92,18 @@ class DatabaseSettingsPrompt
         $helper = $this->sender->getHelper('question');
 
         // Database host
-        if ($this->databaseSettings->getHost() == '' || $this->databaseSettings->getPort() < 0) {
+        if ($this->sender->getDatabaseSettings()->getHost() == '' || $this->sender->getDatabaseSettings()->getPort() < 0) {
             $question = new Question('Database host and port (press ENTER for localhost:3306) ', 'localhost:3306');
             $answer = $helper->ask($this->input, $this->output, $question);
             $hostAndPort = $this->getHostAndPort($answer);
 
-            $this->databaseSettings->setHost($hostAndPort[0]);
-            $this->databaseSettings->setPort($hostAndPort[1]);
+            $this->sender->getDatabaseSettings()->setHost($hostAndPort[0]);
+            $this->sender->getDatabaseSettings()->setPort($hostAndPort[1]);
             unset($question);
         }
 
         // Username
-        if ($this->databaseSettings->getUsername() == '') {
+        if ($this->sender->getDatabaseSettings()->getUsername() == '') {
             $question = new Question('Database username: ');
             $question->setValidator(function ($answer) {
                 $answer = trim($answer);
@@ -138,12 +115,12 @@ class DatabaseSettingsPrompt
             });
 
             $username = $helper->ask($this->input, $this->output, $question);
-            $this->databaseSettings->setUsername($username);
+            $this->sender->getDatabaseSettings()->setUsername($username);
             unset($question);
         }
 
         // Password
-        if ($this->databaseSettings->getPassword() == '') {
+        if ($this->sender->getDatabaseSettings()->getPassword() == '') {
             $question = new Question('Database password (press ENTER if password is empty): ');
             $question->setHidden(true);
             $question->setNormalizer(function ($answer) {
@@ -151,12 +128,12 @@ class DatabaseSettingsPrompt
             });
 
             $password = $helper->ask($this->input, $this->output, $question);
-            $this->databaseSettings->setPassword($password);
+            $this->sender->getDatabaseSettings()->setPassword($password);
             unset($question);
         }
 
         // Database name
-        if ($this->databaseSettings->getDatabaseName() == '') {
+        if ($this->sender->getDatabaseSettings()->getDatabaseName() == '') {
             $question = new Question('Database name: ');
             $question->setValidator(function ($answer) {
                 $answer = trim($answer);
@@ -168,7 +145,7 @@ class DatabaseSettingsPrompt
             });
 
             $databaseName = $helper->ask($this->input, $this->output, $question);
-            $this->databaseSettings->setDatabaseName($databaseName);
+            $this->sender->getDatabaseSettings()->setDatabaseName($databaseName);
             unset($question);
         }
     }

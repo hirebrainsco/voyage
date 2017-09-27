@@ -13,6 +13,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 interface InputOutputInterface
 {
     /**
+     * @return InputInterface
+     */
+    public function getInput();
+
+    /**
+     * @return OutputInterface
+     */
+    public function getOutput();
+
+    /**
      * @param $string
      */
     public function writeln($string);

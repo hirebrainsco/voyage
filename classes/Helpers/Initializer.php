@@ -8,7 +8,7 @@
 namespace Voyage\Helpers;
 
 use Voyage\Core\Configuration;
-use Voyage\Core\DatabaseConnectionWithIoInterface;
+use Voyage\Core\EnvironmentControllerInterface;
 
 /**
  * Class Initializer
@@ -17,7 +17,7 @@ use Voyage\Core\DatabaseConnectionWithIoInterface;
 class Initializer
 {
     /**
-     * @var DatabaseConnectionWithIoInterface
+     * @var EnvironmentControllerInterface
      */
     private $sender;
 
@@ -28,9 +28,9 @@ class Initializer
 
     /**
      * Initializer constructor.
-     * @param DatabaseConnectionWithIoInterface $sender
+     * @param EnvironmentControllerInterface $sender
      */
-    public function __construct(DatabaseConnectionWithIoInterface $sender)
+    public function __construct(EnvironmentControllerInterface $sender)
     {
         $this->sender = $sender;
         $this->configuration = new Configuration();

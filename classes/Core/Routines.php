@@ -15,7 +15,7 @@ abstract class Routines
     private $configuration;
 
     /**
-     * @var InputOutputInterface
+     * @var EnvironmentControllerInterface
      */
     private $sender;
 
@@ -33,7 +33,7 @@ abstract class Routines
     }
 
     /**
-     * @return InputOutputInterface
+     * @return EnvironmentControllerInterface
      */
     public function getSender()
     {
@@ -42,9 +42,9 @@ abstract class Routines
 
     /**
      * Routines constructor.
-     * @param DatabaseConnectionWithIoInterface $sender
+     * @param EnvironmentControllerInterface $sender
      */
-    public function __construct(DatabaseConnectionWithIoInterface $sender)
+    public function __construct(EnvironmentControllerInterface $sender)
     {
         $this->configuration = new Configuration();
         $this->sender = $sender;

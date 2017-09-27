@@ -7,7 +7,7 @@
 
 namespace Voyage\Helpers\ConfigFiles;
 
-use Voyage\Core\DatabaseConnectionWithIoInterface;
+use Voyage\Core\EnvironmentControllerInterface;
 
 /**
  * Class ConfigFiles
@@ -16,34 +16,34 @@ use Voyage\Core\DatabaseConnectionWithIoInterface;
 class ConfigFiles
 {
     /**
-     * @var DatabaseConnectionWithIoInterface
+     * @var EnvironmentControllerInterface
      */
     private $sender;
 
     /**
      * ConfigFiles constructor.
-     * @param DatabaseConnectionWithIoInterface $sender
+     * @param EnvironmentControllerInterface $sender
      */
-    public function __construct(DatabaseConnectionWithIoInterface $sender)
+    public function __construct(EnvironmentControllerInterface $sender)
     {
         $this->sender = $sender;
     }
 
-    public function createEmptyFiles()
+    public function createConfigurationFiles()
     {
-        $ignore = new Ignore();
-        $ignore->createEmptyFile();
+        $configs = [
+            Ignore::class,
+            GitIgnore::class,
+            ApacheConfig::class,
+            CurrentEnvironment::class,
+            Environments::class
+        ];
 
-        $dbSettings = new DbSettings();
-        $dbSettings->setSender($this->sender);
-        $dbSettings->createEmptyFile();
-
-        $gitIgnore = new GitIgnore();
-        $gitIgnore->createEmptyFile();
-
-        $apacheConfig = new ApacheConfig();
-        $apacheConfig->createEmptyFile();
-
-        unset($ignore, $dbSettings, $gitIgnore, $apacheConfig);
+        foreach ($configs as $config) {
+            $configInstance = new $config();
+            $configInstance->setSender($this->sender);
+            $configInstance->createConfig();
+            unset($configInstance);
+        }
     }
 }

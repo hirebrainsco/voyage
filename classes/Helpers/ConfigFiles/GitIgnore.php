@@ -26,7 +26,7 @@ class GitIgnore extends ConfigFile
         $template = '#' . PHP_EOL;
         $template .= '# List of files that should be ignored in git.' . PHP_EOL;
         $template .= '#' . PHP_EOL;
-        $template .= 'config' . PHP_EOL;
+        $template .= 'environment' . PHP_EOL;
         $template .= PHP_EOL;
 
         return $template;

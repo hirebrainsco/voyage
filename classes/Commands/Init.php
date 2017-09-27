@@ -10,9 +10,11 @@ namespace Voyage\Commands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 use Voyage\Core\Command;
 use Voyage\Core\DatabaseConnection;
-use Voyage\Core\DatabaseConnectionWithIoInterface;
+use Voyage\Core\Environment;
+use Voyage\Core\EnvironmentControllerInterface;
 use Voyage\Core\DatabaseSettings;
 use Voyage\Helpers\DatabaseSettingsPrompt;
 use Voyage\Helpers\Initializer;
@@ -22,24 +24,20 @@ use Voyage\Helpers\PlatformConfigurations;
  * Class Init
  * @package Voyage\Commands
  */
-class Init extends Command implements DatabaseConnectionWithIoInterface
+class Init extends Command implements EnvironmentControllerInterface
 {
     /**
-     * @var DatabaseSettings
+     * @var Environment
      */
-    private $databaseSettings;
+    private $environment;
 
-    /**
-     * @var DatabaseConnection
-     */
-    private $databaseConnection;
 
     /**
      * @return DatabaseSettings
      */
     public function getDatabaseSettings()
     {
-        return $this->databaseSettings;
+        return $this->environment->getDatabaseSettings();
     }
 
     /**
@@ -47,7 +45,15 @@ class Init extends Command implements DatabaseConnectionWithIoInterface
      */
     public function getDatabaseConnection()
     {
-        return $this->databaseConnection;
+        return $this->environment->getDatabaseConnection();
+    }
+
+    /**
+     * @return Environment
+     */
+    public function getEnvironment()
+    {
+        return $this->environment;
     }
 
     /**
@@ -55,7 +61,8 @@ class Init extends Command implements DatabaseConnectionWithIoInterface
      */
     public function __construct()
     {
-        $this->databaseSettings = new DatabaseSettings();
+        $this->environment = new Environment();
+        $this->environment->setDatabaseSettings(new DatabaseSettings());
 
         $this->setName('init');
         $this->setDescription('Initialize voyage in the current working directory');
@@ -78,7 +85,29 @@ class Init extends Command implements DatabaseConnectionWithIoInterface
         $this->checkIfAlreadyInitialized();
         $this->retrieveDatabaseSettings();
         $this->connectToDatabase();
+        $this->initEnvironment();
         $this->performInit();
+    }
+
+    private function initEnvironment()
+    {
+        $helper = $this->getHelper('question');
+        $question = new Question('Environment name (for example: development): ');
+        $question->setValidator(function ($answer) {
+            $answer = str_replace(['/', '\\', '..', '~', '@', '!', '|', '$', '<', '>'], '', trim($answer));
+            if (empty($answer)) {
+                throw new \RuntimeException('Environment name cannot be empty.');
+            }
+
+            return $answer;
+        });
+
+        $environmentName = trim($helper->ask($this->getInput(), $this->getOutput(), $question));
+        if (empty($environmentName)) {
+            $this->fatalError('Environment name is empty!');
+        }
+
+        $this->environment->setName($environmentName);
     }
 
     private function performInit()
@@ -111,7 +140,7 @@ class Init extends Command implements DatabaseConnectionWithIoInterface
      */
     private function retrieveDatabaseSettings()
     {
-        $dbSettingsPrompt = new DatabaseSettingsPrompt($this, $this->getInput(), $this->getOutput(), $this->databaseSettings);
+        $dbSettingsPrompt = new DatabaseSettingsPrompt($this);
         $dbSettingsPrompt->prompt();
         unset($dbSettingsPrompt);
     }
@@ -122,7 +151,7 @@ class Init extends Command implements DatabaseConnectionWithIoInterface
     private function connectToDatabase()
     {
         try {
-            $this->databaseConnection = new DatabaseConnection($this->databaseSettings);
+            $this->environment->setDatabaseConnection(new DatabaseConnection($this->getDatabaseSettings()));
         } catch (\Exception $exception) {
             $this->fatalError($exception->getMessage());
         }

@@ -24,7 +24,7 @@ class Ignore extends ConfigFile
     protected function getTemplate()
     {
         $template = '#' . PHP_EOL;
-        $template .= '# IGNORE LIST' . PHP_EOL;
+        $template .= '# Ignore List' . PHP_EOL;
         $template .= '#' . PHP_EOL;
         $template .= '# A list of tables which should be ignored. Include tables which contain debug, log or binary data to this list.' . PHP_EOL;
         $template .= '# Add one table name per line. A table without any parameters will be ignored completely (data and structure). ' . PHP_EOL;

@@ -36,22 +36,30 @@ class FileSystemRoutines extends Routines
         $voyageBasePath = $this->getConfiguration()->getPathToVoyage();
         $this->getSender()->info('Path: ' . $voyageBasePath . ' exists. Removing it.');
 
+        $this->removeDir($voyageBasePath);
+    }
+
+    /**
+     * @param $path
+     */
+    private function removeDir($path)
+    {
         // Remove voyage directory
-        $items = scandir($voyageBasePath);
+        $items = scandir($path);
         foreach ($items as $item) {
             if ($item === '.' || $item === '..') {
                 continue;
             }
 
-            $item = $voyageBasePath . '/' . $item;
+            $item = $path . '/' . $item;
             if (is_dir($item)) {
-                @rmdir($item);
+                $this->removeDir($item);
             } else {
                 @unlink($item);
             }
         }
 
-        @rmdir($voyageBasePath);
+        @rmdir($path);
     }
 
     /**
@@ -67,7 +75,7 @@ class FileSystemRoutines extends Routines
         }
 
         $configFiles = new ConfigFiles($this->getSender());
-        $configFiles->createEmptyFiles();
+        $configFiles->createConfigurationFiles();
         unset($configFiles);
 
         $this->getSender()->report('Created configuration files.');
