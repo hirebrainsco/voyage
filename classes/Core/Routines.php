@@ -17,7 +17,12 @@ abstract class Routines
     /**
      * @var InputOutputInterface
      */
-    private $reporter;
+    private $sender;
+
+    /**
+     * @var DatabaseConnection
+     */
+    private $databaseConnection;
 
     /**
      * @return Configuration
@@ -30,18 +35,27 @@ abstract class Routines
     /**
      * @return InputOutputInterface
      */
-    public function getReporter()
+    public function getSender()
     {
-        return $this->reporter;
+        return $this->sender;
     }
 
     /**
      * Routines constructor.
-     * @param InputOutputInterface $reporter
+     * @param DatabaseConnectionWithIoInterface $sender
      */
-    public function __construct(InputOutputInterface $reporter)
+    public function __construct(DatabaseConnectionWithIoInterface $sender)
     {
         $this->configuration = new Configuration();
-        $this->reporter = $reporter;
+        $this->sender = $sender;
+        $this->databaseConnection = $sender->getDatabaseConnection();
+    }
+
+    /**
+     * @return DatabaseConnection
+     */
+    public function getDatabaseConnection()
+    {
+        return $this->databaseConnection;
     }
 }

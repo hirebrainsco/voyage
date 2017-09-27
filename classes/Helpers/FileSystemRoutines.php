@@ -7,9 +7,8 @@
 
 namespace Voyage\Helpers;
 
-use Voyage\Core\Configuration;
-use Voyage\Core\InputOutputInterface;
 use Voyage\Core\Routines;
+use Voyage\Helpers\ConfigFiles\ConfigFiles;
 
 /**
  * Class FileSystemRoutines
@@ -35,7 +34,7 @@ class FileSystemRoutines extends Routines
         }
 
         $voyageBasePath = $this->getConfiguration()->getPathToVoyage();
-        $this->getReporter()->info('Path: ' . $voyageBasePath . ' exists. Removing it.');
+        $this->getSender()->info('Path: ' . $voyageBasePath . ' exists. Removing it.');
 
         // Remove voyage directory
         $items = scandir($voyageBasePath);
@@ -53,5 +52,22 @@ class FileSystemRoutines extends Routines
         }
 
         @rmdir($voyageBasePath);
+    }
+
+    /**
+     * Create configuration files.
+     */
+    public function createConfigFiles()
+    {
+        // Create voyage directory
+        if (!$this->getConfiguration()->isVoyageDirExist()) {
+            if (!@mkdir($this->getConfiguration()->getPathToVoyage())) {
+                $this->getSender()->fatalError('Failed to create Voyage directory at "' . $this->getConfiguration()->getPathToVoyage() . '"');
+            }
+        }
+
+        $configFiles = new ConfigFiles($this->getSender());
+        $configFiles->createEmptyFiles();
+        unset($configFiles);
     }
 }

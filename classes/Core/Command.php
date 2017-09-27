@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class Command
  * @package Voyage\Core
  */
-class Command extends \Symfony\Component\Console\Command\Command implements InputOutputInterface
+abstract class Command extends \Symfony\Component\Console\Command\Command implements InputOutputInterface
 {
     /**
      * @var InputInterface
