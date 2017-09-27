@@ -7,6 +7,10 @@
 
 namespace Voyage\Core;
 
+/**
+ * Class DatabaseConnection
+ * @package Voyage\Core
+ */
 class DatabaseConnection
 {
     /**
@@ -19,12 +23,19 @@ class DatabaseConnection
      */
     private $settings;
 
+    /**
+     * DatabaseConnection constructor.
+     * @param DatabaseSettings $settings
+     */
     public function __construct(DatabaseSettings $settings)
     {
         $this->settings = $settings;
         $this->connect();
     }
 
+    /**
+     * Connect to database server and select database.
+     */
     private function connect()
     {
         $this->pdo = new \PDO($this->getDsn(), $this->settings->getUsername(), $this->settings->getPassword());
@@ -32,6 +43,10 @@ class DatabaseConnection
         $this->pdo->query('USE ' . $this->settings->getDatabaseName());
     }
 
+    /**
+     * Get data source name.
+     * @return string
+     */
     private function getDsn()
     {
         return sprintf('mysql:host=%s;port=%s;database=%s',
