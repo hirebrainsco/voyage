@@ -7,9 +7,7 @@
 
 namespace Voyage\Helpers;
 
-use Voyage\Commands\Init;
 use Voyage\Core\Configuration;
-use Voyage\Core\DatabaseConnection;
 use Voyage\Core\DatabaseConnectionWithIoInterface;
 
 /**
