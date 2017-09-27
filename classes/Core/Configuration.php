@@ -23,6 +23,19 @@ class Configuration
     private $lockFilename = 'voyage.lock';
 
     /**
+     * @var string
+     */
+    private $migrationsTableName = 'voyage_migrations';
+
+    /**
+     * @return string
+     */
+    public function getMigrationsTableName()
+    {
+        return $this->migrationsTableName;
+    }
+
+    /**
      * Check if Voyage has been initialized and not locked.
      */
     public function checkIntegrity()

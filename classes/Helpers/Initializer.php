@@ -9,6 +9,7 @@ namespace Voyage\Helpers;
 
 use Voyage\Commands\Init;
 use Voyage\Core\Configuration;
+use Voyage\Core\DatabaseConnection;
 use Voyage\Core\DatabaseConnectionWithIoInterface;
 
 /**
@@ -45,13 +46,19 @@ class Initializer
         $this->checkIntegrity();
 
         $fsRoutines = new FileSystemRoutines($this->sender);
+        $dbRoutines = new DatabaseRoutines($this->sender, $this->sender->getDatabaseConnection());
 
         // Remove .voyage directory and all configs if it exists.
         $fsRoutines->clean();
 
+        // Remove voyage migrations table
+        $dbRoutines->clean();
+
         $this->createDirAndConfig();
         $this->createDatabaseTable();
         $this->makeFirstDump();
+
+        unset($fsRoutines, $dbRoutines);
     }
 
     protected function createDirAndConfig()

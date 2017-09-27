@@ -50,6 +50,11 @@ class DatabaseConnection
         $this->connect();
     }
 
+    public function exec($sql)
+    {
+        return $this->pdo->exec($sql);
+    }
+
     /**
      * Connect to database server and select database.
      */

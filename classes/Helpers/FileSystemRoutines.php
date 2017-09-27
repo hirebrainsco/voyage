@@ -9,29 +9,14 @@ namespace Voyage\Helpers;
 
 use Voyage\Core\Configuration;
 use Voyage\Core\InputOutputInterface;
+use Voyage\Core\Routines;
 
 /**
  * Class FileSystemRoutines
  * @package Voyage\Helpers
  */
-class FileSystemRoutines
+class FileSystemRoutines extends Routines
 {
-    /**
-     * @var Configuration
-     */
-    private $configuration;
-
-    /**
-     * @var InputOutputInterface
-     */
-    private $reporter;
-
-    public function __construct(InputOutputInterface $reporter)
-    {
-        $this->configuration = new Configuration();
-        $this->reporter = $reporter;
-    }
-
     /**
      * Remove all voyage files.
      */
@@ -45,21 +30,21 @@ class FileSystemRoutines
      */
     private function removeVoyageDirectory()
     {
-        if (!$this->configuration->isVoyageDirExist()) {
+        if (!$this->getConfiguration()->isVoyageDirExist()) {
             return;
         }
 
-        $this->reporter->info('Path: ' . $this->configuration->getPathToVoyage() . ' exists. Removing it.');
+        $voyageBasePath = $this->getConfiguration()->getPathToVoyage();
+        $this->getReporter()->info('Path: ' . $voyageBasePath . ' exists. Removing it.');
 
         // Remove voyage directory
-        $path = $this->configuration->getPathToVoyage();
-        $items = scandir($path);
+        $items = scandir($voyageBasePath);
         foreach ($items as $item) {
             if ($item === '.' || $item === '..') {
                 continue;
             }
 
-            $item = $this->configuration->getPathToVoyage() . '/' . $item;
+            $item = $voyageBasePath . '/' . $item;
             if (is_dir($item)) {
                 @rmdir($item);
             } else {
@@ -67,6 +52,6 @@ class FileSystemRoutines
             }
         }
 
-        @rmdir($path);
+        @rmdir($voyageBasePath);
     }
 }
