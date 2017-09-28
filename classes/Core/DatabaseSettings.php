@@ -45,6 +45,27 @@ class DatabaseSettings
     private $databaseName = '';
 
     /**
+     * @var string
+     */
+    private $tablePrefix = '';
+
+    /**
+     * @return string
+     */
+    public function getTablePrefix()
+    {
+        return $this->tablePrefix;
+    }
+
+    /**
+     * @param string $tablePrefix
+     */
+    public function setTablePrefix($tablePrefix)
+    {
+        $this->tablePrefix = $tablePrefix;
+    }
+
+    /**
      * @return string
      */
     public function getHost()
@@ -151,6 +172,7 @@ class DatabaseSettings
         $this->setDatabaseName($source->getDatabaseName());
         $this->setUsername($source->getUsername());
         $this->setPassword($source->getPassword());
+        $this->setTablePrefix($source->getTablePrefix());
     }
 
     /**
@@ -164,7 +186,8 @@ class DatabaseSettings
             'user' => $this->getUsername(),
             'pass' => $this->getPassword(),
             'host' => $this->getHost(),
-            'port' => $this->getPort()
+            'port' => $this->getPort(),
+            'prefix' => $this->getTablePrefix()
         ];
     }
 }

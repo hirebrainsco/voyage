@@ -15,6 +15,8 @@ use Voyage\Core\PlatformConfiguration;
  */
 class MagentoTwo extends PlatformConfiguration
 {
+    protected $name = 'magento2';
+
     /**
      * MagentoOne constructor.
      */
@@ -33,6 +35,10 @@ class MagentoTwo extends PlatformConfiguration
 
         if (empty($config) || !isset($config['db']) || !isset($config['db']['connection']) || empty($config['db']['connection'])) {
             return $result;
+        }
+
+        if (isset($config['db']['table_prefix'])) {
+            $result['prefix'] = $config['db']['table_prefix'];
         }
 
         foreach ($config['db']['connection'] as $connection) {
@@ -60,5 +66,36 @@ class MagentoTwo extends PlatformConfiguration
         }
 
         return $result;
+    }
+
+    public function getIgnoreTables()
+    {
+        return [
+            '~*_flat',
+            '~*_fulltext*',
+            '~*_index*',
+            '~*cache*',
+            '~session',
+            '~tax_order_aggregated_*',
+            '~url_rewrite',
+            '~vault_payment_token*',
+            '~sequence_*',
+            '~*_log',
+            '~search_query',
+            '~search_synonyms',
+            '~persistent_session',
+            '~oauth_*',
+            '~newsletter_problem',
+            '~newsletter_queue',
+            '~newsletter_queue_link',
+            '~newsletter_queue_store_link',
+            '~newsletter_subscriber',
+            '~mview_state',
+            '~*_transaction',
+            '~mst_core_urlrewrite',
+            '~mana_filter*',
+            '~indexer_state',
+            '~import_history'
+        ];
     }
 }

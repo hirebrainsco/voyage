@@ -34,6 +34,35 @@ class Ignore extends ConfigFile
         $template .= '#    users - this will completely ignore table `users`.' . PHP_EOL;
         $template .= '#' . PHP_EOL . PHP_EOL;
 
+        $environment = $this->getSender()->getEnvironment();
+        if (is_object($environment) && is_object($environment->getPlatformConfiguration())) {
+            $ignoreList = $environment->getPlatformConfiguration()->getIgnoreTables();
+
+            if (!empty($ignoreList)) {
+                $prefix = $environment->getDatabaseSettings()->getTablePrefix();
+                if (empty($prefix)) {
+                    $prefix = $environment->getPlatformConfiguration()->getDefaultTablePrefix();
+                }
+
+                foreach ($ignoreList as $tableName) {
+                    $tableName = trim($tableName);
+                    if (empty($tableName)) {
+                        continue;
+                    }
+
+                    if (!empty($prefix)) {
+                        if ($tableName[0] == '~') {
+                            $tableName = '~' . $prefix . substr($tableName, 1);
+                        } else {
+                            $tableName = $prefix . $tableName;
+                        }
+                    }
+
+                    $template .= $tableName . PHP_EOL;
+                }
+            }
+        }
+
         return $template;
     }
 }

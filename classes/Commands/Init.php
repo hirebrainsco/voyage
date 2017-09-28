@@ -142,6 +142,11 @@ class Init extends Command implements EnvironmentControllerInterface
     {
         $dbSettingsPrompt = new DatabaseSettingsPrompt($this);
         $dbSettingsPrompt->prompt();
+
+        if (is_object($dbSettingsPrompt->getDetectedPlatform())) {
+            $this->environment->setPlatformConfiguration($dbSettingsPrompt->getDetectedPlatform());
+        }
+
         unset($dbSettingsPrompt);
     }
 

@@ -10,6 +10,7 @@ namespace Voyage\Helpers;
 use Symfony\Component\Console\Question\Question;
 use Voyage\Core\DatabaseSettings;
 use Voyage\Core\EnvironmentControllerInterface;
+use Voyage\Core\PlatformConfiguration;
 
 /**
  * Class DbConnectionPrompt
@@ -21,6 +22,19 @@ class DatabaseSettingsPrompt
      * @var EnvironmentControllerInterface
      */
     private $sender;
+
+    /**
+     * @var PlatformConfiguration
+     */
+    private $detectedPlatform;
+
+    /**
+     * @return PlatformConfiguration
+     */
+    public function getDetectedPlatform()
+    {
+        return $this->detectedPlatform;
+    }
 
     /**
      * DbConnectionPrompt constructor.
@@ -46,22 +60,25 @@ class DatabaseSettingsPrompt
      */
     private function fillFromInput()
     {
-        if (!is_null($this->sender->getInput()->getOption('host'))) {
-            $hostAndPort = $this->getHostAndPort($this->sender->getInput()->getOption('host'));
-            $this->sender->getDatabaseSettings()->setHost($hostAndPort[0]);
-            $this->sender->getDatabaseSettings()->setPort($hostAndPort[1]);
+        $settings = $this->sender->getDatabaseSettings();
+        $input = $this->sender->getInput();
+
+        if (!is_null($input->getOption('host'))) {
+            $hostAndPort = $this->getHostAndPort($input->getOption('host'));
+            $settings->setHost($hostAndPort[0]);
+            $settings->setPort($hostAndPort[1]);
         }
 
-        if (!is_null($this->sender->getInput()->getOption('user'))) {
-            $this->sender->getDatabaseSettings()->setUsername($this->sender->getInput()->getOption('user'));
+        if (!is_null($input->getOption('user'))) {
+            $settings->setUsername($input->getOption('user'));
         }
 
-        if (!is_null($this->sender->getInput()->getOption('pass'))) {
-            $this->sender->getDatabaseSettings()->setPassword($this->sender->getInput()->getOption('pass'));
+        if (!is_null($input->getOption('pass'))) {
+            $settings->setPassword($input->getOption('pass'));
         }
 
-        if (!is_null($this->sender->getInput()->getOption('db'))) {
-            $this->sender->getDatabaseSettings()->setDatabaseName($this->sender->getInput()->getOption('db'));
+        if (!is_null($input->getOption('db'))) {
+            $settings->setDatabaseName($input->getOption('db'));
         }
     }
 
@@ -76,12 +93,18 @@ class DatabaseSettingsPrompt
         }
 
         $configurations = new PlatformConfigurations();
-        $platformName = $configurations->read($this->sender->getDatabaseSettings(), $configurationName);
+        $platformInstance = $configurations->read($this->sender->getDatabaseSettings(), $configurationName);
         unset($configurations);
 
-        if (!empty($platformName)) {
-            $this->sender->report('Detected platform: ' . $platformName . '. Successfully read configuration file.');
+        if (is_object($platformInstance)) {
+            $platformName = $platformInstance->getName();
+
+            if (!empty($platformName)) {
+                $this->sender->report('Detected platform: ' . $platformName . '. Successfully read configuration file.');
+                $this->detectedPlatform = $platformInstance;
+            }
         }
+
     }
 
     /**
@@ -94,7 +117,7 @@ class DatabaseSettingsPrompt
         // Database host
         if ($this->sender->getDatabaseSettings()->getHost() == '' || $this->sender->getDatabaseSettings()->getPort() < 0) {
             $question = new Question('Database host and port (press ENTER for localhost:3306) ', 'localhost:3306');
-            $answer = $helper->ask($this->input, $this->output, $question);
+            $answer = $helper->ask($this->sender->getInput(), $this->sender->getOutput(), $question);
             $hostAndPort = $this->getHostAndPort($answer);
 
             $this->sender->getDatabaseSettings()->setHost($hostAndPort[0]);
@@ -114,7 +137,7 @@ class DatabaseSettingsPrompt
                 return $answer;
             });
 
-            $username = $helper->ask($this->input, $this->output, $question);
+            $username = $helper->ask($this->sender->getInput(), $this->sender->getOutput(), $question);
             $this->sender->getDatabaseSettings()->setUsername($username);
             unset($question);
         }
@@ -127,7 +150,7 @@ class DatabaseSettingsPrompt
                 return trim($answer);
             });
 
-            $password = $helper->ask($this->input, $this->output, $question);
+            $password = $helper->ask($this->sender->getInput(), $this->sender->getOutput(), $question);
             $this->sender->getDatabaseSettings()->setPassword($password);
             unset($question);
         }
@@ -144,7 +167,7 @@ class DatabaseSettingsPrompt
                 return $answer;
             });
 
-            $databaseName = $helper->ask($this->input, $this->output, $question);
+            $databaseName = $helper->ask($this->sender->getInput(), $this->sender->getOutput(), $question);
             $this->sender->getDatabaseSettings()->setDatabaseName($databaseName);
             unset($question);
         }

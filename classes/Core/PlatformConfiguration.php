@@ -19,6 +19,40 @@ class PlatformConfiguration
     protected $pathToConfig = '';
 
     /**
+     * @var string
+     */
+    protected $defaultTablePrefix = '';
+
+    /**
+     * @var string
+     */
+    protected $name = '';
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultTablePrefix()
+    {
+        return $this->defaultTablePrefix;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIgnoreTables()
+    {
+        return [];
+    }
+
+    /**
      * @return bool
      * @throws \Exception
      */
@@ -52,6 +86,10 @@ class PlatformConfiguration
         $settings->setDatabaseName($result['name']);
         $settings->setHost($result['host']);
 
+        if (!is_null($result['prefix'])) {
+            $settings->setTablePrefix($result['prefix']);
+        }
+
         return $settings;
     }
 
@@ -61,7 +99,8 @@ class PlatformConfiguration
             'name' => null,
             'host' => null,
             'user' => null,
-            'pass' => null
+            'pass' => null,
+            'prefix' => null
         ];
 
         return $result;

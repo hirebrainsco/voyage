@@ -15,6 +15,8 @@ use Voyage\Core\PlatformConfiguration;
  */
 class MagentoOne extends PlatformConfiguration
 {
+    protected $name = 'magento1';
+
     /**
      * MagentoOne constructor.
      */
@@ -40,7 +42,9 @@ class MagentoOne extends PlatformConfiguration
         if (!empty($resources)) {
             foreach ($resources as $resource) {
                 foreach ($resource as $data) {
-                    if (isset($data->connection)) {
+                    if (isset($data->table_prefix)) {
+                        $result['prefix'] = $data->table_prefix;
+                    } else if (isset($data->connection)) {
                         if ($data->connection->active == 1 || $data->connection->active == 'true') {
                             if (isset($data->connection->host)) {
                                 $result['host'] = $data->connection->host;
@@ -66,5 +70,46 @@ class MagentoOne extends PlatformConfiguration
         } // if not empty resources
 
         return $result;
+    }
+
+    public function getIgnoreTables()
+    {
+        return [
+            '~*_index',
+            '~*_log',
+            '~log_*',
+            '~index_*',
+            '~*_cache',
+            '~*_debug',
+            '~adminnotification_inbox',
+            '~api_session',
+            '~amasty_geoip_*',
+            '~amasty_audit_*',
+            '~aw_advancednewsletter_*',
+            '~xmlconnect_history',
+            '~salesrule_coupon_usage',
+            '~sales_payment_transaction',
+            '~sales_flat_*',
+            '~review_status',
+            '~poll_answer',
+            '~persistent_session',
+            '~paypaluk_api_debug',
+            '~paypal_payment_transaction',
+            '~oscommerce_orders_status_history',
+            '~oauth_token',
+            '~oauth_nonce',
+            '~mailchimp_errors',
+            '~gtspeed_stat',
+            '~gtspeed_image',
+            '~catalogsearch_*',
+            '~cataloginventory_stock_status*',
+            '~catalog_product_index*',
+            '~catalog_category_product_index*',
+            '~catalog_category_flat*',
+            '~catalog_category_entity*',
+            '~catalog_category_anc_*',
+            '~blog_url_rewrite',
+            '~aw_core_logger'
+        ];
     }
 }

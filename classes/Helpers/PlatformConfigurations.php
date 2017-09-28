@@ -59,40 +59,41 @@ class PlatformConfigurations
      * Read configuration and fill database setting with read settings.
      * @param DatabaseSettings $databaseSettings
      * @param string $configurationName
-     * @return string
+     * @return PlatformConfiguration
      */
     public function read(DatabaseSettings $databaseSettings, $configurationName = PlatformConfigurations::AutoDetect)
     {
-        $platformName = '';
+        $platformInstance = null;
 
         if ($configurationName !== PlatformConfigurations::AutoDetect) {
             if (!$this->exists($configurationName)) {
-                return '';
+                return $platformInstance;
             }
 
             $configurationInstance = $this->getConfigurationInstance($configurationName);
             $settings = $configurationInstance->getDatabaseSettings();
             if (is_object($settings)) {
                 $databaseSettings->copy($settings);
-                $platformName = $this->configurations[$configurationName]['name'];
+                $platformInstance = $configurationInstance;
             }
 
-            unset($configurationInstance, $settings);
+            unset($settings);
         } else {
             // Auto-detection
             foreach ($this->configurations as $name => $data) {
                 $configurationInstance = $this->getConfigurationInstance($name);
                 $settings = $configurationInstance->getDatabaseSettings();
-                unset($configurationInstance);
 
                 if (is_object($settings)) {
                     $databaseSettings->copy($settings);
-                    $platformName = $data['name'];
+                    $platformInstance = $configurationInstance;
                     break;
+                } else {
+                    unset($configurationInstance);
                 }
             }
         }
 
-        return $platformName;
+        return $platformInstance;
     }
 }

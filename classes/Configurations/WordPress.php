@@ -16,6 +16,9 @@ use Voyage\Core\PlatformConfiguration;
  */
 class WordPress extends PlatformConfiguration
 {
+    protected $name = 'wordpress';
+    protected $defaultTablePrefix = 'wp_';
+
     /**
      * WordPress constructor.
      */
@@ -57,6 +60,66 @@ class WordPress extends PlatformConfiguration
             $result['host'] = $matches[2];
         }
 
+        preg_match('/\$table_prefix.*(\'|\")(.*)(\'|\")/', $contents, $matches);
+        if (!empty($matches) && !empty($matches[2])) {
+            $result['prefix'] = $matches[2];
+        }
+
         return $result;
+    }
+
+    public function getIgnoreTables()
+    {
+        return [
+            '~aiowps_events',
+            '~aiowps_failed_logins',
+            '~aiowps_global_meta',
+            '~aiowps_login_activity',
+            '~aiowps_login_lockdown',
+            '~aiowps_permanent_block',
+            '~blc_filters',
+            '~blc_instances',
+            '~blc_links',
+            '~blc_synch',
+            '~duplicator_packages',
+            '~ewwwio_images',
+            '~gpi_page_blacklist',
+            '~gpi_page_reports',
+            '~gpi_page_stats',
+            '~mainwp_stream',
+            '~mainwp_stream_context',
+            '~mainwp_stream_meta',
+            '~rg_incomplete_submissions',
+            '~rg_lead',
+            '~rg_lead_detail',
+            '~rg_lead_detail_long',
+            '~rg_lead_meta',
+            '~rg_lead_notes',
+            '~stream',
+            '~stream_meta',
+            '~wfBadLeechers',
+            '~wfBlockedIPLog',
+            '~wfBlocks',
+            '~wfBlocksAdv',
+            '~wfCrawlers',
+            '~wfFileMods',
+            '~wfHits',
+            '~wfHoover',
+            '~wfIssues',
+            '~wfKnownFileList',
+            '~wfLockedOut',
+            '~wfLocs',
+            '~wfLogins',
+            '~wfNet404s',
+            '~wfNotifications',
+            '~wfPendingIssues',
+            '~wfReverseCache',
+            '~wfSNIPCache',
+            '~wfScanners',
+            '~wfStatus',
+            '~wfThrottleLog',
+            '~wfVulnScanners',
+            '~WP_SEO_*',
+        ];
     }
 }
