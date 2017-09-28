@@ -5,7 +5,7 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Helpers;
+namespace Voyage\Routines;
 
 
 class StringUtils

@@ -5,7 +5,7 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Helpers;
+namespace Voyage\Routines;
 
 use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
@@ -13,7 +13,7 @@ use Voyage\Configuration\Ignore;
 
 /**
  * Class Initializer
- * @package Voyage\Helpers
+ * @package Voyage\Routines
  */
 class Initializer
 {

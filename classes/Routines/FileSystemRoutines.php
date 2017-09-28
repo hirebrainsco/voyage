@@ -5,14 +5,14 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Helpers;
+namespace Voyage\Routines;
 
 use Voyage\Core\Routines;
 use Voyage\Configuration\ConfigFiles;
 
 /**
  * Class FileSystemRoutines
- * @package Voyage\Helpers
+ * @package Voyage\Routines
  */
 class FileSystemRoutines extends Routines
 {

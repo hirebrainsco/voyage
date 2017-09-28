@@ -18,4 +18,15 @@ class CurrentEnvironment extends ConfigFile
 
         return $template;
     }
+
+    public function getEnvironment()
+    {
+
+    }
+
+    public function getEnvironmentName()
+    {
+        $contents = str_replace(["\r", "\n", "\t", " "], '', trim($this->getConfigContents()));
+        return $contents;
+    }
 }

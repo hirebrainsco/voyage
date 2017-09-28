@@ -5,7 +5,7 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Helpers;
+namespace Voyage\Routines;
 
 use Voyage\Core\DatabaseConnection;
 use Voyage\Core\InputOutputInterface;
@@ -13,7 +13,7 @@ use Voyage\Core\Routines;
 
 /**
  * Class DatabaseRoutines
- * @package Voyage\Helpers
+ * @package Voyage\Routines
  */
 class DatabaseRoutines extends Routines
 {

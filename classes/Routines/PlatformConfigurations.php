@@ -5,14 +5,14 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Helpers;
+namespace Voyage\Routines;
 
 use Voyage\Core\DatabaseSettings;
 use Voyage\Core\PlatformConfiguration;
 
 /**
  * Class PlatformConfigurations
- * @package Voyage\Helpers
+ * @package Voyage\Routines
  */
 class PlatformConfigurations
 {

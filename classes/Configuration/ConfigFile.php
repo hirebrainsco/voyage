@@ -9,7 +9,7 @@ namespace Voyage\Configuration;
 
 use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
-use Voyage\Helpers\StringUtils;
+use Voyage\Routines\StringUtils;
 
 /**
  * Class ConfigFile

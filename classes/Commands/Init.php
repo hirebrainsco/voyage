@@ -16,9 +16,9 @@ use Voyage\Core\DatabaseConnection;
 use Voyage\Core\Environment;
 use Voyage\Core\EnvironmentControllerInterface;
 use Voyage\Core\DatabaseSettings;
-use Voyage\Helpers\DatabaseSettingsPrompt;
-use Voyage\Helpers\Initializer;
-use Voyage\Helpers\PlatformConfigurations;
+use Voyage\Routines\DatabaseSettingsPrompt;
+use Voyage\Routines\Initializer;
+use Voyage\Routines\PlatformConfigurations;
 
 /**
  * Class Init

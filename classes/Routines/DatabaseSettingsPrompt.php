@@ -5,7 +5,7 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Helpers;
+namespace Voyage\Routines;
 
 use Symfony\Component\Console\Question\Question;
 use Voyage\Core\DatabaseSettings;
@@ -14,7 +14,7 @@ use Voyage\Core\PlatformConfiguration;
 
 /**
  * Class DbConnectionPrompt
- * @package Voyage\Helpers
+ * @package Voyage\Routines
  */
 class DatabaseSettingsPrompt
 {

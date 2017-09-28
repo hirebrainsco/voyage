@@ -7,7 +7,7 @@
 
 namespace Voyage\Configuration;
 
-use Voyage\Helpers\StringUtils;
+use Voyage\Routines\StringUtils;
 
 /**
  * Class IgnoreItem
