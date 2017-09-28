@@ -7,14 +7,14 @@
 
 namespace Voyage\Routines;
 
-use Voyage\Core\Routines;
+use Voyage\Core\Routine;
 use Voyage\Configuration\ConfigFiles;
 
 /**
  * Class FileSystemRoutines
  * @package Voyage\Routines
  */
-class FileSystemRoutines extends Routines
+class FileSystemRoutine extends Routine
 {
     /**
      * Remove all voyage files.

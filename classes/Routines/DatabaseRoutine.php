@@ -9,13 +9,13 @@ namespace Voyage\Routines;
 
 use Voyage\Core\DatabaseConnection;
 use Voyage\Core\InputOutputInterface;
-use Voyage\Core\Routines;
+use Voyage\Core\Routine;
 
 /**
  * Class DatabaseRoutines
  * @package Voyage\Routines
  */
-class DatabaseRoutines extends Routines
+class DatabaseRoutine extends Routine
 {
     /**
      * Remove voyage table with a list of migrations if it exists.

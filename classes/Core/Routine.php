@@ -7,7 +7,7 @@
 
 namespace Voyage\Core;
 
-abstract class Routines
+abstract class Routine
 {
     /**
      * @var Configuration
