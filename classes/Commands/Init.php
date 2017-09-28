@@ -130,7 +130,7 @@ class Init extends Command implements EnvironmentControllerInterface
             if (true !== $this->getInput()->getOption('force')) {
                 $this->fatalError('Voyage has been already initialized in the current directory. Use --force or -f option to overwrite current Voyage data and settings.');
             } else {
-                $this->info('Voyage has been already initialized in the current directory. Overwriting existing data and settings.');
+                $this->writeln('<options=reverse>Voyage has been already initialized in the current directory. Existing data and settings will be overwritten because --force parameter is present (it\'s not late yet to press Ctrl+C to stop execution).</>');
             }
         }
     }

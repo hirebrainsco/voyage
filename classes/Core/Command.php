@@ -131,6 +131,15 @@ abstract class Command extends \Symfony\Component\Console\Command\Command implem
     }
 
     /**
+     * Display warning message.
+     * @param $message
+     */
+    public function warning($message)
+    {
+        $this->writeln('<error>' . $message . '</error>');
+    }
+
+    /**
      * Display application's name.
      */
     protected function displayAppName()

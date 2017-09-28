@@ -69,7 +69,7 @@ class Configuration
      */
     public function getPathToVoyage()
     {
-        return VOYAGE_WORKING_DIR . $this->directoryName;
+        return VOYAGE_WORKING_DIR . '/' . $this->directoryName;
     }
 
     /**

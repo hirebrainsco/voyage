@@ -45,6 +45,11 @@ interface InputOutputInterface
     /**
      * @param $message
      */
+    public function warning($message);
+
+    /**
+     * @param $message
+     */
     public function fatalError($message);
 
     /**

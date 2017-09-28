@@ -9,6 +9,7 @@ namespace Voyage\Helpers\ConfigFiles;
 
 use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
+use Voyage\Helpers\StringUtils;
 
 /**
  * Class ConfigFile
@@ -92,5 +93,29 @@ abstract class ConfigFile
     protected function getTemplate()
     {
         return '';
+    }
+
+    /**
+     * Read config and get its contents.
+     * @param bool $removeComments
+     * @param bool $removeEmptyLines
+     * @return bool|string
+     */
+    protected function getConfigContents($removeComments = true, $removeEmptyLines = true)
+    {
+        if (!file_exists($this->getFilePath())) {
+            return '';
+        }
+
+        $contents = file_get_contents($this->getFilePath());
+        if (true === $removeComments) {
+            $contents = StringUtils::removeComments($contents);
+        }
+
+        if (true === $removeEmptyLines) {
+            $contents = StringUtils::removeEmptyLines($contents);
+        }
+
+        return $contents;
     }
 }

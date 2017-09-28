@@ -65,4 +65,30 @@ class Ignore extends ConfigFile
 
         return $template;
     }
+
+    /**
+     * @return array
+     */
+    public function getIgnoreList()
+    {
+        static $ignoreList = null;
+        if (is_array($ignoreList)) {
+            return $ignoreList;
+        }
+
+        $configData = $this->getConfigContents();
+        $ignoreRules = explode("\n", $configData);
+        unset($configData);
+
+        foreach ($ignoreRules as $rule) {
+            $rule = trim($rule);
+            if (empty($rule)) {
+                continue;
+            }
+
+            $ignoreList[] = new IgnoreRule($rule);
+        }
+
+        return $ignoreList;
+    }
 }

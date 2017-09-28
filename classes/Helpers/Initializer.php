@@ -9,6 +9,7 @@ namespace Voyage\Helpers;
 
 use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
+use Voyage\Helpers\ConfigFiles\Ignore;
 
 /**
  * Class Initializer
@@ -55,6 +56,24 @@ class Initializer
         $databaseRoutines->clean(); // Remove voyage migrations table.
         $databaseRoutines->createTable(); // Create voyage migrations table.
         unset($databaseRoutines);
+
+        $this->showSuccessMessage();
+    }
+
+    private function showSuccessMessage()
+    {
+        $ignoreConfig = new Ignore();
+        $ignoreConfigPath = $ignoreConfig->getFilePath();
+        unset($ignoreConfig);
+
+        $message = PHP_EOL;
+        $message .= '<options=bold>Next Steps:</>' . PHP_EOL;
+        $message .= " 1) Now you should add replacement variables to your environment file which is located at: <comment>" . $this->sender->getEnvironment()->getPathToEnvironmentConfig() . "</comment>" . PHP_EOL;
+        $message .= " 2) Add/edit list of the tables which should be ignored in: <comment>" . $ignoreConfigPath . "</comment>" . PHP_EOL;
+        $message .= " 3) Run \"voyage make\" command to create your first migration with current database state." . PHP_EOL;
+
+        $this->sender->info('Initialization successfully completed.');
+        $this->sender->writeln($message);
     }
 
     /**
