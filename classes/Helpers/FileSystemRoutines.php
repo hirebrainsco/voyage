@@ -74,8 +74,8 @@ class FileSystemRoutines extends Routines
             }
         }
 
-        @mkdir($this->getConfiguration()->getPathToVoyage() . '/environments');
-        @mkdir($this->getConfiguration()->getPathToVoyage() . '/migrations');
+        @mkdir($this->getConfiguration()->getPathToEnvironments());
+        @mkdir($this->getConfiguration()->getPathToMigrations());
     }
 
     /**

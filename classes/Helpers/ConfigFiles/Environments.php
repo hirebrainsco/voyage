@@ -7,6 +7,7 @@
 
 namespace Voyage\Helpers\ConfigFiles;
 
+use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
 
 class Environments extends ConfigFile
@@ -75,6 +76,10 @@ EOD;
 
     public function getBasePath()
     {
-        return parent::getBasePath() . '/environments';
+        $configuration = new Configuration();
+        $path = $configuration->getPathToEnvironments();
+        unset($configuration);
+
+        return $path;
     }
 }

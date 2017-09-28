@@ -17,6 +17,7 @@ class Configuration
      * @var string
      */
     private $directoryName = '.voyage';
+
     /**
      * @var string
      */
@@ -68,7 +69,23 @@ class Configuration
      */
     public function getPathToVoyage()
     {
-        return './' . $this->directoryName;
+        return VOYAGE_WORKING_DIR . $this->directoryName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPathToEnvironments()
+    {
+        return $this->getPathToVoyage() . '/environments';
+    }
+
+    /**
+     * @return string
+     */
+    public function getPathToMigrations()
+    {
+        return $this->getPathToVoyage() . '/migrations';
     }
 
     /**
