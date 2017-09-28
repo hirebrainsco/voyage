@@ -5,13 +5,13 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Configurations;
+namespace Voyage\Platforms;
 
 use Voyage\Core\PlatformConfiguration;
 
 /**
  * Class MagentoOne
- * @package Voyage\Configurations
+ * @package Voyage\Platforms
  */
 class MagentoOne extends PlatformConfiguration
 {

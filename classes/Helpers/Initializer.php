@@ -9,7 +9,7 @@ namespace Voyage\Helpers;
 
 use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
-use Voyage\Helpers\ConfigFiles\Ignore;
+use Voyage\Configuration\Ignore;
 
 /**
  * Class Initializer

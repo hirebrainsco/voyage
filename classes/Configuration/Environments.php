@@ -5,7 +5,7 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Helpers\ConfigFiles;
+namespace Voyage\Configuration;
 
 use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;

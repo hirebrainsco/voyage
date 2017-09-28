@@ -8,7 +8,7 @@
 namespace Voyage\Helpers;
 
 use Voyage\Core\Routines;
-use Voyage\Helpers\ConfigFiles\ConfigFiles;
+use Voyage\Configuration\ConfigFiles;
 
 /**
  * Class FileSystemRoutines

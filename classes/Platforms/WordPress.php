@@ -5,14 +5,14 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Configurations;
+namespace Voyage\Platforms;
 
 use Voyage\Core\DatabaseSettings;
 use Voyage\Core\PlatformConfiguration;
 
 /**
  * Class WordPress
- * @package Voyage\Configurations
+ * @package Voyage\Platforms
  */
 class WordPress extends PlatformConfiguration
 {

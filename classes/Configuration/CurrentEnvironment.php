@@ -5,7 +5,7 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Helpers\ConfigFiles;
+namespace Voyage\Configuration;
 
 class CurrentEnvironment extends ConfigFile
 {

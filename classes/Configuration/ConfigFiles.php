@@ -5,13 +5,13 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Helpers\ConfigFiles;
+namespace Voyage\Configuration;
 
 use Voyage\Core\EnvironmentControllerInterface;
 
 /**
  * Class ConfigFiles
- * @package Voyage\Helpers\ConfigFiles
+ * @package Voyage\Configuration
  */
 class ConfigFiles
 {

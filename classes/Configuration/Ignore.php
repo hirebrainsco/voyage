@@ -5,11 +5,11 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Helpers\ConfigFiles;
+namespace Voyage\Configuration;
 
 /**
  * Class Ignore
- * @package Voyage\Helpers\ConfigFiles
+ * @package Voyage\Configuration
  */
 class Ignore extends ConfigFile
 {

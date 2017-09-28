@@ -5,13 +5,13 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Helpers\ConfigFiles;
+namespace Voyage\Configuration;
 
 use Voyage\Helpers\StringUtils;
 
 /**
  * Class IgnoreItem
- * @package Voyage\Helpers\ConfigFiles
+ * @package Voyage\Configuration
  */
 class IgnoreRule
 {

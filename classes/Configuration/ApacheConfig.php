@@ -5,18 +5,18 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Helpers\ConfigFiles;
+namespace Voyage\Configuration;
 
 /**
- * Class GitIgnore
- * @package Voyage\Helpers\ConfigFiles
+ * Class ApacheConfig
+ * @package Voyage\Configuration
  */
-class GitIgnore extends ConfigFile
+class ApacheConfig extends ConfigFile
 {
     /**
      * @var string
      */
-    protected $filename = '.gitignore';
+    protected $filename = '.htaccess';
 
     /**
      * @return string
@@ -24,10 +24,9 @@ class GitIgnore extends ConfigFile
     protected function getTemplate()
     {
         $template = '#' . PHP_EOL;
-        $template .= '# List of files that should be ignored in git.' . PHP_EOL;
+        $template .= '# Do not allow access to this directory from web.' . PHP_EOL;
         $template .= '#' . PHP_EOL;
-        $template .= 'environment' . PHP_EOL;
-        $template .= PHP_EOL;
+        $template .= 'Deny from all' . PHP_EOL;
 
         return $template;
     }

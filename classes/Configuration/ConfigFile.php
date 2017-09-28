@@ -5,7 +5,7 @@
  * Email: dmitry@hirebrains.co
  */
 
-namespace Voyage\Helpers\ConfigFiles;
+namespace Voyage\Configuration;
 
 use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
@@ -13,7 +13,7 @@ use Voyage\Helpers\StringUtils;
 
 /**
  * Class ConfigFile
- * @package Voyage\Helpers\ConfigFiles
+ * @package Voyage\Configuration
  */
 abstract class ConfigFile
 {
