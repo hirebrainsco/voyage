@@ -13,7 +13,6 @@ class Environments extends ConfigFile
 {
     public function createConfig()
     {
-        $this->createEnvironmentsDir();
         $this->filename = $this->getSender()->getEnvironment()->getName();
 
         parent::createConfig();
@@ -77,10 +76,5 @@ EOD;
     public function getBasePath()
     {
         return parent::getBasePath() . '/environments';
-    }
-
-    protected function createEnvironmentsDir()
-    {
-        @mkdir($this->getBasePath());
     }
 }

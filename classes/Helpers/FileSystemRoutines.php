@@ -63,9 +63,9 @@ class FileSystemRoutines extends Routines
     }
 
     /**
-     * Create configuration files.
+     * Create empty voyage directories.
      */
-    public function createConfigFiles()
+    public function createDirectories()
     {
         // Create voyage directory
         if (!$this->getConfiguration()->isVoyageDirExist()) {
@@ -74,6 +74,15 @@ class FileSystemRoutines extends Routines
             }
         }
 
+        @mkdir($this->getConfiguration()->getPathToVoyage() . '/environments');
+        @mkdir($this->getConfiguration()->getPathToVoyage() . '/migrations');
+    }
+
+    /**
+     * Create configuration files.
+     */
+    public function createConfigFiles()
+    {
         $configFiles = new ConfigFiles($this->getSender());
         $configFiles->createConfigurationFiles();
         unset($configFiles);
