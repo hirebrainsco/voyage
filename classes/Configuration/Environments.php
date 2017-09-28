@@ -76,10 +76,6 @@ EOD;
 
     public function getBasePath()
     {
-        $configuration = new Configuration();
-        $path = $configuration->getPathToEnvironments();
-        unset($configuration);
-
-        return $path;
+        return Configuration::getInstance()->getPathToEnvironments();
     }
 }

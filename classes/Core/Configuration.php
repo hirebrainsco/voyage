@@ -46,6 +46,21 @@ class Configuration
     }
 
     /**
+     * @return Configuration
+     */
+    public static function getInstance()
+    {
+        static $instance = null;
+
+        if (is_object($instance)) {
+            return $instance;
+        }
+
+        $instance = new Configuration();
+        return $instance;
+    }
+
+    /**
      * @return string
      */
     public function getLockFilePath()

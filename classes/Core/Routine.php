@@ -46,7 +46,7 @@ abstract class Routine
      */
     public function __construct(EnvironmentControllerInterface $sender)
     {
-        $this->configuration = new Configuration();
+        $this->configuration = Configuration::getInstance();
         $this->sender = $sender;
         $this->databaseConnection = $sender->getDatabaseConnection();
     }

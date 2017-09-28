@@ -50,11 +50,7 @@ class Environment
      */
     public function getPathToEnvironmentConfig()
     {
-        $configuration = new Configuration();
-        $path = $configuration->getPathToEnvironments();
-        unset($configuration);
-
-        return $path . '/' . $this->getName();
+        return Configuration::getInstance()->getPathToEnvironments() . '/' . $this->getName();
     }
 
     /**

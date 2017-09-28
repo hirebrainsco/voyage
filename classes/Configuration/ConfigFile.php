@@ -56,10 +56,7 @@ abstract class ConfigFile
             return $this->basePath;
         }
 
-        $configuration = new Configuration();
-        $this->basePath = $configuration->getPathToVoyage();
-        unset($configuration);
-
+        $this->basePath = Configuration::getInstance()->getPathToVoyage();
         return $this->basePath;
     }
 

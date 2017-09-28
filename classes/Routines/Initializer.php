@@ -34,7 +34,7 @@ class Initializer
     public function __construct(EnvironmentControllerInterface $sender)
     {
         $this->sender = $sender;
-        $this->configuration = new Configuration();
+        $this->configuration = Configuration::getInstance();
     }
 
     /**

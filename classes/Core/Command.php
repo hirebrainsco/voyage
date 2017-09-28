@@ -53,7 +53,7 @@ abstract class Command extends \Symfony\Component\Console\Command\Command implem
     public function __construct()
     {
         parent::__construct();
-        $this->configuration = new Configuration();
+        $this->configuration = Configuration::getInstance();
     }
 
     /**
