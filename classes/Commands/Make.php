@@ -8,6 +8,7 @@
 namespace Voyage\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Voyage\Core\Command;
 use Voyage\Core\Configuration;
@@ -29,6 +30,7 @@ class Make extends Command implements EnvironmentControllerInterface
         $this->setDescription('Calculate difference between current database state and latest migration and create a new migration containing changes.');
 
         parent::__construct();
+        $this->addCommandOptions();
     }
 
     /**
@@ -52,5 +54,13 @@ class Make extends Command implements EnvironmentControllerInterface
         } catch (\Exception $e) {
             $this->fatalError($e->getMessage());
         }
+    }
+
+    /**
+     * Add options for 'make' command.
+     */
+    private function addCommandOptions()
+    {
+        $this->addOption('name', null, InputOption::VALUE_REQUIRED, 'Name of migration. Voyage will prompt for a name if not passed via parameter.');
     }
 }
