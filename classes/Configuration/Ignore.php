@@ -7,6 +7,8 @@
 
 namespace Voyage\Configuration;
 
+use Voyage\Core\Configuration as CoreConfiguration;
+
 /**
  * Class Ignore
  * @package Voyage\Configuration
@@ -90,5 +92,32 @@ class Ignore extends ConfigFile
         }
 
         return $ignoreList;
+    }
+
+    /**
+     * @param $tableName
+     * @return bool
+     */
+    public static function shouldIgnore($tableName)
+    {
+        if ($tableName == CoreConfiguration::getInstance()->getMigrationsTableName()) {
+            return true;
+        }
+
+        $ignore = new Ignore();
+        $ignoreList = $ignore->getIgnoreList();
+        $result = false;
+
+        if (!empty($ignoreList)) {
+            foreach ($ignoreList as $item) {
+                if ($item->shouldIgnore($tableName)) {
+                    $result = true;
+                    break;
+                }
+            }
+        }
+
+        unset($ignore);
+        return $result;
     }
 }

@@ -45,14 +45,14 @@ class Initializer
         $this->checkIntegrity();
 
         // Initialize in filesystem
-        $fileSystemRoutines = new FileSystemRoutine($this->sender);
+        $fileSystemRoutines = new FileSystemRoutines($this->sender);
         $fileSystemRoutines->clean(); // Remove .voyage directory and all configs if it exists.
         $fileSystemRoutines->createDirectories(); // Create voyage directories.
         $fileSystemRoutines->createConfigFiles(); // Create Voyage directory and configuration files.
         unset($fileSystemRoutines);
 
         // Initialize in database
-        $databaseRoutines = new DatabaseRoutine($this->sender);
+        $databaseRoutines = new DatabaseRoutines($this->sender);
         $databaseRoutines->clean(); // Remove voyage migrations table.
         $databaseRoutines->createTable(); // Create voyage migrations table.
         unset($databaseRoutines);

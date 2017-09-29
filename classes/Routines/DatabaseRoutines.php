@@ -7,15 +7,14 @@
 
 namespace Voyage\Routines;
 
-use Voyage\Core\DatabaseConnection;
-use Voyage\Core\InputOutputInterface;
+use Voyage\Configuration\Ignore;
 use Voyage\Core\Routine;
 
 /**
  * Class DatabaseRoutines
  * @package Voyage\Routines
  */
-class DatabaseRoutine extends Routine
+class DatabaseRoutines extends Routine
 {
     /**
      * Remove voyage table with a list of migrations if it exists.
@@ -48,5 +47,27 @@ class DatabaseRoutine extends Routine
         } catch (\Exception $e) {
             $this->getSender()->fatalError($e->getMessage());
         }
+    }
+
+    /**
+     * Get tables in current database connection with ignore tables filtered out.
+     */
+    public function getTables()
+    {
+        $sql = 'SHOW TABLES';
+        $tables = [];
+        try {
+            $stmt = $this->getDatabaseConnection()->query($sql);
+            while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+                $tableName = $row[0];
+                if (!Ignore::shouldIgnore($tableName)) {
+                    $tables[] = $tableName;
+                }
+            }
+        } catch (\Exception $e) {
+            $this->getSender()->fatalError($e->getMessage());
+        }
+
+        return $tables;
     }
 }

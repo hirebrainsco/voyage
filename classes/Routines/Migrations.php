@@ -17,6 +17,10 @@ class Migrations extends Routine
 {
     public function make()
     {
-        
+        $databaseRoutines = new DatabaseRoutines($this->getSender());
+        $tables = $databaseRoutines->getTables();
+
+        print_r($tables);
+        unset($databaseRoutines);
     }
 }

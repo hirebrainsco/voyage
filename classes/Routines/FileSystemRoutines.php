@@ -14,7 +14,7 @@ use Voyage\Configuration\ConfigFiles;
  * Class FileSystemRoutines
  * @package Voyage\Routines
  */
-class FileSystemRoutine extends Routine
+class FileSystemRoutines extends Routine
 {
     /**
      * Remove all voyage files.

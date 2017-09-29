@@ -61,6 +61,14 @@ class DatabaseConnection
     }
 
     /**
+     * Run SQL query
+     */
+    public function query($sql)
+    {
+        return $this->pdo->query($sql);
+    }
+    
+    /**
      * Connect to database server and select database.
      */
     private function connect()

@@ -50,6 +50,6 @@ class StringUtils
         }
 
         $pattern = str_replace('*', '(.*)', $pattern);
-        return 1 == preg_match($pattern, $string);
+        return 1 == preg_match('/' . $pattern . '/i', $string);
     }
 }
