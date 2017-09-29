@@ -23,6 +23,14 @@ class BaseEnvironmentSender
     }
 
     /**
+     * @return Environment
+     */
+    public function getEnvironment()
+    {
+        return $this->sender->getEnvironment();
+    }
+
+    /**
      * @param EnvironmentControllerInterface $sender
      */
     public function setSender($sender)

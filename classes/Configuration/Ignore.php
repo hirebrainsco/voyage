@@ -8,6 +8,7 @@
 namespace Voyage\Configuration;
 
 use Voyage\Core\Configuration as CoreConfiguration;
+use Voyage\Core\Configuration;
 
 /**
  * Class Ignore
@@ -15,6 +16,10 @@ use Voyage\Core\Configuration as CoreConfiguration;
  */
 class Ignore extends ConfigFile
 {
+    const IgnoreFully = 1;
+    const IgnoreDataOnly = 2;
+    const DontIgnore = 3;
+
     /**
      * @var string
      */
@@ -101,18 +106,19 @@ class Ignore extends ConfigFile
      */
     public static function shouldIgnore($tableName)
     {
-        if ($tableName == CoreConfiguration::getInstance()->getMigrationsTableName()) {
-            return true;
+        $tmpTablesPattern = '/^' . Configuration::getInstance()->getTempTablePrefix() . '(.*)$/';
+        if ($tableName == CoreConfiguration::getInstance()->getMigrationsTableName() || preg_match($tmpTablesPattern, $tableName)) {
+            return Ignore::IgnoreFully;
         }
 
         $ignore = new Ignore();
         $ignoreList = $ignore->getIgnoreList();
-        $result = false;
+        $result = Ignore::DontIgnore;
 
         if (!empty($ignoreList)) {
             foreach ($ignoreList as $item) {
-                if ($item->shouldIgnore($tableName) && $item->isIgnoreFully()) {
-                    $result = true;
+                if ($item->shouldIgnore($tableName)) {
+                    $result = $item->isIgnoreFully() ? Ignore::IgnoreFully : Ignore::IgnoreDataOnly;
                     break;
                 }
             }

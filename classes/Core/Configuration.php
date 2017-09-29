@@ -19,6 +19,11 @@ class Configuration
     private $directoryName = '.voyage';
 
     /**
+     * @var string
+     */
+    private $tempTablePrefix = 'tmp_voyage_';
+
+    /**
      * @var bool
      */
     private $locked = false;
@@ -32,6 +37,22 @@ class Configuration
      * @var string
      */
     private $migrationsTableName = 'voyage_migrations';
+
+    /**
+     * @return string
+     */
+    public function getTempTablePrefix()
+    {
+        return $this->tempTablePrefix;
+    }
+
+    /**
+     * @param string $tempTablePrefix
+     */
+    public function setTempTablePrefix($tempTablePrefix)
+    {
+        $this->tempTablePrefix = $tempTablePrefix;
+    }
 
     /**
      * @return string

@@ -24,6 +24,10 @@ class Application
 
     public function __construct()
     {
+        ini_set('memory_limit', -1);
+        date_default_timezone_set('UTC');
+        set_time_limit(0);
+
         $this->application = new ConsoleApplication();
     }
 

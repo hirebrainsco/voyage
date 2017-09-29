@@ -8,7 +8,11 @@
 namespace Voyage\Routines;
 
 use Symfony\Component\Console\Question\Question;
+use Voyage\Core\Configuration;
+use Voyage\Core\Migration;
+use Voyage\Core\Migrations;
 use Voyage\Core\Routine;
+use Voyage\Core\TableData;
 
 /**
  * Class Migrations
@@ -16,17 +20,61 @@ use Voyage\Core\Routine;
  */
 class MigrationRoutines extends Routine
 {
+    /**
+     * @var Migrations
+     */
+    private $migrations;
+
+    /**
+     * @var DatabaseRoutines
+     */
+    private $databaseRoutines;
+
     public function make()
     {
-        $databaseRoutines = new DatabaseRoutines($this->getSender());
-        $databaseRoutines->checkPermissions();
-        unset($databaseRoutines);
+        $this->databaseRoutines = new DatabaseRoutines($this->getSender());
+        $this->migrations = new Migrations($this->getSender());
 
-        $migrationName = $this->promptMigrationName();
+        $this->databaseRoutines->checkPermissions(); // Check if we have sufficient rights to modify database.
+        $this->migrations->push(); // Push migrations to database (temp tables) for comparison.
 
-        // Push migrations to database (temp tables) for comparison.
+        $this->compareAndGenerateMigration();
         // Perform comparison.
         // Generate migration.
+    }
+
+    protected function compareAndGenerateMigration()
+    {
+        $migration = new Migration($this->getSender());
+        $migration->setName($this->promptMigrationName());
+        $migration->generate($this->getComparisonTables());
+    }
+
+    protected function getComparisonTables()
+    {
+        $result = [
+            'current' => [],
+            'old' => []
+        ];
+
+        // Get list of current tables in database and pass them through ignore filter.
+        $result['current'] = $this->databaseRoutines->getTables();
+
+        // Get list of old tables
+        $tmpTables = $this->migrations->getTemporaryTables();
+        $oldTables = [];
+
+        if (!empty($tmpTables)) {
+            $prefix = Configuration::getInstance()->getTempTablePrefix();
+            foreach ($tmpTables as $tableName) {
+                $tableName = str_replace($prefix, '', $tableName);
+                $ignoreData = isset($result['current'][$tableName]) ? $result['current'][$tableName]->ignoreData : false;
+                $oldTables[$tableName] = new TableData($tableName, $ignoreData);
+            }
+        }
+
+        $result['old'] = $oldTables;
+        return $result;
     }
 
     /**

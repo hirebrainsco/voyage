@@ -9,6 +9,7 @@ namespace Voyage\Routines;
 
 use Voyage\Configuration\Ignore;
 use Voyage\Core\Routine;
+use Voyage\Core\TableData;
 
 /**
  * Class DatabaseRoutines
@@ -60,8 +61,10 @@ class DatabaseRoutines extends Routine
             $stmt = $this->getDatabaseConnection()->query($sql);
             while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
                 $tableName = $row[0];
-                if (!Ignore::shouldIgnore($tableName)) {
-                    $tables[] = $tableName;
+                $ignoreMode = Ignore::shouldIgnore($tableName);
+
+                if ($ignoreMode != Ignore::IgnoreFully) {
+                    $tables[$tableName] = new TableData($tableName, $ignoreMode == Ignore::IgnoreDataOnly);
                 }
             }
         } catch (\Exception $e) {
