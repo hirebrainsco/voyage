@@ -7,6 +7,8 @@
 
 namespace Voyage\Configuration;
 
+use Voyage\Routines\EnvironmentsFactory;
+
 class CurrentEnvironment extends ConfigFile
 {
     protected $filename = 'environment';
@@ -21,7 +23,20 @@ class CurrentEnvironment extends ConfigFile
 
     public function getEnvironment()
     {
+        $environmentName = $this->getEnvironmentName();
+        if (empty($environmentName)) {
+            $this->getSender()->fatalError("Current environment isn't set. Please, check settings in " . $this->getFilePath());
+        }
 
+        try {
+            $factory = new EnvironmentsFactory($environmentName);
+            $environmentInstance = $factory->create();
+            unset($factory);
+
+            return $environmentInstance;
+        } catch (\Exception $e) {
+            $this->getSender()->fatalError($e->getMessage());
+        }
     }
 
     public function getEnvironmentName()

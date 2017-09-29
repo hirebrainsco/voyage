@@ -69,6 +69,14 @@ abstract class ConfigFile
     }
 
     /**
+     * @param string $filename
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+    }
+
+    /**
      * @return string
      */
     public function getFilePath()

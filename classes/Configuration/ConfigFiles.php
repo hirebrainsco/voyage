@@ -36,7 +36,7 @@ class ConfigFiles
             GitIgnore::class,
             ApacheConfig::class,
             CurrentEnvironment::class,
-            Environments::class
+            EnvironmentConfig::class
         ];
 
         foreach ($configs as $config) {

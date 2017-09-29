@@ -27,42 +27,12 @@ use Voyage\Routines\PlatformConfigurations;
 class Init extends Command implements EnvironmentControllerInterface
 {
     /**
-     * @var Environment
-     */
-    private $environment;
-
-
-    /**
-     * @return DatabaseSettings
-     */
-    public function getDatabaseSettings()
-    {
-        return $this->environment->getDatabaseSettings();
-    }
-
-    /**
-     * @return DatabaseConnection
-     */
-    public function getDatabaseConnection()
-    {
-        return $this->environment->getDatabaseConnection();
-    }
-
-    /**
-     * @return Environment
-     */
-    public function getEnvironment()
-    {
-        return $this->environment;
-    }
-
-    /**
      * Init constructor.
      */
     public function __construct()
     {
-        $this->environment = new Environment();
-        $this->environment->setDatabaseSettings(new DatabaseSettings());
+        $this->setEnvironment(new Environment());
+        $this->getEnvironment()->setDatabaseSettings(new DatabaseSettings());
 
         $this->setName('init');
         $this->setDescription('Initialize voyage in the current working directory');
@@ -107,7 +77,7 @@ class Init extends Command implements EnvironmentControllerInterface
             $this->fatalError('Environment name is empty!');
         }
 
-        $this->environment->setName($environmentName);
+        $this->getEnvironment()->setName($environmentName);
     }
 
     private function performInit()
@@ -144,7 +114,7 @@ class Init extends Command implements EnvironmentControllerInterface
         $dbSettingsPrompt->prompt();
 
         if (is_object($dbSettingsPrompt->getDetectedPlatform())) {
-            $this->environment->setPlatformConfiguration($dbSettingsPrompt->getDetectedPlatform());
+            $this->getEnvironment()->setPlatformConfiguration($dbSettingsPrompt->getDetectedPlatform());
         }
 
         unset($dbSettingsPrompt);
@@ -156,7 +126,7 @@ class Init extends Command implements EnvironmentControllerInterface
     private function connectToDatabase()
     {
         try {
-            $this->environment->setDatabaseConnection(new DatabaseConnection($this->getDatabaseSettings()));
+            $this->getEnvironment()->setDatabaseConnection(new DatabaseConnection($this->getDatabaseSettings()));
         } catch (\Exception $exception) {
             $this->fatalError($exception->getMessage());
         }

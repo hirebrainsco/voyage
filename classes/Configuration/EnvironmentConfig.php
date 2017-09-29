@@ -8,9 +8,8 @@
 namespace Voyage\Configuration;
 
 use Voyage\Core\Configuration;
-use Voyage\Core\EnvironmentControllerInterface;
 
-class Environments extends ConfigFile
+class EnvironmentConfig extends ConfigFile
 {
     public function createConfig()
     {
@@ -77,5 +76,55 @@ EOD;
     public function getBasePath()
     {
         return Configuration::getInstance()->getPathToEnvironments();
+    }
+
+    /**
+     * @return EnvironmentConfigData
+     * @throws \Exception
+     */
+    public function getData()
+    {
+        $data = new EnvironmentConfigData();
+
+        $databaseParams = ['host', 'username', 'database', 'password'];
+
+        $contents = $this->getConfigContents();
+        $items = explode("\n", $contents);
+
+        if (empty($items)) {
+            throw new \Exception('Environment config is empty!');
+        }
+
+        foreach ($items as $item) {
+            $item = trim($item);
+            if (empty($item)) {
+                continue;
+            }
+
+            $var = explode("=", $item, 2);
+            if (sizeof($var) != 2) {
+                throw new \Exception('Syntax error in expression "' . $item . '" in "' . $this->getFilePath() . '"');
+            }
+
+            $varName = trim($var[0]);
+            $varValue = trim($var[1]);
+
+            if (empty($varName)) {
+                throw new \Exception('Parameter name cannot be empty in "' . $this->getFilePath() . '"');
+            }
+
+            if (in_array($varName, $databaseParams)) {
+                if (empty($varValue)) {
+                    throw new \Exception('A value is required for parameter "' . $varName . '" in "' . $this->getFilePath() . '"');
+                }
+
+                $data->$varName = $varValue;
+            } else {
+                $data->replacements[] = [$varName, $varValue];
+            }
+
+        }
+
+        return $data;
     }
 }

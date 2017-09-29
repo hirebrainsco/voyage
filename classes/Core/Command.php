@@ -9,6 +9,7 @@ namespace Voyage\Core;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Voyage\Configuration\CurrentEnvironment;
 
 /**
  * Class Command
@@ -32,6 +33,11 @@ abstract class Command extends \Symfony\Component\Console\Command\Command implem
     private $configuration;
 
     /**
+     * @var Environment
+     */
+    private $environment;
+
+    /**
      * @return InputInterface
      */
     public function getInput()
@@ -45,6 +51,39 @@ abstract class Command extends \Symfony\Component\Console\Command\Command implem
     public function getOutput()
     {
         return $this->output;
+    }
+
+
+    /**
+     * @return DatabaseSettings
+     */
+    public function getDatabaseSettings()
+    {
+        return $this->environment->getDatabaseSettings();
+    }
+
+    /**
+     * @return DatabaseConnection
+     */
+    public function getDatabaseConnection()
+    {
+        return $this->environment->getDatabaseConnection();
+    }
+
+    /**
+     * @return Environment
+     */
+    public function getEnvironment()
+    {
+        return $this->environment;
+    }
+
+    /**
+     * @param Environment $environment
+     */
+    public function setEnvironment($environment)
+    {
+        $this->environment = $environment;
     }
 
     /**
@@ -156,5 +195,12 @@ abstract class Command extends \Symfony\Component\Console\Command\Command implem
     protected function checkIntegrity(OutputInterface $output)
     {
         $this->configuration->checkIntegrity();
+    }
+
+    protected function initCurrentEnvironment()
+    {
+        $environment = new CurrentEnvironment();
+        $environment->setSender($this);
+        $this->setEnvironment($environment->getEnvironment());
     }
 }

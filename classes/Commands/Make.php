@@ -10,12 +10,13 @@ namespace Voyage\Commands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Voyage\Core\Command;
+use Voyage\Core\EnvironmentControllerInterface;
 
 /**
  * Class Make
  * @package Voyage\Commands
  */
-class Make extends Command
+class Make extends Command implements EnvironmentControllerInterface
 {
     /**
      * Make constructor.
@@ -36,5 +37,7 @@ class Make extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->checkIntegrity($output);
+        parent::execute($input, $output);
+        $this->initCurrentEnvironment();
     }
 }
