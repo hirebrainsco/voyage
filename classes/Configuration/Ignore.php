@@ -35,6 +35,7 @@ class Ignore extends ConfigFile
         $template .= '#    ~users - this will record only changes in structure of the `users` table.' . PHP_EOL;
         $template .= '#    users - this will completely ignore table `users`.' . PHP_EOL;
         $template .= '#' . PHP_EOL . PHP_EOL;
+        $template .= 'tmp_voyage_*' . PHP_EOL;
 
         $environment = $this->getSender()->getEnvironment();
         if (is_object($environment) && is_object($environment->getPlatformConfiguration())) {

@@ -11,13 +11,8 @@ namespace Voyage\Core;
  * Class Migration
  * @package Voyage\Core
  */
-class Migration
+class Migration extends BaseEnvironmentSender
 {
-    /**
-     * @var EnvironmentControllerInterface
-     */
-    private $sender;
-
     /**
      * @var string
      */
@@ -42,14 +37,5 @@ class Migration
         }
 
         $this->name = $name;
-    }
-
-    /**
-     * Migration constructor.
-     * @param EnvironmentControllerInterface $sender
-     */
-    public function __construct(EnvironmentControllerInterface $sender)
-    {
-        $this->sender = $sender;
     }
 }

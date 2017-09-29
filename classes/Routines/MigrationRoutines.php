@@ -14,7 +14,7 @@ use Voyage\Core\Routine;
  * Class Migrations
  * @package Voyage\Routines
  */
-class Migrations extends Routine
+class MigrationRoutines extends Routine
 {
     public function make()
     {
@@ -23,6 +23,10 @@ class Migrations extends Routine
         unset($databaseRoutines);
 
         $migrationName = $this->promptMigrationName();
+
+        // Push migrations to database (temp tables) for comparison.
+        // Perform comparison.
+        // Generate migration.
     }
 
     /**
