@@ -110,7 +110,7 @@ class Ignore extends ConfigFile
 
         if (!empty($ignoreList)) {
             foreach ($ignoreList as $item) {
-                if ($item->shouldIgnore($tableName)) {
+                if ($item->shouldIgnore($tableName) && $item->isIgnoreFully()) {
                     $result = true;
                     break;
                 }

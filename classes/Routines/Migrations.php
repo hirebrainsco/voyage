@@ -20,8 +20,9 @@ class Migrations extends Routine
     {
         $databaseRoutines = new DatabaseRoutines($this->getSender());
         $databaseRoutines->checkPermissions();
-        $migrationName = $this->promptMigrationName();
         unset($databaseRoutines);
+
+        $migrationName = $this->promptMigrationName();
     }
 
     /**
