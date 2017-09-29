@@ -51,16 +51,16 @@ class Init extends Command implements EnvironmentControllerInterface
     {
         try {
             parent::execute($input, $output);
-            Configuration::getInstance()->lock();
             $this->displayAppName();
 
             $this->checkPlatformConfigMode();
             $this->checkIfAlreadyInitialized();
             $this->retrieveDatabaseSettings();
+
+            Configuration::getInstance()->lock();
             $this->connectToDatabase();
             $this->initEnvironment();
             $this->performInit();
-            Configuration::getInstance()->unlock();
         } catch (\Exception $e) {
             $this->fatalError($e->getMessage());
         }

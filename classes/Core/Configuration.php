@@ -19,6 +19,11 @@ class Configuration
     private $directoryName = '.voyage';
 
     /**
+     * @var bool
+     */
+    private $locked = false;
+
+    /**
      * @var string
      */
     private $lockFilename = 'voyage.lock';
@@ -77,6 +82,16 @@ class Configuration
         if (!@file_put_contents($this->getLockFilePath(), time())) {
             throw new \Exception('Failed to create lock file at "' . $this->getLockFilePath() . '"');
         }
+
+        $this->locked = true;
+        register_shutdown_function([$this, 'shutdown']);
+    }
+
+    public function shutdown()
+    {
+        if ($this->locked) {
+            $this->unlock();
+        }
     }
 
     /**
@@ -84,6 +99,10 @@ class Configuration
      */
     public function unlock()
     {
+        if (!$this->locked) {
+            return;
+        }
+
         if (file_exists($this->getLockFilePath())) {
             @unlink($this->getLockFilePath());
         }

@@ -7,8 +7,6 @@
 
 namespace Voyage\Core;
 
-use \Symfony\Component\Console\Application as SymfonyApplication;
-
 class Application
 {
     const Name = 'Voyage (Database Migration Tool)';
@@ -26,7 +24,7 @@ class Application
 
     public function __construct()
     {
-        $this->application = new SymfonyApplication();
+        $this->application = new ConsoleApplication();
     }
 
     public function run()

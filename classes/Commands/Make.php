@@ -43,8 +43,6 @@ class Make extends Command implements EnvironmentControllerInterface
 
             $this->checkIntegrity($output);
             $this->initCurrentEnvironment();
-
-            Configuration::getInstance()->unlock();
         } catch (\Exception $e) {
             $this->fatalError($e->getMessage());
         }
