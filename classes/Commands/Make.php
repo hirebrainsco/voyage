@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Voyage\Core\Command;
 use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
+use Voyage\Routines\Migrations;
 
 /**
  * Class Make
@@ -41,8 +42,13 @@ class Make extends Command implements EnvironmentControllerInterface
             parent::execute($input, $output);
             Configuration::getInstance()->lock();
 
+            $this->displayAppName();
             $this->checkIntegrity($output);
             $this->initCurrentEnvironment();
+
+            $migrations = new Migrations($this);
+            $migrations->make();
+            unset($migrations);
         } catch (\Exception $e) {
             $this->fatalError($e->getMessage());
         }

@@ -101,6 +101,13 @@ class DatabaseSettingsPrompt
 
             if (!empty($platformName)) {
                 $this->sender->report('Detected platform: ' . $platformName . '. Successfully read configuration file.');
+                $this->sender->report('Database Settings');
+                $this->sender->report('-----------------');
+                $this->sender->report("DB Host:\t" . $this->sender->getDatabaseSettings()->getHost() . ':' . $this->sender->getDatabaseSettings()->getPort());
+                $this->sender->report("DB Name:\t" . $this->sender->getDatabaseSettings()->getDatabaseName());
+                $this->sender->report("DB Username:\t" . $this->sender->getDatabaseSettings()->getUsername());
+                $this->sender->report("DB Password:\t" . $this->sender->getDatabaseSettings()->getPassword());
+                $this->sender->report('');
                 $this->detectedPlatform = $platformInstance;
             }
         }
