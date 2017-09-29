@@ -70,4 +70,57 @@ class DatabaseRoutines extends Routine
 
         return $tables;
     }
+
+    /**
+     * Check whether we have permissions to run SELECT, INSERT, UPDATE, DROP, CREATE, ALTER, DELETE, INDEX, REFERENCES.
+     */
+    public function checkPermissions()
+    {
+        $allowed = false;
+        $requiredPermissions = ['SELECT', 'INSERT', 'UPDATE', 'DROP', 'CREATE', 'ALTER', 'DELETE', 'INDEX', 'REFERENCES'];
+        $missingPermissions = '';
+
+        $sql = 'SHOW GRANTS FOR CURRENT_USER()';
+        $stmt = $this->getDatabaseConnection()->query($sql);
+        $pattern = '/GRANT\s+(.*)\s+ON\s+(.*)\s+TO\s+(.*)/i';
+
+        while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+            $permission = $row[0];
+            if (strpos($permission, 'GRANT USAGE') !== false || strpos($permission, 'GRANT PROXY') !== false) {
+                continue;
+            }
+
+            $matches = [];
+            if (preg_match($pattern, $permission, $matches)) {
+                $databaseName = trim($matches[2]);
+                $privileges = str_replace('ALL PRIVILEGES', 'ALL', trim($matches[1]));
+
+                if ($databaseName == '*.*' || $databaseName == '`' . $this->getDatabaseConnection()->getSettings()->getDatabaseName() . '`.*') {
+                    // Permission to all tables or the current database.
+                    if ($privileges == 'ALL') {
+                        $allowed = true;
+                        break;
+                    }
+
+                    $permissions = array_map('trim', explode(',', $privileges));
+                    $diff = array_diff($requiredPermissions, $permissions);
+                    if (!empty($diff)) {
+                        $missingPermissions = $diff;
+                    } else {
+                        $allowed = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!$allowed) {
+            if (empty($missingPermissions)) {
+                $missingPermissions = $requiredPermissions;
+            }
+
+            $missingPermissionsList = implode(', ', $missingPermissions);
+            throw new \Exception("Current user doesn't have sufficient permissions to the database. Missing permission(s): " . $missingPermissionsList);
+        }
+    }
 }

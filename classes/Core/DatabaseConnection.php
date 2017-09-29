@@ -91,4 +91,12 @@ class DatabaseConnection
             $this->settings->getPort(),
             $this->settings->getDatabaseName());
     }
+
+    /**
+     * @return DatabaseSettings
+     */
+    public function getSettings()
+    {
+        return $this->settings;
+    }
 }

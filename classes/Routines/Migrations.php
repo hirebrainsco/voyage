@@ -18,6 +18,7 @@ class Migrations extends Routine
     public function make()
     {
         $databaseRoutines = new DatabaseRoutines($this->getSender());
+        $databaseRoutines->checkPermissions();
         $tables = $databaseRoutines->getTables();
 
         print_r($tables);
