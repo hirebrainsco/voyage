@@ -73,6 +73,7 @@ class DatabaseRoutines extends Routine
 
     /**
      * Check whether we have permissions to run SELECT, INSERT, UPDATE, DROP, CREATE, ALTER, DELETE, INDEX, REFERENCES.
+     * @throws \Exception
      */
     public function checkPermissions()
     {
