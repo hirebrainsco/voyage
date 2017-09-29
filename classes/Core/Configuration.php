@@ -42,7 +42,6 @@ class Configuration
     public function checkIntegrity()
     {
         $this->checkVoyageDirectory();
-        $this->checkLockFile();
     }
 
     /**
@@ -65,7 +64,29 @@ class Configuration
      */
     public function getLockFilePath()
     {
-        return $this->directoryName . '/' . $this->lockFilename;
+        return VOYAGE_WORKING_DIR . '/' . $this->directoryName . '/' . $this->lockFilename;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function lock()
+    {
+        $this->checkLockFile();
+
+        if (!@file_put_contents($this->getLockFilePath(), time())) {
+            throw new \Exception('Failed to create lock file at "' . $this->getLockFilePath() . '"');
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function unlock()
+    {
+        if (file_exists($this->getLockFilePath())) {
+            @unlink($this->getLockFilePath());
+        }
     }
 
     /**
@@ -109,9 +130,9 @@ class Configuration
      */
     private function checkLockFile()
     {
-        $path = realpath($this->getLockFilePath());
+        $path = $this->getLockFilePath();
         if (file_exists($this->getLockFilePath())) {
-            throw new \Exception('Voyage lock file exists at ' . $path . '. Another voyage process is running?');
+            throw new \Exception('Voyage lock file exists at ' . $path . '. Another Voyage process is running?');
         }
     }
 

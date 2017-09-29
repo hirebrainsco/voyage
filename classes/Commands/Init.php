@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Voyage\Core\Command;
+use Voyage\Core\Configuration;
 use Voyage\Core\DatabaseConnection;
 use Voyage\Core\Environment;
 use Voyage\Core\EnvironmentControllerInterface;
@@ -48,15 +49,21 @@ class Init extends Command implements EnvironmentControllerInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        parent::execute($input, $output);
-        $this->displayAppName();
+        try {
+            parent::execute($input, $output);
+            Configuration::getInstance()->lock();
+            $this->displayAppName();
 
-        $this->checkPlatformConfigMode();
-        $this->checkIfAlreadyInitialized();
-        $this->retrieveDatabaseSettings();
-        $this->connectToDatabase();
-        $this->initEnvironment();
-        $this->performInit();
+            $this->checkPlatformConfigMode();
+            $this->checkIfAlreadyInitialized();
+            $this->retrieveDatabaseSettings();
+            $this->connectToDatabase();
+            $this->initEnvironment();
+            $this->performInit();
+            Configuration::getInstance()->unlock();
+        } catch (\Exception $e) {
+            $this->fatalError($e->getMessage());
+        }
     }
 
     private function initEnvironment()
