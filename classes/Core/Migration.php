@@ -78,6 +78,9 @@ class Migration extends BaseEnvironmentSender
         $this->getSender()->getDatabaseConnection()->exec($sql, $sqlVars);
     }
 
+    /**
+     * @param array $comparisonTables
+     */
     private function tablesDifference(array $comparisonTables)
     {
         $difference = new TablesDifference($this->getSender()->getDatabaseConnection(), $comparisonTables);
@@ -88,6 +91,9 @@ class Migration extends BaseEnvironmentSender
         unset($code);
     }
 
+    /**
+     * @param $contents
+     */
     private function appendMigrationFile($contents)
     {
         file_put_contents($this->getFilePath(), $contents, FILE_APPEND);
