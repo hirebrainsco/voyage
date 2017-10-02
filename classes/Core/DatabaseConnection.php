@@ -53,15 +53,23 @@ class DatabaseConnection
     /**
      * Execute SQL query.
      * @param $sql
+     * @param array $sqlVars
      * @return int
      */
-    public function exec($sql)
+    public function exec($sql, $sqlVars = [])
     {
-        return $this->pdo->exec($sql);
+        if (empty($sqlVars)) {
+            return $this->pdo->exec($sql);
+        }
+
+        $stmt = $this->pdo->prepare($sql, [\PDO::ATTR_CURSOR => \PDO::CURSOR_FWDONLY]);
+        return $stmt->execute($sqlVars);
     }
 
     /**
      * Run SQL query
+     * @param $sql
+     * @return \PDOStatement
      */
     public function query($sql)
     {

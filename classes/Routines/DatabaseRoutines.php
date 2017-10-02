@@ -33,7 +33,7 @@ class DatabaseRoutines extends Routine
     {
         $sql = "
             CREATE TABLE %s (
-              `id` VARCHAR(15) NOT NULL DEFAULT '',
+              `id` VARCHAR(50) NOT NULL DEFAULT '',
               `name` VARCHAR(255) NOT NULL DEFAULT '', 
               `ts` INT(11) NOT NULL DEFAULT 0,
               UNIQUE key (`id`)

@@ -60,6 +60,22 @@ class Migration extends BaseEnvironmentSender
         // Compare data in tables
         // Compare indexes
         // Save migration to database
+        $this->recordMigration();
+    }
+
+    /**
+     * Record migration to database.
+     */
+    private function recordMigration()
+    {
+        $sql = 'INSERT INTO ' . Configuration::getInstance()->getMigrationsTableName() . ' SET id=:id, name =:name, ts=:ts';
+        $sqlVars = [
+            ':id' => $this->getId(),
+            ':name' => $this->getName(),
+            ':ts' => time()
+        ];
+
+        $this->getSender()->getDatabaseConnection()->exec($sql, $sqlVars);
     }
 
     private function tablesDifference(array $comparisonTables)
