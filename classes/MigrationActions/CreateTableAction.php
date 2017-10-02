@@ -38,7 +38,7 @@ class CreateTableAction extends MigrationAction
             throw new \Exception('Failed to get CREATE TABLE for table: ' . $this->tableName);
         }
 
-        return $row['Create Table'] . ';' . PHP_EOL;
+        return $this->prepareTableNameForExport($row['Create Table']) . ';' . PHP_EOL;
     }
 
     /**
@@ -47,6 +47,6 @@ class CreateTableAction extends MigrationAction
     public function getRollback()
     {
         $code = 'DROP TABLE IF EXISTS `' . $this->tableName . '`;';
-        return $code;
+        return $this->prepareTableNameForExport($code);
     }
 }

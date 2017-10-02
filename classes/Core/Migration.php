@@ -51,16 +51,34 @@ class Migration extends BaseEnvironmentSender
      */
     public function generate(array $comparisonTables)
     {
-        $this->saveHeader();
+        try {
+            $this->saveHeader();
 
-        // Process tables to drop and create
-        $this->tablesDifference($comparisonTables);
+            // Process tables to drop and create
+            $tablesDifference = $this->tablesDifference($comparisonTables);
 
-        // Compare list of fields in tables
-        // Compare data in tables
-        // Compare indexes
-        // Save migration to database
-        $this->recordMigration();
+            // Compare list of fields in tables
+            // Compare data in tables
+            // Compare indexes
+            // Save migration to database
+
+            if (!$tablesDifference) {
+                $this->getSender()->info('No changes found.');
+                $this->removeMigrationFile();
+                return;
+            }
+
+            $this->recordMigration();
+            $this->getSender()->info('Migration has been created: ' . $this->getFilename());
+        } catch (\Exception $exception) {
+            $this->getSender()->fatalError($exception->getMessage());
+            $this->removeMigrationFile();
+        }
+    }
+
+    private function removeMigrationFile()
+    {
+        unlink($this->getFilePath());
     }
 
     /**
@@ -80,6 +98,7 @@ class Migration extends BaseEnvironmentSender
 
     /**
      * @param array $comparisonTables
+     * @return bool
      */
     private function tablesDifference(array $comparisonTables)
     {
@@ -87,8 +106,14 @@ class Migration extends BaseEnvironmentSender
         $code = $difference->getDifference();
         unset($difference);
 
+        if (empty($code)) {
+            return false;
+        }
+
         $this->appendMigrationFile($code);
         unset($code);
+
+        return true;
     }
 
     /**
@@ -132,6 +157,9 @@ EOD;
         return $this->getId() . '.mgr';
     }
 
+    /**
+     * @return string
+     */
     private function getId()
     {
         if (!empty($this->id)) {
@@ -141,5 +169,31 @@ EOD;
         $this->id = date('Ydm-His-');
         $this->id .= strtolower(str_replace('.', '_', $this->getEnvironment()->getName()));
         return $this->id;
+    }
+
+    /**
+     * @param $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    public function importTemporarily()
+    {
+        $parser = new MigrationFileParser($this->getFilePath());
+        $contents = $parser->getApply();
+        unset($parser);
+
+        if (empty($contents)) {
+            return;
+        }
+
+        $this->getSender()->getDatabaseConnection()->exec("SET SQL_MODE='ALLOW_INVALID_DATES'");
+        $prefix = Configuration::getInstance()->getTempTablePrefix();
+        foreach ($contents as $item) {
+            $item = preg_replace("/(.*)\{\{\:(.*)\:\}\}(.*)/", "$1" . $prefix . "$2$3", $item);
+            $this->getSender()->getDatabaseConnection()->exec($item);
+        }
     }
 }

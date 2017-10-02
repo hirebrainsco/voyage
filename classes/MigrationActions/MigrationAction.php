@@ -48,4 +48,9 @@ abstract class MigrationAction
     {
         throw new \Exception("getRollback() method not implemented!");
     }
+
+    protected function prepareTableNameForExport($code)
+    {
+        return str_replace('`' . $this->tableName . '`', '`{{:' . $this->tableName . ':}}`', $code);
+    }
 }

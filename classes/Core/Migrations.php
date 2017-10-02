@@ -19,8 +19,32 @@ class Migrations extends BaseEnvironmentSender
             return;
         }
 
-        // TODO: check migration files
-        // TODO: import migrations for checking and return list of tables that have been pushed.
+        $this->checkMigrationFiles($migrations);
+        $this->importMigrations($migrations);
+    }
+
+    private function importMigrations(array $migrations)
+    {
+        foreach ($migrations as $migration) {
+            $migrationInstance = new Migration($this->getSender());
+            $migrationInstance->setId($migration['id']);
+            $migrationInstance->importTemporarily();
+            unset($migrationInstance);
+        }
+    }
+
+    /**
+     * @param array $migrations
+     */
+    private function checkMigrationFiles(array $migrations)
+    {
+        $basePath = Configuration::getInstance()->getPathToMigrations() . '/';
+        foreach ($migrations as $migration) {
+            $migrationPath = $basePath . $migration['id'] . '.mgr';
+            if (!file_exists($migrationPath)) {
+                $this->getSender()->fatalError('Migration "' . $migrationPath . '" cannot be found!');
+            }
+        }
     }
 
     /**
@@ -50,7 +74,7 @@ class Migrations extends BaseEnvironmentSender
         }
 
         foreach ($tables as $tableName) {
-            $sql = "DROP TABLE IF EXISTS '" . $tableName . "'";
+            $sql = "DROP TABLE IF EXISTS `" . $tableName . "`";
             $this->getSender()->getDatabaseConnection()->exec($sql);
         }
     }
@@ -60,7 +84,7 @@ class Migrations extends BaseEnvironmentSender
      */
     public function getListOfAppliedMigrations()
     {
-        $sql = 'SELECT * FROM ' . Configuration::getInstance()->getMigrationsTableName() . ' ORDER BY id';
+        $sql = 'SELECT * FROM ' . Configuration::getInstance()->getMigrationsTableName() . ' ORDER BY ts, id';
         $stmt = $this->getSender()->getDatabaseConnection()->query($sql);
 
         $migrations = [];

@@ -7,6 +7,7 @@
 
 namespace Voyage\MigrationActions;
 
+use Voyage\Core\Configuration;
 use Voyage\Core\DatabaseConnection;
 
 /**
@@ -31,7 +32,7 @@ class DropTableAction extends MigrationAction
     public function getApply()
     {
         $code = 'DROP TABLE IF EXISTS `' . $this->tableName . '`;';
-        return $code;
+        return $this->prepareTableNameForExport($code);
     }
 
     /**
@@ -40,13 +41,14 @@ class DropTableAction extends MigrationAction
      */
     public function getRollback()
     {
-        $sql = 'SHOW CREATE TABLE `' . $this->tableName . '`';
+        $sql = 'SHOW CREATE TABLE `' . Configuration::getInstance()->getTempTablePrefix() . $this->tableName . '`';
         $row = $this->connection->fetch($sql);
 
         if (empty($row) || !isset($row['Create Table'])) {
             throw new \Exception('Failed to get CREATE TABLE for table: ' . $this->tableName);
         }
 
-        return $row['Create Table'];
+        $code = str_replace(Configuration::getInstance()->getTempTablePrefix(), '', $row['Create Table']);
+        return $this->prepareTableNameForExport($code) . ';' . PHP_EOL;
     }
 }

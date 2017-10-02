@@ -41,6 +41,8 @@ class MigrationRoutines extends Routine
         $this->compareAndGenerateMigration();
         // Perform comparison.
         // Generate migration.
+
+        $this->migrations->dropTemporaryTables();
     }
 
     protected function compareAndGenerateMigration()
@@ -48,6 +50,7 @@ class MigrationRoutines extends Routine
         $migration = new Migration($this->getSender());
         $migration->setName($this->promptMigrationName());
         $migration->generate($this->getComparisonTables());
+        unset($migration);
     }
 
     protected function getComparisonTables()
