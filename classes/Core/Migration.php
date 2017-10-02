@@ -7,6 +7,8 @@
 
 namespace Voyage\Core;
 
+use Voyage\Routines\TablesDifference;
+
 /**
  * Class Migration
  * @package Voyage\Core
@@ -52,10 +54,26 @@ class Migration extends BaseEnvironmentSender
         $this->saveHeader();
 
         // Process tables to drop and create
+        $this->tablesDifference($comparisonTables);
+
         // Compare list of fields in tables
         // Compare data in tables
         // Compare indexes
         // Save migration to database
+    }
+
+    private function tablesDifference(array $comparisonTables)
+    {
+        $difference = new TablesDifference($this->getSender()->getDatabaseConnection(), $comparisonTables);
+        $code = $difference->getDifference();
+        unset($difference);
+
+        $this->appendMigrationFile($code);
+    }
+
+    private function appendMigrationFile($contents)
+    {
+        file_put_contents($this->getFilePath(), $contents, FILE_APPEND);
     }
 
     private function saveHeader()
