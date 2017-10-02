@@ -67,7 +67,17 @@ class DatabaseConnection
     {
         return $this->pdo->query($sql);
     }
-    
+
+    /**
+     * @param $sql
+     * @return mixed
+     */
+    public function fetch($sql)
+    {
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
     /**
      * Connect to database server and select database.
      */
