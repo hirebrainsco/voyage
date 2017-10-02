@@ -85,6 +85,7 @@ class Migration extends BaseEnvironmentSender
         unset($difference);
 
         $this->appendMigrationFile($code);
+        unset($code);
     }
 
     private function appendMigrationFile($contents)
