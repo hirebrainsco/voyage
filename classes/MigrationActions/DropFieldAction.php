@@ -7,22 +7,15 @@
 
 namespace Voyage\MigrationActions;
 
-use Voyage\Core\Configuration;
+use Voyage\Core\DatabaseConnection;
+use Voyage\Core\FieldData;
 
 /**
- * Class DropTableAction
+ * Class DropFieldAction
  * @package Voyage\MigrationActions
  */
-class DropTableAction extends TableAction
+class DropFieldAction extends FieldAction
 {
-    /**
-     * @return string
-     */
-    protected function getTableName()
-    {
-        return Configuration::getInstance()->getTempTablePrefix() . $this->tableName;
-    }
-
     /**
      * @return string
      */
@@ -32,11 +25,10 @@ class DropTableAction extends TableAction
     }
 
     /**
-     * @return mixed
-     * @throws \Exception
+     * @return string
      */
     public function getRollback()
     {
-        return $this->getCreate();
+        return $this->getAdd();
     }
 }

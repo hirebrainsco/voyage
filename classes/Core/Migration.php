@@ -7,6 +7,7 @@
 
 namespace Voyage\Core;
 
+use Voyage\Routines\FieldsDifference;
 use Voyage\Routines\TablesDifference;
 
 /**
@@ -58,11 +59,13 @@ class Migration extends BaseEnvironmentSender
             $tablesDifference = $this->tablesDifference($comparisonTables);
 
             // Compare list of fields in tables
+            $fieldsDifference = $this->fieldsDifference($comparisonTables);
+
             // Compare data in tables
             // Compare indexes
             // Save migration to database
 
-            if (!$tablesDifference) {
+            if (!$tablesDifference && !$fieldsDifference) {
                 $this->getSender()->info('No changes have been found.');
                 $this->removeMigrationFile();
                 return;
@@ -74,6 +77,33 @@ class Migration extends BaseEnvironmentSender
             $this->getSender()->fatalError($exception->getMessage());
             $this->removeMigrationFile();
         }
+    }
+
+
+    /**
+     * @param array $comparisonTables
+     * @return bool
+     */
+    private function fieldsDifference(array $comparisonTables)
+    {
+        if (empty($comparisonTables)) {
+            return false;
+        }
+
+        $this->getSender()->report('Checking differences in fields.');
+
+        $difference = new FieldsDifference($this->getSender(), $comparisonTables);
+        $code = $difference->getDifference();
+        unset($difference);
+
+        if (empty($code)) {
+            return false;
+        }
+
+        $this->appendMigrationFile($code);
+        unset($code);
+
+        return true;
     }
 
     private function removeMigrationFile()
@@ -102,8 +132,12 @@ class Migration extends BaseEnvironmentSender
      */
     private function tablesDifference(array $comparisonTables)
     {
+        if (empty($comparisonTables)) {
+            return false;
+        }
+
         $this->getSender()->report('Checking differences in a list of database tables.');
-        $difference = new TablesDifference($this->getSender()->getDatabaseConnection(), $comparisonTables);
+        $difference = new TablesDifference($this->getSender(), $comparisonTables);
         $code = $difference->getDifference();
         unset($difference);
 

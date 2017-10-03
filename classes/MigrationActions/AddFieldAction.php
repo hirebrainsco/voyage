@@ -8,18 +8,17 @@
 namespace Voyage\MigrationActions;
 
 /**
- * Class CreateTableAction
+ * Class AddFieldAction
  * @package Voyage\MigrationActions
  */
-class CreateTableAction extends TableAction
+class AddFieldAction extends FieldAction
 {
     /**
      * @return string
-     * @throws \Exception
      */
     public function getApply()
     {
-        return $this->getCreate();
+        return $this->getAdd();
     }
 
     /**

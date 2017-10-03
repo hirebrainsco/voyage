@@ -8,6 +8,7 @@
 namespace Voyage\Routines;
 
 use Voyage\Configuration\Ignore;
+use Voyage\Core\FieldData;
 use Voyage\Core\Routine;
 use Voyage\Core\TableData;
 
@@ -48,6 +49,23 @@ class DatabaseRoutines extends Routine
         } catch (\Exception $e) {
             $this->getSender()->fatalError($e->getMessage());
         }
+    }
+
+    /**
+     * @param $tableName
+     * @return array
+     */
+    public function getTableFields($tableName)
+    {
+        $fields = [];
+        $sql = 'SHOW FIELDS FROM `' . $tableName . '`';
+        $stmt = $this->getDatabaseConnection()->query($sql);
+
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $fields[$row['Field']] = new FieldData($row['Field'], $row['Type'], $row['Default'], $row['Null'], $row['Key'], $row['Extra']);
+        }
+
+        return $fields;
     }
 
     /**

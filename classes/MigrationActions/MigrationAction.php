@@ -41,14 +41,15 @@ abstract class MigrationAction
         throw new \Exception("getApply() method not implemented!");
     }
 
-    /**
-     *
-     */
     public function getRollback()
     {
         throw new \Exception("getRollback() method not implemented!");
     }
 
+    /**
+     * @param $code
+     * @return string
+     */
     protected function prepareTableNameForExport($code)
     {
         return str_replace('`' . $this->tableName . '`', '`{{:' . $this->tableName . ':}}`', $code);
