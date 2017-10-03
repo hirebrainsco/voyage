@@ -5,13 +5,6 @@
  * Email: dmitry@hirebrains.co
  */
 
-/**
- * Created by PhpStorm.
- * User: dmitry
- * Date: 10/3/17
- * Time: 15:16
- */
-
 namespace Voyage\MigrationActions;
 
 use Voyage\Core\Configuration;

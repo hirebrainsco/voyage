@@ -8,8 +8,15 @@
 namespace Voyage\Core;
 
 
+/**
+ * Class Migrations
+ * @package Voyage\Core
+ */
 class Migrations extends BaseEnvironmentSender
 {
+    /**
+     * Import migrations to temp tables.
+     */
     public function push()
     {
         $this->dropTemporaryTables();
@@ -24,6 +31,9 @@ class Migrations extends BaseEnvironmentSender
         $this->importMigrations($migrations);
     }
 
+    /**
+     * @param array $migrations
+     */
     private function importMigrations(array $migrations)
     {
         foreach ($migrations as $migration) {

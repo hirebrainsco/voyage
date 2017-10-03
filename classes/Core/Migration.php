@@ -106,6 +106,9 @@ class Migration extends BaseEnvironmentSender
         return true;
     }
 
+    /**
+     * Remove migration file.
+     */
     private function removeMigrationFile()
     {
         unlink($this->getFilePath());
@@ -159,6 +162,9 @@ class Migration extends BaseEnvironmentSender
         file_put_contents($this->getFilePath(), $contents, FILE_APPEND);
     }
 
+    /**
+     * Save header of migration file.
+     */
     private function saveHeader()
     {
         $name = $this->getName();
@@ -214,6 +220,9 @@ EOD;
         $this->id = $id;
     }
 
+    /**
+     * Import migration to temporary table.
+     */
     public function importTemporarily()
     {
         $parser = new MigrationFileParser($this->getFilePath());
