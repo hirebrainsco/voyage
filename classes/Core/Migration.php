@@ -7,6 +7,7 @@
 
 namespace Voyage\Core;
 
+use Voyage\Routines\DataDifference;
 use Voyage\Routines\FieldsDifference;
 use Voyage\Routines\TablesDifference;
 
@@ -62,15 +63,15 @@ class Migration extends BaseEnvironmentSender
             $fieldsDifference = $this->fieldsDifference($comparisonTables);
 
             // Compare data in tables
-            // Compare indexes
-            // Save migration to database
+            $dataDifference = $this->dataDifference($comparisonTables);
 
-            if (!$tablesDifference && !$fieldsDifference) {
+            if (!$tablesDifference && !$fieldsDifference && !$dataDifference) {
                 $this->getSender()->info('No changes have been found.');
                 $this->removeMigrationFile();
                 return;
             }
 
+            // Save migration to database
             $this->recordMigration();
             $this->getSender()->info('Migration has been created: ' . $this->getFilename());
         } catch (\Exception $exception) {
@@ -79,6 +80,24 @@ class Migration extends BaseEnvironmentSender
         }
     }
 
+    /**
+     * @param array $comparisonTables
+     * @return bool
+     */
+    private function dataDifference(array $comparisonTables)
+    {
+        if (empty($comparisonTables)) {
+            return false;
+        }
+
+        $this->getSender()->report('Checking differences in data.');
+
+        $difference = new DataDifference($this->getSender(), $comparisonTables, $this);
+        $hasData = $difference->getDifference();
+        unset($difference);
+
+        return $hasData;
+    }
 
     /**
      * @param array $comparisonTables
@@ -157,7 +176,7 @@ class Migration extends BaseEnvironmentSender
     /**
      * @param $contents
      */
-    private function appendMigrationFile($contents)
+    public function appendMigrationFile($contents)
     {
         file_put_contents($this->getFilePath(), $contents, FILE_APPEND);
     }
