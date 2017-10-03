@@ -19,6 +19,7 @@ class Migrations extends BaseEnvironmentSender
             return;
         }
 
+        $this->getSender()->report('Pushing migrations for comparison.');
         $this->checkMigrationFiles($migrations);
         $this->importMigrations($migrations);
     }

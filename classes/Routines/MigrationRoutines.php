@@ -35,6 +35,7 @@ class MigrationRoutines extends Routine
         $this->databaseRoutines = new DatabaseRoutines($this->getSender());
         $this->migrations = new Migrations($this->getSender());
 
+        $this->getSender()->report('Checking permissions.');
         $this->databaseRoutines->checkPermissions(); // Check if we have sufficient rights to modify database.
         $this->migrations->push(); // Push migrations to database (temp tables) for comparison.
 

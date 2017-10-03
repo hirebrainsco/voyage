@@ -63,7 +63,7 @@ class Migration extends BaseEnvironmentSender
             // Save migration to database
 
             if (!$tablesDifference) {
-                $this->getSender()->info('No changes found.');
+                $this->getSender()->info('No changes have been found.');
                 $this->removeMigrationFile();
                 return;
             }
@@ -102,6 +102,7 @@ class Migration extends BaseEnvironmentSender
      */
     private function tablesDifference(array $comparisonTables)
     {
+        $this->getSender()->report('Checking differences in a list of database tables.');
         $difference = new TablesDifference($this->getSender()->getDatabaseConnection(), $comparisonTables);
         $code = $difference->getDifference();
         unset($difference);
