@@ -39,10 +39,8 @@ class MigrationRoutines extends Routine
         $this->databaseRoutines->checkPermissions(); // Check if we have sufficient rights to modify database.
         $this->migrations->push(); // Push migrations to database (temp tables) for comparison.
 
+        // Compare and generate migration.
         $this->compareAndGenerateMigration();
-        // Perform comparison.
-        // Generate migration.
-
         $this->migrations->dropTemporaryTables();
     }
 
