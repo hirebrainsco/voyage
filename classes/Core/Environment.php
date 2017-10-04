@@ -30,6 +30,27 @@ class Environment
     private $platformConfiguration;
 
     /**
+     * @var array
+     */
+    private $replacements = [];
+
+    /**
+     * @return array
+     */
+    public function getReplacements()
+    {
+        return $this->replacements;
+    }
+
+    /**
+     * @param array $replacements
+     */
+    public function setReplacements($replacements)
+    {
+        $this->replacements = $replacements;
+    }
+
+    /**
      * @return PlatformConfiguration
      */
     public function getPlatformConfiguration()

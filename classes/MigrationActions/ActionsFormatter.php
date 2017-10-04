@@ -28,11 +28,24 @@ class ActionsFormatter
         $applyCode = '# @APPLY' . PHP_EOL;
         $rollbackCode = '# @ROLLBACK' . PHP_EOL;
 
+        $hasApplyCode = false;
+        $hasRollbackCode = false;
+
         foreach ($this->actions as $action) {
-            $applyCode .= $action->getApply() . PHP_EOL;
-            $rollbackCode .= $action->getRollback() . PHP_EOL;
+            $code = $action->getApply();
+
+            if ($code !== false) {
+                $hasApplyCode = true;
+                $applyCode .= $code . PHP_EOL;
+            }
+
+            $code = $action->getRollback();
+            if ($code !== false) {
+                $hasRollbackCode = true;
+                $rollbackCode .= $code . PHP_EOL;
+            }
         }
 
-        return $applyCode . PHP_EOL . $rollbackCode;
+        return ($hasApplyCode ? $applyCode . PHP_EOL : '') . ($hasRollbackCode ? $rollbackCode : '');
     }
 }

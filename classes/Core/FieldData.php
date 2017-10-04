@@ -34,4 +34,12 @@ class FieldData
         $this->key = $key;
         $this->extra = $extra;
     }
+
+    /**
+     * @return bool
+     */
+    public function isPrimaryKey()
+    {
+        return $this->key == 'PRI';
+    }
 }

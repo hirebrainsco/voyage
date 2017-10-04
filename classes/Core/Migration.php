@@ -128,7 +128,7 @@ class Migration extends BaseEnvironmentSender
     /**
      * Remove migration file.
      */
-    private function removeMigrationFile()
+    public function removeMigrationFile()
     {
         unlink($this->getFilePath());
     }

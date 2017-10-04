@@ -71,6 +71,7 @@ class EnvironmentsFactory
         $environment->setName($this->getEnvironmentName());
         $environment->setDatabaseSettings($this->toDatabaseSettings($configData));
         $environment->setDatabaseConnection(new DatabaseConnection($environment->getDatabaseSettings()));
+        $environment->setReplacements($configData->replacements);
         return $environment;
     }
 

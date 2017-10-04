@@ -9,10 +9,20 @@ namespace Voyage\Configuration;
 
 use Voyage\Routines\EnvironmentsFactory;
 
+/**
+ * Class CurrentEnvironment
+ * @package Voyage\Configuration
+ */
 class CurrentEnvironment extends ConfigFile
 {
+    /**
+     * @var string
+     */
     protected $filename = 'environment';
 
+    /**
+     * @return string
+     */
     protected function getTemplate()
     {
         $template = '# Current environment.' . PHP_EOL;
@@ -21,6 +31,9 @@ class CurrentEnvironment extends ConfigFile
         return $template;
     }
 
+    /**
+     * @return \Voyage\Core\Environment
+     */
     public function getEnvironment()
     {
         $environmentName = $this->getEnvironmentName();
@@ -39,6 +52,9 @@ class CurrentEnvironment extends ConfigFile
         }
     }
 
+    /**
+     * @return mixed
+     */
     public function getEnvironmentName()
     {
         $contents = str_replace(["\r", "\n", "\t", " "], '', trim($this->getConfigContents()));
