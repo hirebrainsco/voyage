@@ -11,8 +11,15 @@ use Voyage\Core\DatabaseConnection;
 use Voyage\Core\FieldData;
 use Voyage\Core\Migration;
 
+/**
+ * Class InsertRecordAction
+ * @package Voyage\MigrationActions
+ */
 class InsertRecordAction extends RecordAction
 {
+    /**
+     * @var string
+     */
     public static $insertQueryTemplate = '';
 
     /**
@@ -20,6 +27,9 @@ class InsertRecordAction extends RecordAction
      */
     protected $isNewTable = false;
 
+    /**
+     * @return string
+     */
     public function getApply()
     {
         $this->prepareStaticData();
@@ -39,6 +49,9 @@ class InsertRecordAction extends RecordAction
         return $this->prepareTableNameForExport($sql);
     }
 
+    /**
+     * @return bool|string
+     */
     public function getRollback()
     {
         if ($this->isNewTable) {
