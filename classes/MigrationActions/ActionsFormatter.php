@@ -7,10 +7,21 @@
 
 namespace Voyage\MigrationActions;
 
+/**
+ * Class ActionsFormatter
+ * @package Voyage\MigrationActions
+ */
 class ActionsFormatter
 {
+    /**
+     * @var array
+     */
     private $actions = [];
 
+    /**
+     * ActionsFormatter constructor.
+     * @param array $actions
+     */
     public function __construct(array $actions)
     {
         $this->actions = $actions;
