@@ -46,6 +46,6 @@ class ActionsFormatter
             }
         }
 
-        return ($hasApplyCode ? $applyCode . PHP_EOL : '') . ($hasRollbackCode ? $rollbackCode : '');
+        return ($hasApplyCode ? $applyCode . PHP_EOL : '') . ($hasRollbackCode ? $rollbackCode . PHP_EOL : '');
     }
 }

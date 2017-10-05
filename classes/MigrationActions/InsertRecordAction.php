@@ -10,19 +10,15 @@ namespace Voyage\MigrationActions;
 use Voyage\Core\DatabaseConnection;
 use Voyage\Core\FieldData;
 use Voyage\Core\Migration;
-use Voyage\Routines\DatabaseRoutines;
 
 class InsertRecordAction extends RecordAction
 {
     public static $insertQueryTemplate = '';
-    public static $primaryKey = '';
-    public static $totalFields = 0;
-    public static $fields = [];
 
     /**
      * @var bool
      */
-    private $isNewTable = false;
+    protected $isNewTable = false;
 
     public function getApply()
     {
@@ -83,28 +79,17 @@ class InsertRecordAction extends RecordAction
         /**
          * @var FieldData $field
          * @var int $i
-         * @var int $sz
-         * @var array $fields
          */
 
         if (self::$staticDataForTable == $this->tableName) {
             return;
         }
 
-        self::$primaryKey = '';
         self::$insertQueryTemplate = 'INSERT INTO `' . $this->tableName . '` (';
-
         parent::prepareStaticData();
 
         $i = 0;
-        self::$fields = $this->getTableFields();
-        self::$totalFields = sizeof(self::$fields);
-
         foreach (self::$fields as $field) {
-            if ($field->isPrimaryKey()) {
-                self::$primaryKey = $field->name;
-            }
-
             self::$insertQueryTemplate .= $field->name;
 
             if ($i < self::$totalFields - 1) {
@@ -115,18 +100,6 @@ class InsertRecordAction extends RecordAction
         }
 
         self::$insertQueryTemplate .= ') VALUES (';
-    }
-
-    /**
-     * @return array
-     */
-    private function getTableFields()
-    {
-        $databaseRoutines = new DatabaseRoutines($this->sender);
-        $fields = $databaseRoutines->getTableFields($this->tableName);
-        unset($databaseRoutines);
-
-        return $fields;
     }
 
     /**

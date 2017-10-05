@@ -65,6 +65,11 @@ class Migration extends BaseEnvironmentSender
             // Compare data in tables
             $dataDifference = $this->dataDifference($comparisonTables);
 
+            // DEBUG PURPOSES ONLY
+            $this->removeMigrationFile();
+            exit();
+            // DEBUG PURPOSES ONLY
+
             if (!$tablesDifference && !$fieldsDifference && !$dataDifference) {
                 $this->getSender()->info('No changes have been found.');
                 $this->removeMigrationFile();

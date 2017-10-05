@@ -9,6 +9,7 @@ namespace Voyage\MigrationActions;
 
 use Voyage\Core\DatabaseConnection;
 use Voyage\Core\Migration;
+use Voyage\Routines\DatabaseRoutines;
 
 class RecordAction extends MigrationAction
 {
@@ -21,6 +22,21 @@ class RecordAction extends MigrationAction
      * @var string
      */
     protected static $staticDataForTable = '';
+
+    /**
+     * @var string
+     */
+    protected static $primaryKey = '';
+
+    /**
+     * @var int
+     */
+    protected static $totalFields = 0;
+
+    /**
+     * @var array
+     */
+    protected static $fields = [];
 
     /**
      * @var \Voyage\Core\Environment
@@ -62,8 +78,19 @@ class RecordAction extends MigrationAction
             return;
         }
 
+        self::$primaryKey = '';
         self::$staticDataForTable = $this->tableName;
         self::$replacements = $this->environment->getReplacements();
+
+        self::$fields = $this->getTableFields();
+        self::$totalFields = sizeof(self::$fields);
+
+        foreach (self::$fields as $field) {
+            if ($field->isPrimaryKey()) {
+                self::$primaryKey = $field->name;
+                break;
+            }
+        }
     }
 
     /**
@@ -104,5 +131,18 @@ class RecordAction extends MigrationAction
         }
 
         return '\'' . str_replace(["'", "\r", "\n", "\t"], ["\\'", '\\r', '\\n', '\\t'], $value) . '\'';
+    }
+
+
+    /**
+     * @return array
+     */
+    private function getTableFields()
+    {
+        $databaseRoutines = new DatabaseRoutines($this->sender);
+        $fields = $databaseRoutines->getTableFields($this->tableName);
+        unset($databaseRoutines);
+
+        return $fields;
     }
 }
