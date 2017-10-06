@@ -52,6 +52,16 @@ class DatabaseRoutines extends Routine
     }
 
     /**
+     * @param $code
+     * @param string $prefix
+     * @return mixed
+     */
+    public static function replaceTableNames($code, $prefix = '')
+    {
+        return preg_replace("/(.*)\{\{\:(.*)\:\}\}(.*)/", "$1" . $prefix . "$2$3", $code);
+    }
+
+    /**
      * @param $tableName
      * @return array
      */

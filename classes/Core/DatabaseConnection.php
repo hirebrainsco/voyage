@@ -50,6 +50,12 @@ class DatabaseConnection
         $this->connect();
     }
 
+    public function setVariables()
+    {
+        $sql = "SET SQL_MODE='ALLOW_INVALID_DATES'";
+        $this->pdo->exec($sql);
+    }
+
     /**
      * Execute SQL query.
      * @param $sql
@@ -74,6 +80,11 @@ class DatabaseConnection
     public function query($sql)
     {
         return $this->pdo->query($sql);
+    }
+
+    public function quote($str)
+    {
+        return $this->pdo->quote($str);
     }
 
     /**

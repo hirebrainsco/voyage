@@ -7,6 +7,8 @@
 
 namespace Voyage\Core;
 
+use Voyage\MigrationActions\ActionsRunner;
+use Voyage\Routines\DatabaseRoutines;
 use Voyage\Routines\DataDifference;
 use Voyage\Routines\FieldsDifference;
 use Voyage\Routines\TablesDifference;
@@ -60,15 +62,13 @@ class Migration extends BaseEnvironmentSender
             $tablesDifference = $this->tablesDifference($comparisonTables);
 
             // Compare list of fields in tables
-            $fieldsDifference = $this->fieldsDifference($comparisonTables);
+            $fieldApplyActions = [];
+            $fieldsDifference = $this->fieldsDifference($comparisonTables, $fieldApplyActions);
+
+            $this->prepareTemporaryTables($fieldApplyActions);
 
             // Compare data in tables
             $dataDifference = $this->dataDifference($comparisonTables);
-
-            // DEBUG PURPOSES ONLY
-            $this->removeMigrationFile();
-            exit();
-            // DEBUG PURPOSES ONLY
 
             if (!$tablesDifference && !$fieldsDifference && !$dataDifference) {
                 $this->getSender()->info('No changes have been found.');
@@ -106,9 +106,10 @@ class Migration extends BaseEnvironmentSender
 
     /**
      * @param array $comparisonTables
+     * @param array $fieldApplyActions
      * @return bool
      */
-    private function fieldsDifference(array $comparisonTables)
+    private function fieldsDifference(array $comparisonTables, array &$fieldApplyActions)
     {
         if (empty($comparisonTables)) {
             return false;
@@ -117,7 +118,7 @@ class Migration extends BaseEnvironmentSender
         $this->getSender()->report('Checking differences in fields.');
 
         $difference = new FieldsDifference($this->getSender(), $comparisonTables);
-        $code = $difference->getDifference();
+        $code = $difference->getDifferenceWithActions($fieldApplyActions);
         unset($difference);
 
         if (empty($code)) {
@@ -257,11 +258,27 @@ EOD;
             return;
         }
 
-        $this->getSender()->getDatabaseConnection()->exec("SET SQL_MODE='ALLOW_INVALID_DATES'");
+        $this->getSender()->getDatabaseConnection()->setVariables();
         $prefix = Configuration::getInstance()->getTempTablePrefix();
+
         foreach ($contents as $item) {
-            $item = preg_replace("/(.*)\{\{\:(.*)\:\}\}(.*)/", "$1" . $prefix . "$2$3", $item);
+            $item = DatabaseRoutines::replaceTableNames($item, $prefix);
             $this->getSender()->getDatabaseConnection()->exec($item);
         }
+    }
+
+    /**
+     * @param array $fieldApplyActions
+     */
+    private function prepareTemporaryTables(array $fieldApplyActions)
+    {
+        static $applied = false;
+        if ($applied) {
+            return;
+        }
+
+        $actionsRunner = new ActionsRunner($this->getEnvironment()->getDatabaseConnection(), $fieldApplyActions, true);
+        $actionsRunner->apply();
+        unset($actionsRunner);
     }
 }

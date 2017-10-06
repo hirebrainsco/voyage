@@ -17,9 +17,10 @@ use Voyage\MigrationActions\DropFieldAction;
 class FieldsDifference extends DifferenceRoutines
 {
     /**
+     * @param array $fieldApplyActions
      * @return string
      */
-    public function getDifference()
+    public function getDifferenceWithActions(array &$fieldApplyActions)
     {
         $code = '';
         if (!$this->hasData()) {
@@ -35,8 +36,9 @@ class FieldsDifference extends DifferenceRoutines
 
         $formatter = new ActionsFormatter($difference);
         $code .= $formatter->generate();
-        unset($difference, $formatter);
+        unset($formatter);
 
+        $fieldApplyActions = $difference;
         return $code;
     }
 

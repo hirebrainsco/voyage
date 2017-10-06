@@ -71,6 +71,7 @@ class TablesDifference extends DifferenceRoutines
         }
 
         foreach ($tables as $table) {
+            // Make sure that
             $difference[] = new DropTableAction($this->connection, $table->name);
         }
 

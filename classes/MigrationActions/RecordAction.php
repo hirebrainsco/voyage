@@ -130,6 +130,8 @@ class RecordAction extends MigrationAction
             }
         }
 
+        $value = str_replace('\\', '\\\\', $value);
+
         return '\'' . str_replace(["'", "\r", "\n", "\t"], ["\\'", '\\r', '\\n', '\\t'], $value) . '\'';
     }
 
