@@ -40,6 +40,15 @@ class FileSystemRoutines extends Routine
     }
 
     /**
+     * @param $filePath
+     * @param $content
+     */
+    public function prepend($filePath, $content)
+    {
+        @file_put_contents($filePath, $content . @file_get_contents($filePath));
+    }
+
+    /**
      * @param $path
      */
     private function removeDir($path)

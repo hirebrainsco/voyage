@@ -100,6 +100,10 @@ class Configuration
     {
         $this->checkLockFile();
 
+        if (!file_exists($this->getPathToVoyage())) {
+            return;
+        }
+
         if (!@file_put_contents($this->getLockFilePath(), time())) {
             throw new \Exception('Failed to create lock file at "' . $this->getLockFilePath() . '"');
         }

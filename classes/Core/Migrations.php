@@ -21,7 +21,7 @@ class Migrations extends BaseEnvironmentSender
     {
         $this->dropTemporaryTables();
 
-        $migrations = $this->getListOfAppliedMigrations();  // Get list of migrations that have been applied (from migrations table).
+        $migrations = $this->getAppliedMigrations();  // Get list of migrations that have been applied (from migrations table).
         if (empty($migrations)) {
             return;
         }
@@ -29,6 +29,17 @@ class Migrations extends BaseEnvironmentSender
         $this->getSender()->report('Pushing migrations for comparison.');
         $this->checkMigrationFiles($migrations);
         $this->importMigrations($migrations);
+    }
+
+    /**
+     * @return array
+     */
+    public function getLatestAppliedMigrationData()
+    {
+        $sql = 'SELECT * FROM `' . Configuration::getInstance()->getMigrationsTableName() . '` ORDER BY ts DESC LIMIT 1';
+        $row = $this->getSender()->getDatabaseConnection()->fetch($sql);
+
+        return $row;
     }
 
     /**
@@ -56,6 +67,43 @@ class Migrations extends BaseEnvironmentSender
                 $this->getSender()->fatalError('Migration "' . $migrationPath . '" cannot be found!');
             }
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getNotAppliedMigrations()
+    {
+        $applied = $this->getAppliedMigrations();
+        $all = $this->getAllMigrationFiles();
+        $notApplied = [];
+
+        foreach ($all as $filePath) {
+            $id = pathinfo($filePath, PATHINFO_FILENAME);
+            if (!isset($applied[$id])) {
+                $notApplied[] = $id;
+            }
+        }
+
+        return $notApplied;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllMigrationFiles()
+    {
+        $migrations = [];
+        $basePath = Configuration::getInstance()->getPathToMigrations() . '/';
+
+        $files = glob($basePath . '*.mgr');
+        if (!empty($files)) {
+            foreach ($files as $file) {
+                $migrations[] = $file;
+            }
+        }
+
+        return $migrations;
     }
 
     /**
@@ -93,14 +141,14 @@ class Migrations extends BaseEnvironmentSender
     /**
      * @return array
      */
-    public function getListOfAppliedMigrations()
+    public function getAppliedMigrations()
     {
         $sql = 'SELECT * FROM ' . Configuration::getInstance()->getMigrationsTableName() . ' ORDER BY ts, id';
         $stmt = $this->getSender()->getDatabaseConnection()->query($sql);
 
         $migrations = [];
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $migrations[] = $row;
+            $migrations[$row['id']] = $row;
         }
 
         return $migrations;

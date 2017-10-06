@@ -20,38 +20,21 @@ use Voyage\Core\TableData;
  */
 class MigrationRoutines extends Routine
 {
+    use MigrationMakeRoutines, MigrationStatusRoutines;
+
     /**
      * @var Migrations
      */
-    private $migrations;
+    protected $migrations;
 
     /**
      * @var DatabaseRoutines
      */
-    private $databaseRoutines;
+    protected $databaseRoutines;
 
-    public function make()
-    {
-        $this->databaseRoutines = new DatabaseRoutines($this->getSender());
-        $this->migrations = new Migrations($this->getSender());
-
-        $this->getSender()->report('Checking permissions.');
-        $this->databaseRoutines->checkPermissions(); // Check if we have sufficient rights to modify database.
-        $this->migrations->push(); // Push migrations to database (temp tables) for comparison.
-
-        // Compare and generate migration.
-        $this->compareAndGenerateMigration();
-        $this->migrations->dropTemporaryTables();
-    }
-
-    protected function compareAndGenerateMigration()
-    {
-        $migration = new Migration($this->getSender());
-        $migration->setName($this->promptMigrationName());
-        $migration->generate($this->getComparisonTables());
-        unset($migration);
-    }
-
+    /**
+     * @return array
+     */
     protected function getComparisonTables()
     {
         $result = [

@@ -11,6 +11,7 @@ use Voyage\MigrationActions\ActionsRunner;
 use Voyage\Routines\DatabaseRoutines;
 use Voyage\Routines\DataDifference;
 use Voyage\Routines\FieldsDifference;
+use Voyage\Routines\FileSystemRoutines;
 use Voyage\Routines\TablesDifference;
 
 /**
@@ -52,12 +53,11 @@ class Migration extends BaseEnvironmentSender
 
     /**
      * @param array $comparisonTables
+     * @return bool
      */
     public function generate(array $comparisonTables)
     {
         try {
-            $this->saveHeader();
-
             // Process tables to drop and create
             $tablesDifference = $this->tablesDifference($comparisonTables);
 
@@ -73,15 +73,14 @@ class Migration extends BaseEnvironmentSender
             if (!$tablesDifference && !$fieldsDifference && !$dataDifference) {
                 $this->getSender()->info('No changes have been found.');
                 $this->removeMigrationFile();
-                return;
+                return false;
             }
 
-            // Save migration to database
-            $this->recordMigration();
-            $this->getSender()->info('Migration has been created: ' . $this->getFilename());
+            return true;
         } catch (\Exception $exception) {
             $this->getSender()->fatalError($exception->getMessage());
             $this->removeMigrationFile();
+            return false;
         }
     }
 
@@ -136,13 +135,27 @@ class Migration extends BaseEnvironmentSender
      */
     public function removeMigrationFile()
     {
-        unlink($this->getFilePath());
+        if (file_exists($this->getFilePath())) {
+            unlink($this->getFilePath());
+        }
+    }
+
+    /**
+     * @return bool|string
+     */
+    public function getFileContents()
+    {
+        if (file_exists($this->getFilePath())) {
+            return file_get_contents($this->getFilePath());
+        }
+
+        return '';
     }
 
     /**
      * Record migration to database.
      */
-    private function recordMigration()
+    public function recordMigration()
     {
         $sql = 'INSERT INTO ' . Configuration::getInstance()->getMigrationsTableName() . ' SET id=:id, name =:name, ts=:ts';
         $sqlVars = [
@@ -190,7 +203,7 @@ class Migration extends BaseEnvironmentSender
     /**
      * Save header of migration file.
      */
-    private function saveHeader()
+    public function saveHeader()
     {
         $name = $this->getName();
         $id = $this->getId();
@@ -204,7 +217,15 @@ class Migration extends BaseEnvironmentSender
 
 
 EOD;
-        file_put_contents($this->getFilePath(), $header);
+
+        $fs = new FileSystemRoutines($this->getSender());
+        $fs->prepend($this->getFilePath(), $header);
+        unset($fs);
+    }
+
+    public function printSuccess()
+    {
+        $this->getSender()->info('Migration has been created: ' . $this->getFilename());
     }
 
     /**
