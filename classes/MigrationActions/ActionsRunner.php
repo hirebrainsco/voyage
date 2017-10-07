@@ -43,7 +43,9 @@ class ActionsRunner
 
     /**
      * ActionsFormatter constructor.
+     * @param DatabaseConnection $connection
      * @param array $actions
+     * @param bool $runOnTemporaryTables
      */
     public function __construct(DatabaseConnection $connection, array $actions, $runOnTemporaryTables = false)
     {

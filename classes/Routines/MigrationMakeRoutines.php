@@ -8,6 +8,7 @@
 namespace Voyage\Routines;
 
 
+use Voyage\Core\Configuration;
 use Voyage\Core\Migration;
 use Voyage\Core\Migrations;
 
@@ -26,6 +27,7 @@ trait MigrationMakeRoutines
         $this->migrations = new Migrations($this->getSender());
 
         $this->databaseRoutines->checkPermissions(); // Check if we have sufficient rights to modify database.
+        Configuration::getInstance()->lock();
         $this->migrations->push(); // Push migrations to database (temp tables) for comparison.
 
         // Compare and generate migration.

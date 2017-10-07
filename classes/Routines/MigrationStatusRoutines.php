@@ -8,8 +8,8 @@
 namespace Voyage\Routines;
 
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Voyage\Core\Configuration;
 use Voyage\Core\Migration;
-use Voyage\Core\MigrationFileParser;
 use Voyage\Core\MigrationParser;
 use Voyage\Core\Migrations;
 
@@ -26,6 +26,7 @@ trait MigrationStatusRoutines
     {
         $this->migrations = new Migrations($this->getSender());
 
+        Configuration::getInstance()->lock();
         $this->showCurrentMigrationInfo();
         $this->showNotAppliedMigrations();
         $this->showCurrentStatus();

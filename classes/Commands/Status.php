@@ -40,7 +40,6 @@ class Status extends Command implements EnvironmentControllerInterface
     {
         try {
             parent::execute($input, $output);
-            Configuration::getInstance()->lock();
 
             $this->displayAppName();
             $this->checkIntegrity($output);

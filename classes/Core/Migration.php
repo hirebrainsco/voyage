@@ -145,7 +145,7 @@ class Migration extends BaseEnvironmentSender
      */
     public function getFileContents()
     {
-        if (file_exists($this->getFilePath())) {
+        if ($this->migrationFileExists()) {
             return file_get_contents($this->getFilePath());
         }
 
@@ -153,10 +153,67 @@ class Migration extends BaseEnvironmentSender
     }
 
     /**
+     * @return bool
+     */
+    public function migrationFileExists()
+    {
+        return file_exists($this->getFilePath());
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function rollback()
+    {
+        if ($this->getId() == '') {
+            throw new \Exception('Migration\'s ID cannot be empty!');
+        }
+
+        if (!$this->migrationFileExists()) {
+            throw new \Exception('Migration\'s file doesn\'t exist at "' . $this->getFilePath() . '"');
+        }
+
+        $parser = new MigrationFileParser($this->getFilePath());
+        $queries = $parser->getRollback();
+        unset($parser);
+
+        $this->getSender()->getDatabaseConnection()->setVariables();
+
+        foreach ($queries as $query) {
+            $query = DatabaseRoutines::replaceTableNames($query);
+            $this->getSender()->getDatabaseConnection()->exec($query);
+            $this->removeMigrationFile();
+            $this->unRegisterMigration();
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function unRegisterMigration()
+    {
+        if ($this->getId() == '') {
+            throw new \Exception('Migration\'s ID cannot be empty!');
+        }
+
+        $sql = 'DELETE FROM `' . Configuration::getInstance()->getMigrationsTableName() . '` WHERE id=:id';
+        $sqlVars = [
+            ':id' => $this->getId()
+        ];
+
+        $this->getSender()->getDatabaseConnection()->exec($sql, $sqlVars);
+    }
+
+    /**
      * Record migration to database.
+     * @throws \Exception
      */
     public function recordMigration()
     {
+        if ($this->getId() == '') {
+            throw new \Exception('Migration\'s ID cannot be empty!');
+        }
+
         $sql = 'INSERT INTO ' . Configuration::getInstance()->getMigrationsTableName() . ' SET id=:id, name =:name, ts=:ts';
         $sqlVars = [
             ':id' => $this->getId(),
