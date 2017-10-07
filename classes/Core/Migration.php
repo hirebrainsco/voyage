@@ -161,9 +161,40 @@ class Migration extends BaseEnvironmentSender
     }
 
     /**
+     * @param bool $registerMigration
      * @throws \Exception
      */
-    public function rollback()
+    public function apply($registerMigration = true)
+    {
+        if ($this->getId() == '') {
+            throw new \Exception('Migration\'s ID cannot be empty!');
+        }
+
+        if (!$this->migrationFileExists()) {
+            throw new \Exception('Migration\'s file doesn\'t exist at "' . $this->getFilePath() . '"');
+        }
+
+        $parser = new MigrationFileParser($this->getFilePath());
+        $queries = $parser->getApply();
+        unset($parser);
+
+        $this->getSender()->getDatabaseConnection()->setVariables();
+
+        foreach ($queries as $query) {
+            $query = DatabaseRoutines::replaceTableNames($query);
+            $this->getSender()->getDatabaseConnection()->exec($query);
+
+            if ($registerMigration) {
+                $this->recordMigration();
+            }
+        }
+    }
+
+    /**
+     * @param bool $removeMigration
+     * @throws \Exception
+     */
+    public function rollback($removeMigration = true)
     {
         if ($this->getId() == '') {
             throw new \Exception('Migration\'s ID cannot be empty!');
@@ -182,8 +213,11 @@ class Migration extends BaseEnvironmentSender
         foreach ($queries as $query) {
             $query = DatabaseRoutines::replaceTableNames($query);
             $this->getSender()->getDatabaseConnection()->exec($query);
-            $this->removeMigrationFile();
-            $this->unRegisterMigration();
+
+            if ($removeMigration) {
+                $this->removeMigrationFile();
+                $this->unRegisterMigration();
+            }
         }
     }
 
@@ -310,7 +344,7 @@ EOD;
             return $this->id;
         }
 
-        $this->id = date('Ydm-His-');
+        $this->id = date('Ymd-His-');
         $this->id .= strtolower(str_replace('.', '_', $this->getEnvironment()->getName()));
         return $this->id;
     }

@@ -62,20 +62,16 @@ class Reset extends Command implements EnvironmentControllerInterface
          * @var array $migrationData
          */
         $sz = sizeof($appliedMigrations);
-        if ($sz == 1) {
-            $this->report('Already at the initial migration.');
-            return;
-        }
-
         foreach ($appliedMigrations as $migrationData) {
+            $migration = new Migration($this);
+            $migration->setId($migrationData['id']);
+            $migration->rollback($sz > 1);
+
             if ($sz <= 1) {
+                $migration->apply(false);
                 $this->info('Successfully reset to the first migration.');
                 break;
             }
-
-            $migration = new Migration($this);
-            $migration->setId($migrationData['id']);
-            $migration->rollback();
 
             $sz--;
         }

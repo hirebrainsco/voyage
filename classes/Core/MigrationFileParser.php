@@ -37,6 +37,47 @@ class MigrationFileParser
     }
 
     /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        if ($this->getFilePath() == '' || !file_exists($this->getFilePath())) {
+            return '';
+        }
+
+        $fileHandle = fopen($this->getFilePath(), 'r');
+        if (is_resource($fileHandle)) {
+            $buffer = fgets($fileHandle, 4096);
+            fclose($fileHandle);
+
+            $matches = [];
+            if (preg_match("/\s*\#\s+Migration Name:\s+(.*)$/", $buffer, $matches)) {
+                return $matches[1];
+            }
+        }
+
+        return '';
+    }
+
+    public function getTimestamp()
+    {
+        if ($this->getFilePath() == '' || !file_exists($this->getFilePath())) {
+            return '';
+        }
+
+        $filename = pathinfo($this->getFilePath(), PATHINFO_FILENAME);
+
+        $matches = [];
+        preg_match("/(\d{4})(\d{2})(\d{2})\-\d{4,}-\w/", $filename, $matches);
+
+        if (!empty($matches) && sizeof($matches) == 4) {
+            return strtotime($matches[1] . '-' . $matches[2] . '-' . $matches[3]);
+        }
+
+        return 0;
+    }
+
+    /**
      * MigrationFileParser constructor.
      * @param $filePath
      */
