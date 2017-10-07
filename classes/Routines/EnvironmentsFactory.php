@@ -63,7 +63,7 @@ class EnvironmentsFactory
     {
         $this->checkEnvironmentConfig();
 
-        $environmentConfig = new EnvironmentConfig(null);
+        $environmentConfig = new EnvironmentConfig();
         $environmentConfig->setFilename($this->getEnvironmentName());
         $configData = $environmentConfig->getData();
 

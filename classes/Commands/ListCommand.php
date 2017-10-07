@@ -7,7 +7,6 @@
 
 namespace Voyage\Commands;
 
-use Symfony\Component\Console\Helper\DescriptorHelper;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableStyle;
 use Symfony\Component\Console\Input\InputDefinition;

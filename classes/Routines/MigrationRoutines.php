@@ -9,7 +9,6 @@ namespace Voyage\Routines;
 
 use Symfony\Component\Console\Question\Question;
 use Voyage\Core\Configuration;
-use Voyage\Core\Migration;
 use Voyage\Core\Migrations;
 use Voyage\Core\Routine;
 use Voyage\Core\TableData;

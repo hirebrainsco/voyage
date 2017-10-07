@@ -10,7 +10,6 @@ namespace Voyage\Commands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Voyage\Core\Command;
-use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
 use Voyage\Routines\MigrationRoutines;
 

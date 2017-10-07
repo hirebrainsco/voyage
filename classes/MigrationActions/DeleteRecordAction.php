@@ -17,7 +17,7 @@ use Voyage\Core\Migration;
 class DeleteRecordAction extends InsertRecordAction
 {
     /**
-     * @return string|void
+     * @return string|bool
      */
     public function getApply()
     {
@@ -25,7 +25,7 @@ class DeleteRecordAction extends InsertRecordAction
     }
 
     /**
-     * @return string|void
+     * @return string|bool
      */
     public function getRollback()
     {

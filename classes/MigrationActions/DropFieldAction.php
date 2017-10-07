@@ -7,9 +7,6 @@
 
 namespace Voyage\MigrationActions;
 
-use Voyage\Core\DatabaseConnection;
-use Voyage\Core\FieldData;
-
 /**
  * Class DropFieldAction
  * @package Voyage\MigrationActions

@@ -7,7 +7,6 @@
 
 namespace Voyage\Platforms;
 
-use Voyage\Core\DatabaseSettings;
 use Voyage\Core\PlatformConfiguration;
 
 /**

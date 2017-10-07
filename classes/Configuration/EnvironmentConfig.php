@@ -9,6 +9,10 @@ namespace Voyage\Configuration;
 
 use Voyage\Core\Configuration;
 
+/**
+ * Class EnvironmentConfig
+ * @package Voyage\Configuration
+ */
 class EnvironmentConfig extends ConfigFile
 {
     public function createConfig()
@@ -18,6 +22,9 @@ class EnvironmentConfig extends ConfigFile
         parent::createConfig();
     }
 
+    /**
+     * @return mixed|string
+     */
     protected function getTemplate()
     {
         $template = <<<'EOD'
@@ -73,6 +80,9 @@ EOD;
         return $template;
     }
 
+    /**
+     * @return string
+     */
     public function getBasePath()
     {
         return Configuration::getInstance()->getPathToEnvironments();

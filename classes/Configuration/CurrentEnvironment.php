@@ -50,6 +50,8 @@ class CurrentEnvironment extends ConfigFile
         } catch (\Exception $e) {
             $this->getSender()->fatalError($e->getMessage());
         }
+
+        return null;
     }
 
     /**

@@ -15,7 +15,7 @@ class Application
     private $application = null;
 
     /**
-     * @return null|SymfonyApplication
+     * @return null|SymfonyApplicatio
      */
     public function getApplication()
     {

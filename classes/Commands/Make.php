@@ -11,9 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Voyage\Core\Command;
-use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
-use Voyage\Core\MigrationFileParser;
 use Voyage\Routines\MigrationRoutines;
 
 /**
