@@ -75,6 +75,10 @@ class ListCommand extends Command implements EnvironmentControllerInterface
             'ID', 'Description', 'Date', 'Current Migration'
         ]);
 
+        $tableStyle = new TableStyle();
+        $tableStyle->setCellHeaderFormat('%s');
+        $table->setStyle($tableStyle);
+
         $migrations = new Migrations($this);
         $appliedMigrations = $migrations->getAppliedMigrations();
         $notAppliedMigrations = $migrations->getNotAppliedMigrations();
