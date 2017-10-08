@@ -41,7 +41,6 @@ class Application
     {
         $this->application->setName(self::Name);
         $this->application->setVersion(self::Version);
-        $this->application->find('list')->setHidden(true);
 
         $this->application->add(new \Voyage\Commands\Init());
         $this->application->add(new \Voyage\Commands\Status());
@@ -50,6 +49,10 @@ class Application
         $this->application->add(new \Voyage\Commands\Apply());
         $this->application->add(new \Voyage\Commands\Reset());
         $this->application->add(new \Voyage\Commands\ListCommand());
+        $this->application->add(new \Voyage\Commands\DefaultCommand());
+
+        $this->application->find('default')->setHidden(true);
+        $this->application->setDefaultCommand('default');
     }
 }
 
