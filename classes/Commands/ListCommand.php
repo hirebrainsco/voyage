@@ -83,6 +83,7 @@ class ListCommand extends Command implements EnvironmentControllerInterface
         $appliedMigrations = $migrations->getAppliedMigrations();
         $notAppliedMigrations = $migrations->getNotAppliedMigrations();
 
+        // Applied migrations
         $sz = sizeof($appliedMigrations);
         $i = 0;
         foreach ($appliedMigrations as $migration) {
@@ -95,6 +96,7 @@ class ListCommand extends Command implements EnvironmentControllerInterface
             $i++;
         }
 
+        // Not applied migrations
         $migrationsPath = Configuration::getInstance()->getPathToMigrations();
         foreach ($notAppliedMigrations as $migration) {
             $parser = new MigrationFileParser($migrationsPath . '/' . $migration . '.mgr');
