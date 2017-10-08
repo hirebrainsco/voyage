@@ -57,9 +57,9 @@ class Init extends Command implements EnvironmentControllerInterface
             $this->checkIfAlreadyInitialized();
             $this->retrieveDatabaseSettings();
 
-            Configuration::getInstance()->lock();
             $this->connectToDatabase();
             $this->initEnvironment();
+            Configuration::getInstance()->lock();
             $this->performInit();
         } catch (\Exception $e) {
             $this->fatalError($e->getMessage());
