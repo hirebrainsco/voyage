@@ -12,6 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Voyage\Core\Command;
 use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
+use Voyage\Core\Migration;
+use Voyage\Core\Migrations;
 
 /**
  * Class Apply
@@ -34,14 +36,41 @@ class Apply extends Command implements EnvironmentControllerInterface
     {
         try {
             parent::execute($input, $output);
-            Configuration::getInstance()->lock();
 
             $this->displayAppName();
             $this->checkIntegrity($output);
             $this->initCurrentEnvironment();
 
+            $this->createBackup();
+            $this->apply();
         } catch (\Exception $e) {
             $this->fatalError($e->getMessage());
+        }
+    }
+
+    protected function createBackup()
+    {
+        // TODO: Create backup
+    }
+
+    protected function apply()
+    {
+        $migrations = new Migrations($this);
+        $notAppliedMigrations = $migrations->getNotAppliedMigrations();
+
+        if (empty($notAppliedMigrations)) {
+            $this->info('There\'re no not applied migrations.');
+            return;
+        }
+
+        Configuration::getInstance()->lock();
+        foreach ($notAppliedMigrations as $migrationId) {
+            $this->info($migrationId);
+            $migration = new Migration($this);
+            $migration->setId($migrationId);
+            $migration->apply();
+            $this->report('Applied successfully.');
+            $this->report('');
         }
     }
 }

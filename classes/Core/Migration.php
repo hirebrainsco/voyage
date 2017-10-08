@@ -31,6 +31,31 @@ class Migration extends BaseEnvironmentSender
     private $name = '';
 
     /**
+     * @return int
+     */
+    public function getTimestamp()
+    {
+        if ($this->timestamp <= 0) {
+            return time();
+        }
+
+        return $this->timestamp;
+    }
+
+    /**
+     * @param int $timestamp
+     */
+    public function setTimestamp($timestamp)
+    {
+        $this->timestamp = $timestamp;
+    }
+
+    /**
+     * @var int
+     */
+    private $timestamp = 0;
+
+    /**
      * @return string
      */
     public function getName()
@@ -176,25 +201,28 @@ class Migration extends BaseEnvironmentSender
 
         $parser = new MigrationFileParser($this->getFilePath());
         $queries = $parser->getApply();
-        unset($parser);
-
         $this->getSender()->getDatabaseConnection()->setVariables();
 
         foreach ($queries as $query) {
             $query = DatabaseRoutines::replaceTableNames($query);
             $this->getSender()->getDatabaseConnection()->exec($query);
-
-            if ($registerMigration) {
-                $this->recordMigration();
-            }
         }
+
+        if ($registerMigration) {
+            $this->setName($parser->getDescription());
+            $this->setTimestamp($parser->getTimestamp());
+            $this->recordMigration();
+        }
+
+        unset($parser);
     }
 
     /**
-     * @param bool $removeMigration
+     * @param bool $removeMigrationFile
+     * @param bool $unRegisterMigration
      * @throws \Exception
      */
-    public function rollback($removeMigration = true)
+    public function rollback($removeMigrationFile = true, $unRegisterMigration = true)
     {
         if ($this->getId() == '') {
             throw new \Exception('Migration\'s ID cannot be empty!');
@@ -213,11 +241,14 @@ class Migration extends BaseEnvironmentSender
         foreach ($queries as $query) {
             $query = DatabaseRoutines::replaceTableNames($query);
             $this->getSender()->getDatabaseConnection()->exec($query);
+        }
 
-            if ($removeMigration) {
-                $this->removeMigrationFile();
-                $this->unRegisterMigration();
-            }
+        if ($removeMigrationFile) {
+            $this->removeMigrationFile();
+        }
+
+        if ($unRegisterMigration) {
+            $this->unRegisterMigration();
         }
     }
 
@@ -252,7 +283,7 @@ class Migration extends BaseEnvironmentSender
         $sqlVars = [
             ':id' => $this->getId(),
             ':name' => $this->getName(),
-            ':ts' => time()
+            ':ts' => $this->getTimestamp()
         ];
 
         $this->getSender()->getDatabaseConnection()->exec($sql, $sqlVars);

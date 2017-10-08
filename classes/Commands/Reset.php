@@ -65,7 +65,7 @@ class Reset extends Command implements EnvironmentControllerInterface
         foreach ($appliedMigrations as $migrationData) {
             $migration = new Migration($this);
             $migration->setId($migrationData['id']);
-            $migration->rollback($sz > 1);
+            $migration->rollback($sz > 1, $sz > 1);
 
             if ($sz <= 1) {
                 $migration->apply(false);

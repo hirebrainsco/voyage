@@ -58,8 +58,7 @@ class ListCommand extends Command implements EnvironmentControllerInterface
             $this->checkIntegrity($output);
             $this->initCurrentEnvironment();
 
-            $this->showAppliedMigrations();
-            $this->showNotAppliedMigrations();
+            $this->showMigrationsList();
         } catch (\Exception $e) {
             $this->fatalError($e->getMessage());
         }
@@ -68,7 +67,7 @@ class ListCommand extends Command implements EnvironmentControllerInterface
     /**
      * Display a list of applied migrations.
      */
-    protected function showAppliedMigrations()
+    protected function showMigrationsList()
     {
         $this->report('<options=bold>Applied Migrations</>');
         $table = new Table($this->getOutput());
@@ -78,61 +77,36 @@ class ListCommand extends Command implements EnvironmentControllerInterface
 
         $migrations = new Migrations($this);
         $appliedMigrations = $migrations->getAppliedMigrations();
+        $notAppliedMigrations = $migrations->getNotAppliedMigrations();
 
         $sz = sizeof($appliedMigrations);
         $i = 0;
         foreach ($appliedMigrations as $migration) {
             $table->addRow([
-                $migration['id'],
+                ($i == $sz - 1 ? '<fg=green>' : '') . $migration['id'] . ($i == $sz - 1 ? '</>' : ''),
                 $migration['name'],
                 date('d M Y', $migration['ts']),
-                $i == $sz - 1 ? '<-- Current --' : ''
+                $i == $sz - 1 ? '<-- Current --' : ' '
             ]);
             $i++;
         }
 
-        $table->render();
-        unset($migrations);
-    }
+        $migrationsPath = Configuration::getInstance()->getPathToMigrations();
+        foreach ($notAppliedMigrations as $migration) {
+            $parser = new MigrationFileParser($migrationsPath . '/' . $migration . '.mgr');
+            $description = $parser->getDescription();
+            $ts = $parser->getTimestamp();
 
-    /**
-     * Display a list of not applied migrations.
-     */
-    protected function showNotAppliedMigrations()
-    {
-        $migrations = new Migrations($this);
-        $notAppliedMigrations = $migrations->getNotAppliedMigrations();
-        $table = new Table($this->getOutput());
-
-        if (!empty($notAppliedMigrations)) {
-            $this->report('');
-            $this->report('<options=bold>List of Not Applied Migrations</>');
-            $table->setHeaders([
-                'ID', 'Description', 'Date'
+            $table->addRow([
+                '<fg=cyan>' . $migration . '</>',
+                $description,
+                $ts > 0 ? date('d M Y', $ts) : '',
+                ''
             ]);
-
-            $migrationsPath = Configuration::getInstance()->getPathToMigrations();
-
-            foreach ($notAppliedMigrations as $migration) {
-                $parser = new MigrationFileParser($migrationsPath . '/' . $migration . '.mgr');
-                $description = $parser->getDescription();
-                $ts = $parser->getTimestamp();
-
-                $table->addRow([
-                    $migration,
-                    $description,
-                    $ts > 0 ? date('d M Y', $ts) : ''
-                ]);
-                unset($parser);
-            }
-
-            $tableStyle = new TableStyle();
-            $tableStyle->setCellHeaderFormat('<fg=cyan>%s</>');
-
-            $table->setStyle($tableStyle);
-            $table->render();
+            unset($parser);
         }
 
+        $table->render();
         unset($migrations);
     }
 

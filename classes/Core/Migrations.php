@@ -143,7 +143,7 @@ class Migrations extends BaseEnvironmentSender
      */
     public function getAppliedMigrations()
     {
-        $sql = 'SELECT * FROM ' . Configuration::getInstance()->getMigrationsTableName() . ' ORDER BY ts, id';
+        $sql = 'SELECT * FROM ' . Configuration::getInstance()->getMigrationsTableName() . ' ORDER BY id';
         $stmt = $this->getSender()->getDatabaseConnection()->query($sql);
 
         $migrations = [];
