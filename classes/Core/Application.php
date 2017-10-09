@@ -47,9 +47,9 @@ class Application
         $this->application->add(new \Voyage\Commands\Make());
         $this->application->add(new \Voyage\Commands\Rollback());
         $this->application->add(new \Voyage\Commands\Apply());
-        $this->application->add(new \Voyage\Commands\Reset());
         $this->application->add(new \Voyage\Commands\ListCommand());
         $this->application->add(new \Voyage\Commands\DefaultCommand());
+        $this->application->add(new \Voyage\Commands\Backup());
 
         $this->application->find('default')->setHidden(true);
         $this->application->setDefaultCommand('default');

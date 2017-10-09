@@ -84,6 +84,7 @@ class FileSystemRoutines extends Routine
         }
 
         @mkdir($this->getConfiguration()->getPathToEnvironments());
+        @mkdir($this->getConfiguration()->getPathToBackups());
         @mkdir($this->getConfiguration()->getPathToMigrations());
     }
 

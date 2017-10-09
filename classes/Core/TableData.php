@@ -16,9 +16,14 @@ class TableData
      * TableData constructor.
      * @param $name
      * @param bool $ignoreData
+     * @throws \Exception
      */
     public function __construct($name, $ignoreData)
     {
+        if (empty($name)) {
+            throw new \Exception('Table name cannot be empty!');
+        }
+
         $this->name = $name;
         $this->ignoreData = $ignoreData;
     }

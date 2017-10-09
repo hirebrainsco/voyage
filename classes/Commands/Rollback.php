@@ -78,6 +78,10 @@ class Rollback extends Command implements EnvironmentControllerInterface
         }
     }
 
+    /**
+     * @return array
+     * @throws \Exception
+     */
     protected function getMigrationsList()
     {
         $migrations = new Migrations($this);

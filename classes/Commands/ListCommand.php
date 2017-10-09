@@ -69,7 +69,8 @@ class ListCommand extends Command implements EnvironmentControllerInterface
      */
     protected function showMigrationsList()
     {
-        $this->report('<options=bold>Applied Migrations</>');
+        $totalItems = 0;
+
         $table = new Table($this->getOutput());
         $table->setHeaders([
             'ID', 'Description', 'Date', 'Current Migration'
@@ -87,6 +88,7 @@ class ListCommand extends Command implements EnvironmentControllerInterface
         $sz = sizeof($appliedMigrations);
         $i = 0;
         foreach ($appliedMigrations as $migration) {
+            $totalItems++;
             $table->addRow([
                 ($i == $sz - 1 ? '<fg=green>' : '') . $migration['id'] . ($i == $sz - 1 ? '</>' : ''),
                 $migration['name'],
@@ -99,6 +101,7 @@ class ListCommand extends Command implements EnvironmentControllerInterface
         // Not applied migrations
         $migrationsPath = Configuration::getInstance()->getPathToMigrations();
         foreach ($notAppliedMigrations as $migration) {
+            $totalItems++;
             $parser = new MigrationFileParser($migrationsPath . '/' . $migration . '.mgr');
             $description = $parser->getDescription();
             $ts = $parser->getTimestamp();
@@ -112,7 +115,12 @@ class ListCommand extends Command implements EnvironmentControllerInterface
             unset($parser);
         }
 
-        $table->render();
+        if ($totalItems > 0) {
+            $this->report('<options=bold>Applied Migrations</>');
+            $table->render();
+        } else {
+            $this->report('There\'re no applied migrations. Run "voyage make" to create a first migration.');
+        }
         unset($migrations);
     }
 

@@ -163,6 +163,14 @@ class Configuration
     /**
      * @return string
      */
+    public function getPathToBackups()
+    {
+        return $this->getPathToVoyage() . '/backups';
+    }
+
+    /**
+     * @return string
+     */
     public function getPathToMigrations()
     {
         return $this->getPathToVoyage() . '/migrations';
