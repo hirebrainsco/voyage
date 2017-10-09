@@ -10,7 +10,7 @@ namespace Voyage\Routines;
 use Voyage\Core\Configuration;
 use Voyage\Core\Routine;
 
-class BackupRoutines extends Routine
+class BackupRestoreRoutines extends Routine
 {
     /**
      * @param string $filename

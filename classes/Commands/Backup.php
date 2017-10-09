@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Voyage\Core\Command;
 use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
-use Voyage\Routines\BackupRoutines;
+use Voyage\Routines\BackupRestoreRoutines;
 
 class Backup extends Command implements EnvironmentControllerInterface
 {
@@ -54,7 +54,7 @@ class Backup extends Command implements EnvironmentControllerInterface
     protected function showList()
     {
 
-        $backupRoutines = new BackupRoutines($this);
+        $backupRoutines = new BackupRestoreRoutines($this);
         $list = $backupRoutines->getAllBackups();
 
         $backupsPath = Configuration::getInstance()->getPathToBackups();
@@ -106,7 +106,7 @@ class Backup extends Command implements EnvironmentControllerInterface
      */
     protected function createBackup()
     {
-        $backup = new BackupRoutines($this);
+        $backup = new BackupRestoreRoutines($this);
         $exportFilePath = $backup->backup();
         unset($backup);
 
