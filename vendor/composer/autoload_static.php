@@ -16,6 +16,7 @@ class ComposerStaticInit60aa350d05e553a1a6ea1afac0c88d83
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Debug\\' => 24,
             'Symfony\\Component\\Console\\' => 26,
+            'Secondtruth\\Compiler\\' => 21,
         ),
         'P' => 
         array (
@@ -36,6 +37,10 @@ class ComposerStaticInit60aa350d05e553a1a6ea1afac0c88d83
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
         ),
+        'Secondtruth\\Compiler\\' =>
+            array(
+                0 => __DIR__ . '/..' . '/secondtruth/phar-compiler/lib',
+            ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',

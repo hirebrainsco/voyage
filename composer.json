@@ -1,5 +1,6 @@
 {
     "require": {
-        "symfony/console": "^3.3"
+      "symfony/console": "^3.3",
+      "secondtruth/phar-compiler": "^1.1"
     }
 }

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8961d40db86b84f7447cb9fff79b1c94",
-    "content-hash": "bfc279199effc35de421f550f558ec32",
+    "hash": "19bf02c98cf361a96cd4faef5ed191a3",
+    "content-hash": "e3fd1507e27133fda00662ad93bb79e6",
     "packages": [
         {
             "name": "psr/log",
@@ -53,6 +53,53 @@
                 "psr-3"
             ],
             "time": "2016-10-10 12:19:37"
+        },
+        {
+            "name": "secondtruth/phar-compiler",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/secondtruth/php-phar-compiler.git",
+                "reference": "f18ef1072a02fe65ed7dba7345b77b170bffcf42"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/secondtruth/php-phar-compiler/zipball/f18ef1072a02fe65ed7dba7345b77b170bffcf42",
+                "reference": "f18ef1072a02fe65ed7dba7345b77b170bffcf42",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.5.*",
+                "scrutinizer/ocular": "~1.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Secondtruth\\Compiler\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "ISC"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Neff",
+                    "email": "christian.neff@gmail.com",
+                    "homepage": "http://www.secondtruth.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Generic PHP PHAR compiler",
+            "homepage": "http://www.secondtruth.de",
+            "keywords": [
+                "compiler",
+                "phar"
+            ],
+            "time": "2015-07-27 15:52:10"
         },
         {
             "name": "symfony/console",
