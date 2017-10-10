@@ -66,7 +66,7 @@ class Backup extends Command implements EnvironmentControllerInterface
         }
 
         $table = new Table($this->getOutput());
-        $table->setHeaders(['#', 'Name', 'Date']);
+        $table->setHeaders(['#', 'ID', 'Date']);
         $tableStyle = new TableStyle();
         $tableStyle->setCellHeaderFormat('%s');
         $table->setStyle($tableStyle);

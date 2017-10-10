@@ -7,7 +7,6 @@
 
 namespace Voyage\Routines;
 
-use Symfony\Component\Console\Helper\Table;
 use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
 use Voyage\Core\Migration;
@@ -65,7 +64,7 @@ class Backup
     public function create()
     {
         if ($this->getExportFilePath() == '') {
-            throw new \Exception('Backup file name cannot be empty!');
+            throw new \Exception('Backup filename cannot be empty!');
         }
 
         $tables = $this->getTables();

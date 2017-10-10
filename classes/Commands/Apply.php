@@ -41,16 +41,10 @@ class Apply extends Command implements EnvironmentControllerInterface
             $this->checkIntegrity($output);
             $this->initCurrentEnvironment();
 
-            $this->createBackup();
             $this->apply();
         } catch (\Exception $e) {
             $this->fatalError($e->getMessage());
         }
-    }
-
-    protected function createBackup()
-    {
-        // TODO: Create backup
     }
 
     protected function apply()

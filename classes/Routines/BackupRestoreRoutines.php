@@ -32,22 +32,26 @@ class BackupRestoreRoutines extends Routine
     }
 
     /**
-     * @param string $filename
+     * @param string $filePath
      * @throws \Exception
      */
-    public function restore($filename = '')
+    public function restore($filePath = '')
     {
-        if (empty($filename)) {
-            $filename = $this->getLatestBackupFilename();
-            if (empty($filename)) {
+        if (empty($filePath)) {
+            $filePath = $this->getLatestBackupFilename();
+            if (empty($filePath)) {
                 throw new \Exception('There\'re no backups have been taken yet.');
             }
         }
 
-        $filePath = Configuration::getInstance()->getPathToBackups() . '/' . $filename;
         if (!file_exists($filePath)) {
             throw new \Exception('Backup file doesn\'t exist at "' . $filePath . '"');
         }
+
+        $this->getSender()->info('Restoring from "' . $filePath . '"');
+        $restore = new Restore($this->getSender(), $filePath);
+        $restore->restore();
+        unset($restore);
     }
 
     /**
@@ -55,7 +59,7 @@ class BackupRestoreRoutines extends Routine
      */
     protected function generateBackupFilename()
     {
-        $filename = date('Ymd-His') . '-backup.sql';
+        $filename = date('Ymd-His') . '-' . $this->getSender()->getEnvironment()->getName() . '-backup.sql';
         return $filename;
     }
 

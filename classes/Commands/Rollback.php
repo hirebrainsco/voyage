@@ -44,16 +44,10 @@ class Rollback extends Command implements EnvironmentControllerInterface
             $this->checkIntegrity($output);
             $this->initCurrentEnvironment();
 
-            $this->createBackup();
             $this->rollback();
         } catch (\Exception $e) {
             $this->fatalError($e->getMessage());
         }
-    }
-
-    protected function createBackup()
-    {
-        // TODO: Create backup here
     }
 
     protected function rollback()

@@ -9,6 +9,7 @@ namespace Voyage\MigrationActions;
 
 use Voyage\Core\DatabaseConnection;
 use Voyage\Core\Migration;
+use Voyage\Core\Replacements;
 use Voyage\Routines\DatabaseRoutines;
 
 class RecordAction extends MigrationAction
@@ -97,44 +98,10 @@ class RecordAction extends MigrationAction
      * @param string $value
      * @return string
      */
-    protected function prepareValue($value)
+    public function prepareValue($value)
     {
-        if (!is_string($value)) {
-            if (!$value) {
-                return 'NULL';
-            }
-            return $value;
-        }
-
-        if (empty($value)) {
-            return '\'\'';
-        }
-
-        if (!empty(self::$replacements)) {
-            $serializedData = @unserialize($value);
-            if (false !== $serializedData) {
-                $replacements = self::$replacements;
-                array_walk_recursive($serializedData, function (&$item, $key) use ($replacements) {
-                    if (is_string($item)) {
-                        foreach ($replacements as $replacement) {
-                            $item = str_replace($replacement[1], $replacement[0], $item);
-                        }
-                    }
-                });
-
-                $value = serialize($serializedData);
-            } else {
-                foreach (self::$replacements as $replacement) {
-                    $value = str_replace($replacement[1], $replacement[0], $value);
-                }
-            }
-        }
-
-        $value = str_replace('\\', '\\\\', $value);
-
-        return '\'' . str_replace(["'", "\r", "\n", "\t"], ["\\'", '\\r', '\\n', '\\t'], $value) . '\'';
+        return Replacements::prepareValue($value, self::$replacements);
     }
-
 
     /**
      * @return array
