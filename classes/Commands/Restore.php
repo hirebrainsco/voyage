@@ -59,7 +59,7 @@ class Restore extends Command implements EnvironmentControllerInterface
         }
 
         $backup = new BackupRestoreRoutines($this);
-        $result = $backup->restore($backupId);
+        $backup->restore($backupId);
         unset($backup);
 
         $this->report('Backup has been successfully restored.');

@@ -147,7 +147,7 @@ class Replacements
      */
     private function replaceUpdate($code)
     {
-        if (false === stripos($code, 'UPDATE ')) {
+        if (false === ($pos = stripos($code, 'UPDATE ')) || $pos > 0) {
             return $code;
         }
 
@@ -213,7 +213,10 @@ class Replacements
             }
 
             if ($chr == "'" && $startedWithQuote || !$startedWithQuote && $chr == ',') {
-                if ($chr == "," || $chr == "'" && $values[$i - 1] == "'" && $startedIndex == $i - 1 || $chr == "'" && $values[$i - 1] != "\\" && $values[$i - 1] != "'" && $i != $sz - 1 && $values[$i + 1] != "'") {
+                $prevChar = $values[$i - 1];
+                $nextChar = $i < $sz - 1 ? $values[$i + 1] : '';
+
+                if ($chr == "," || $chr == "'" && $prevChar == "'" && $startedIndex == $i - 1 || $chr == "'" && $prevChar != "\\" && $prevChar != "'" && $nextChar != "'") {
                     $valueStarted = false;
                     $result[] = $item;
                     $item = '';

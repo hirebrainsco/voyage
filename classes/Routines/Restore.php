@@ -8,6 +8,7 @@
 namespace Voyage\Routines;
 
 use Voyage\Core\EnvironmentControllerInterface;
+use Voyage\Core\Replacements;
 
 class Restore
 {
@@ -58,6 +59,8 @@ class Restore
         }
 
         $queryCode = '';
+        $contents = [];
+
         while (($line = fgets($fileHandle)) !== false) {
             $line = trim($line);
             if (empty($line)) {
@@ -77,10 +80,12 @@ class Restore
             }
         }
 
+        $this->environmentController->getDatabaseConnection()->setVariables();
+        $replacements = new Replacements($this->environmentController->getEnvironment()->getReplacements());
+
         foreach ($contents as $item) {
-            if (stripos($item, 'siteurl') !== false) {
-                echo $item . PHP_EOL;
-            }
+            $item = $replacements->replace($item);
+            $this->environmentController->getDatabaseConnection()->exec($item);
         }
         fclose($fileHandle);
     }
