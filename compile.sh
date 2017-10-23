@@ -1,10 +1,11 @@
 #!/bin/bash
 
 echo "Compiling to PHAR..."
-php -f ./compile.php
+rm -f ./bin/voyage
+php box.phar build
 
 echo "Renaming and setting executable permissions."
-mv ./bin/voyage.phar ./bin/voyage
+mv ./voyage.phar ./bin/voyage
 chmod +x ./bin/voyage
 
 echo "Done."

@@ -1,0 +1,14 @@
+{
+  "files": ["./voyage"],
+  "directories": ["./classes/", "./lib/", "./vendor/"],
+  "main": "./voyage",
+  "output": "voyage.phar",
+  "stub": true,
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": ["Tests"],
+      "in": "vendor"
+    }
+  ]
+}
