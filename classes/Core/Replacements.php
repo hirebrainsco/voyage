@@ -28,7 +28,7 @@ class Replacements
     }
 
     /**
-     * @param $code
+     * @param string $code
      * @return string
      */
     public function replace($code)
@@ -39,12 +39,13 @@ class Replacements
 
         $code = $this->replaceInsert($code);
         $code = $this->replaceUpdate($code);
+        $code = $this->replaceDelete($code);
 
         return $code;
     }
 
     /**
-     * @param $code
+     * @param string $code
      * @return string
      */
     private function replaceInsert($code)
@@ -179,6 +180,41 @@ class Replacements
     }
 
     /**
+     * @param $code
+     * @return string
+     */
+    private function replaceDelete($code)
+    {
+        if (false === ($pos = stripos($code, 'DELETE ')) || $pos > 0) {
+            return $code;
+        }
+
+        $matches = [];
+        if (!preg_match("/DELETE FROM(.*)WHERE(.*)/i", $code, $matches) || empty($matches[2])) {
+            return $code;
+        }
+
+        $values = $this->parseDeleteValues($matches[2]);
+        if (empty($values)) {
+            return $code;
+        }
+
+        $code = 'DELETE FROM ' . $matches[1] . ' WHERE ';
+
+        $sz = sizeof($values);
+        $i = 0;
+        foreach ($values as $key => $value) {
+            $code .= $key . '=' . self::prepareValue($value, $this->replacements, false);
+            if ($i < $sz - 1) {
+                $code .= ' AND ';
+            }
+            $i++;
+        }
+
+        return $code;
+    }
+
+    /**
      * @param $values
      * @return array
      */
@@ -276,7 +312,73 @@ class Replacements
 
             if ($valueStarted) {
                 if ($chr == "'" && $startedWithQuote) {
-                    if ($values[$i + 1] != '\'' && $values[$i - 1] != '\'' && $values[$i - 1] != '\\') {
+                    if ($i == $sz - 1 || $values[$i + 1] != '\'' && $values[$i - 1] != '\'' && $values[$i - 1] != '\\') {
+                        $key = trim($key);
+                        $valueStarted = false;
+                        $assignOperator = false;
+                        $result[$key] = $value;
+                        $value = '';
+                        $key = '';
+                        continue;
+                    }
+                }
+
+                $value .= $chr;
+            }
+        }
+
+        if (!empty($value)) {
+            $key = trim($key);
+            $result[$key] = $value;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $values
+     * @return array
+     */
+    private function parseDeleteValues($values)
+    {
+        $values = str_ireplace(' AND', ',', $values);
+        $sz = strlen($values);
+        $result = [];
+
+        $key = '';
+        $value = '';
+        $valueStarted = false;
+        $startedWithQuote = false;
+        $assignOperator = false;
+
+        for ($i = 0; $i < $sz; $i++) {
+            $chr = $values[$i];
+
+            if (!$valueStarted) {
+                if ($chr == '=') {
+                    $assignOperator = true;
+                    continue;
+                }
+
+                if ($assignOperator) {
+                    if ($chr == '\'') {
+                        $valueStarted = true;
+                        $startedWithQuote = true;
+                        continue;
+                    } else if ($chr != ' ' && $chr != "\t") {
+                        $valueStarted = true;
+                        $startedWithQuote = false;
+                    } else {
+                        continue;
+                    }
+                } else if ($chr != ',') {
+                    $key .= $chr;
+                }
+            }
+
+            if ($valueStarted) {
+                if ($chr == "'" && $startedWithQuote) {
+                    if ($i == $sz - 1 || $values[$i + 1] != '\'' && $values[$i - 1] != '\'' && $values[$i - 1] != '\\') {
                         $key = trim($key);
                         $valueStarted = false;
                         $assignOperator = false;

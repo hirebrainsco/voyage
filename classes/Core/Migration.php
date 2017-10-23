@@ -242,10 +242,14 @@ class Migration extends BaseEnvironmentSender
 
         $this->getSender()->getDatabaseConnection()->setVariables();
 
+        $replacementsApplier = new Replacements($this->getSender()->getEnvironment()->getReplacements());
         foreach ($queries as $query) {
             $query = DatabaseRoutines::replaceTableNames($query);
-            $this->getSender()->getDatabaseConnection()->exec($query);
+            $query = $replacementsApplier->replace($query, false);
+            $this->getSender()->getDatabaseConnection()->query($query);
         }
+
+        unset($replacementsApplier);
 
         if ($removeMigrationFile) {
             $this->removeMigrationFile();
