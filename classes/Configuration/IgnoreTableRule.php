@@ -10,10 +10,10 @@ namespace Voyage\Configuration;
 use Voyage\Routines\StringUtils;
 
 /**
- * Class IgnoreItem
+ * Class IgnoreTableRule
  * @package Voyage\Configuration
  */
-class IgnoreRule
+class IgnoreTableRule
 {
     /**
      * @var string

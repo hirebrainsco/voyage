@@ -95,7 +95,7 @@ class Ignore extends ConfigFile
                 continue;
             }
 
-            $ignoreList[] = new IgnoreRule($rule);
+            $ignoreList[] = new IgnoreTableRule($rule);
         }
 
         return $ignoreList;
