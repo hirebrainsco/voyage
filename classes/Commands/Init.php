@@ -71,20 +71,24 @@ class Init extends Command implements EnvironmentControllerInterface
 
     private function initEnvironment()
     {
-        $helper = $this->getHelper('question');
-        $question = new Question('Environment name (for example: development): ');
-        $question->setValidator(function ($answer) {
-            $answer = str_replace(['/', '\\', '..', '~', '@', '!', '|', '$', '<', '>'], '', trim($answer));
-            if (empty($answer)) {
-                throw new \RuntimeException('Environment name cannot be empty.');
-            }
+        $environmentName = trim($this->getInput()->getOption('env'));
 
-            return $answer;
-        });
-
-        $environmentName = trim($helper->ask($this->getInput(), $this->getOutput(), $question));
         if (empty($environmentName)) {
-            $this->fatalError('Environment name is empty!');
+            $helper = $this->getHelper('question');
+            $question = new Question('Environment name (for example: development): ');
+            $question->setValidator(function ($answer) {
+                $answer = str_replace(['/', '\\', '..', '~', '@', '!', '|', '$', '<', '>'], '', trim($answer));
+                if (empty($answer)) {
+                    throw new \RuntimeException('Environment name cannot be empty.');
+                }
+
+                return $answer;
+            });
+
+            $environmentName = trim($helper->ask($this->getInput(), $this->getOutput(), $question));
+            if (empty($environmentName)) {
+                $this->fatalError('Environment name is empty!');
+            }
         }
 
         $this->getEnvironment()->setName($environmentName);
@@ -183,5 +187,6 @@ class Init extends Command implements EnvironmentControllerInterface
         $this->addOption('user', 'u', InputOption::VALUE_REQUIRED, 'Database username');
         $this->addOption('pass', 'p', InputOption::VALUE_REQUIRED, 'Database password');
         $this->addOption('db', 'd', InputOption::VALUE_REQUIRED, 'Database name');
+        $this->addOption('env', '', InputOption::VALUE_REQUIRED, 'Environment name');
     }
 }
