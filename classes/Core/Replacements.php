@@ -153,7 +153,7 @@ class Replacements
         }
 
         $matches = [];
-        if (!preg_match("/UPDATE(.*)SET(.*)WHERE(.*)/i", $code, $matches) || empty($matches[2])) {
+        if (!preg_match("/UPDATE (.*) SET (.*) WHERE (.*)/i", $code, $matches) || empty($matches[2])) {
             return $code;
         }
 
@@ -220,6 +220,7 @@ class Replacements
      */
     private function parseInsertValues($values)
     {
+        $values = trim($values);
         $sz = strlen($values);
         $result = [];
 
@@ -279,7 +280,9 @@ class Replacements
         $values = trim($values);
         $sz = strlen($values);
         $result = [];
-
+        echo '-----------------------------' . PHP_EOL;
+        print_r($values);
+        echo PHP_EOL . '-----------------------------' . PHP_EOL;
         $key = '';
         $value = '';
         $valueStarted = false;
