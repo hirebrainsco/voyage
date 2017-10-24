@@ -78,7 +78,7 @@ class Ignore extends ConfigFile
     /**
      * @return array
      */
-    public function getTablesToIgnore()
+    public function getIgnoreList()
     {
         static $ignoreList = null;
         if (is_array($ignoreList)) {
@@ -113,7 +113,7 @@ class Ignore extends ConfigFile
         }
 
         $ignore = new Ignore();
-        $ignoreList = $ignore->getTablesToIgnore();
+        $ignoreList = $ignore->getIgnoreList();
         $result = Ignore::DontIgnore;
 
         if (!empty($ignoreList)) {
