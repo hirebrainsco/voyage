@@ -276,6 +276,7 @@ class Replacements
      */
     private function parseUpdateValues($values)
     {
+        $values = trim($values);
         $sz = strlen($values);
         $result = [];
 
@@ -287,7 +288,6 @@ class Replacements
 
         for ($i = 0; $i < $sz; $i++) {
             $chr = $values[$i];
-
             if (!$valueStarted) {
                 if ($chr == '=') {
                     $assignOperator = true;
