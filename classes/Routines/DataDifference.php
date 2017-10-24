@@ -7,6 +7,7 @@
 
 namespace Voyage\Routines;
 
+use Voyage\Configuration\Ignore;
 use Voyage\Core\EnvironmentControllerInterface;
 use Voyage\Core\Migration;
 use Voyage\MigrationActions\ActionsFormatter;
@@ -60,9 +61,22 @@ class DataDifference extends DifferenceRoutines
                 continue;
             }
 
+
+            $ignore = new Ignore();
+            $ignore->setSender($this->environmentController);
+            $ignoreList = $ignore->getIgnoreList();
+            unset($ignore);
+
+            $dataIgnoreList = [];
+            if (!empty($ignoreList) && isset($ignoreList['data']) && isset($ignoreList['data'][$table->name])) {
+                $dataIgnoreList = $ignoreList['data'][$table->name];
+            }
+
+            unset($ignoreList);
+
             if (!isset($this->comparisonTables['old'][$table->name])) {
                 // Generate inserts for a new table
-                $recordsCount += $this->generateInsertsForNewTables($table);
+                $recordsCount += $this->generateInsertsForNewTables($table, $dataIgnoreList);
             } else {
                 // Process existing tables
                 // Prepare for detection of changes in data
@@ -74,12 +88,12 @@ class DataDifference extends DifferenceRoutines
 
                 if (false === $primaryKey) {
                     // No primary key
-                    $recordsCount += $this->generateChangesWithoutPrimaryKey($table, $fields);
+                    $recordsCount += $this->generateChangesWithoutPrimaryKey($table, $fields, $dataIgnoreList);
                 } else {
                     // Primary key exists
-                    $recordsCount += $this->generateInserts($table, $fields, $primaryKey);
-                    $recordsCount += $this->generateUpdates($table, $fields, $primaryKey);
-                    $recordsCount += $this->generateDeletes($table, $fields, $primaryKey);
+                    $recordsCount += $this->generateInserts($table, $fields, $primaryKey, $dataIgnoreList);
+                    $recordsCount += $this->generateUpdates($table, $fields, $primaryKey, $dataIgnoreList);
+                    $recordsCount += $this->generateDeletes($table, $fields, $primaryKey, $dataIgnoreList);
                 }
 
             }

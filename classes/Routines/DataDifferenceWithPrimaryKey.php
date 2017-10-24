@@ -20,9 +20,10 @@ trait DataDifferenceWithPrimaryKey
      * @param TableData $currentTable
      * @param array $fields
      * @param $primaryKey
+     * @param array $ignoreList
      * @return int
      */
-    protected function generateInserts(TableData $currentTable, array $fields, $primaryKey)
+    protected function generateInserts(TableData $currentTable, array $fields, $primaryKey, array $ignoreList)
     {
         $buffer = [];
         $totalRecords = $bufferedRecords = 0;
@@ -32,6 +33,23 @@ trait DataDifferenceWithPrimaryKey
         $stmt = $this->connection->query($sql);
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if (!empty($ignoreList)) {
+                /**
+                 * @var IgnoreDataValueRule $ignoreRule
+                 */
+                $shouldIgnore = false;
+                foreach ($ignoreList as $ignoreRule) {
+                    if ($ignoreRule->shouldIgnore($row)) {
+                        $shouldIgnore = true;
+                        break;
+                    }
+                }
+
+                if ($shouldIgnore) {
+                    continue;
+                }
+            }
+
             $totalRecords++;
             $bufferedRecords++;
 
@@ -58,9 +76,10 @@ trait DataDifferenceWithPrimaryKey
      * @param TableData $currentTable
      * @param array $fields
      * @param $primaryKey
+     * @param array $ignoreList
      * @return int
      */
-    protected function generateDeletes(TableData $currentTable, array $fields, $primaryKey)
+    protected function generateDeletes(TableData $currentTable, array $fields, $primaryKey, array $ignoreList)
     {
         $buffer = [];
         $totalRecords = $bufferedRecords = 0;
@@ -70,6 +89,23 @@ trait DataDifferenceWithPrimaryKey
         $stmt = $this->connection->query($sql);
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if (!empty($ignoreList)) {
+                /**
+                 * @var IgnoreDataValueRule $ignoreRule
+                 */
+                $shouldIgnore = false;
+                foreach ($ignoreList as $ignoreRule) {
+                    if ($ignoreRule->shouldIgnore($row)) {
+                        $shouldIgnore = true;
+                        break;
+                    }
+                }
+
+                if ($shouldIgnore) {
+                    continue;
+                }
+            }
+
             $totalRecords++;
             $bufferedRecords++;
 
@@ -96,9 +132,10 @@ trait DataDifferenceWithPrimaryKey
      * @param TableData $table
      * @param array $fields
      * @param $primaryKey
+     * @param array $ignoreList
      * @return int
      */
-    protected function generateUpdates(TableData $table, array $fields, $primaryKey)
+    protected function generateUpdates(TableData $table, array $fields, $primaryKey, array $ignoreList)
     {
         $buffer = [];
         $totalRecords = $bufferedRecords = 0;
@@ -113,6 +150,23 @@ trait DataDifferenceWithPrimaryKey
         $stmt = $this->connection->query($sql);
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if (!empty($ignoreList)) {
+                /**
+                 * @var IgnoreDataValueRule $ignoreRule
+                 */
+                $shouldIgnore = false;
+                foreach ($ignoreList as $ignoreRule) {
+                    if ($ignoreRule->shouldIgnore($row)) {
+                        $shouldIgnore = true;
+                        break;
+                    }
+                }
+
+                if ($shouldIgnore) {
+                    continue;
+                }
+            }
+
             $bufferedRecords++;
 
             $oldRecsSql = 'SELECT * FROM `' . $oldTableName . '` WHERE `' . $primaryKey . '`=\'' . $row[$primaryKey] . '\'';
@@ -149,9 +203,10 @@ trait DataDifferenceWithPrimaryKey
 
     /**
      * @param TableData $table
+     * @param array $ignoreList
      * @return int
      */
-    protected function generateInsertsForNewTables(TableData $table)
+    protected function generateInsertsForNewTables(TableData $table, array $ignoreList)
     {
         $buffer = [];
         $totalRecords = $bufferedRecords = 0;
@@ -160,6 +215,23 @@ trait DataDifferenceWithPrimaryKey
         $stmt = $this->connection->query($sql);
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if (!empty($ignoreList)) {
+                /**
+                 * @var IgnoreDataValueRule $ignoreRule
+                 */
+                $shouldIgnore = false;
+                foreach ($ignoreList as $ignoreRule) {
+                    if ($ignoreRule->shouldIgnore($row)) {
+                        $shouldIgnore = true;
+                        break;
+                    }
+                }
+
+                if ($shouldIgnore) {
+                    continue;
+                }
+            }
+
             $totalRecords++;
             $bufferedRecords++;
 

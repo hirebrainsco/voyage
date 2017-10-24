@@ -95,7 +95,24 @@ class Ignore extends ConfigFile
                 continue;
             }
 
-            $ignoreList[] = new IgnoreTableRule($rule);
+            if (strpos($rule, '=') !== false) {
+                if (!isset($ignoreList['data'])) {
+                    $ignoreList['data'] = [];
+                }
+
+                $rule = new IgnoreDataValueRule($rule);
+
+                if (!isset($ignoreList['data'][$rule->getTableName()])) {
+                    $ignoreList['data'][$rule->getTableName()] = [];
+                }
+
+                $ignoreList['data'][$rule->getTableName()][] = $rule;
+            } else {
+                if (!isset($ignoreList['tables'])) {
+                    $ignoreList['tables'] = [];
+                }
+                $ignoreList['tables'][] = new IgnoreTableRule($rule);
+            }
         }
 
         return $ignoreList;
@@ -116,8 +133,8 @@ class Ignore extends ConfigFile
         $ignoreList = $ignore->getIgnoreList();
         $result = Ignore::DontIgnore;
 
-        if (!empty($ignoreList)) {
-            foreach ($ignoreList as $item) {
+        if (!empty($ignoreList) && isset($ignoreList['tables']) && !empty($ignoreList['tables'])) {
+            foreach ($ignoreList['tables'] as $item) {
                 if ($item->shouldIgnore($tableName)) {
                     $result = $item->isIgnoreFully() ? Ignore::IgnoreFully : Ignore::IgnoreDataOnly;
                     break;

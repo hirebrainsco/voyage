@@ -7,6 +7,8 @@
 
 namespace Voyage\Routines;
 
+use Voyage\Configuration\Ignore;
+use Voyage\Configuration\IgnoreDataValueRule;
 use Voyage\MigrationActions\DeleteRecordAction;
 use Voyage\MigrationActions\InsertRecordAction;
 use Voyage\Core\Configuration;
@@ -18,9 +20,10 @@ trait DataDifferenceWithoutPrimaryKey
     /**
      * @param TableData $currentTable
      * @param array $fields
+     * @param array $ignoreList
      * @return int
      */
-    protected function generateChangesWithoutPrimaryKey(TableData $currentTable, array $fields)
+    protected function generateChangesWithoutPrimaryKey(TableData $currentTable, array $fields, array $ignoreList)
     {
         $buffer = [];
         $totalRecords = $bufferedRecords = 0;
@@ -31,6 +34,23 @@ trait DataDifferenceWithoutPrimaryKey
         $stmt = $this->connection->query($sql);
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if (!empty($ignoreList)) {
+                /**
+                 * @var IgnoreDataValueRule $ignoreRule
+                 */
+                $shouldIgnore = false;
+                foreach ($ignoreList as $ignoreRule) {
+                    if ($ignoreRule->shouldIgnore($row)) {
+                        $shouldIgnore = true;
+                        break;
+                    }
+                }
+
+                if ($shouldIgnore) {
+                    continue;
+                }
+            }
+
             $totalRecords++;
             $bufferedRecords++;
             $action = $row['___action'];
