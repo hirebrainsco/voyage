@@ -10,7 +10,7 @@ namespace Voyage\Core;
 class Application
 {
     const Name = 'Voyage (Database Migration Tool)';
-    const Version = 'beta-1.0.2';
+    const Version = 'beta-1.0.3';
 
     private $application = null;
 
