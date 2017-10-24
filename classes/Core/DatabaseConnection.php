@@ -104,7 +104,7 @@ class DatabaseConnection
     {
         $this->pdo = new \PDO($this->getDsn(), $this->settings->getUsername(), $this->settings->getPassword());
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $this->pdo->query('USE ' . $this->settings->getDatabaseName());
+        $this->pdo->query('USE `' . $this->settings->getDatabaseName() . '`');
 
         $this->connected = true;
     }
