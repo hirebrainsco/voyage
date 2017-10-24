@@ -38,7 +38,7 @@ class CurrentEnvironment extends ConfigFile
     {
         $environmentName = $this->getEnvironmentName();
         if (empty($environmentName)) {
-            $this->getSender()->fatalError("Current environment isn't set. Please, check settings in " . $this->getFilePath());
+            $this->getSender()->fatalError("Current environment hasn't been set. Please, check settings in " . $this->getFilePath());
         }
 
         try {
