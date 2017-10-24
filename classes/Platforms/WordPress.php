@@ -70,6 +70,7 @@ class WordPress extends PlatformConfiguration
     public function getIgnoreTables()
     {
         return [
+            'options.option_name=*transient*',
             '~aiowps_events',
             '~aiowps_failed_logins',
             '~aiowps_global_meta',
