@@ -14,6 +14,7 @@ use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
 use Voyage\Core\Migration;
 use Voyage\Core\Migrations;
+use Voyage\Routines\DatabaseRoutines;
 
 /**
  * Class Apply
@@ -40,6 +41,10 @@ class Apply extends Command implements EnvironmentControllerInterface
             $this->displayAppName();
             $this->checkIntegrity($output);
             $this->initCurrentEnvironment();
+
+            $databaseRoutines = new DatabaseRoutines($this);
+            $databaseRoutines->createTable(); // Create voyage migrations table.
+            unset($databaseRoutines);
 
             $this->apply();
         } catch (\Exception $e) {

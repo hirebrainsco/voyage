@@ -33,7 +33,7 @@ class DatabaseRoutines extends Routine
     public function createTable()
     {
         $sql = "
-            CREATE TABLE %s (
+            CREATE TABLE IF NOT EXISTS %s (
               `id` VARCHAR(50) NOT NULL DEFAULT '',
               `name` VARCHAR(255) NOT NULL DEFAULT '', 
               `ts` INT(11) NOT NULL DEFAULT 0,
@@ -45,7 +45,6 @@ class DatabaseRoutines extends Routine
 
         try {
             $this->getDatabaseConnection()->exec($sql);
-            $this->getSender()->report('Created migrations table.');
         } catch (\Exception $e) {
             $this->getSender()->fatalError($e->getMessage());
         }
