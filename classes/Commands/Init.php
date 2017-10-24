@@ -11,6 +11,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Voyage\Configuration\CurrentEnvironment;
 use Voyage\Core\Command;
 use Voyage\Core\Configuration;
 use Voyage\Core\DatabaseConnection;
@@ -27,6 +28,8 @@ use Voyage\Routines\PlatformConfigurations;
  */
 class Init extends Command implements EnvironmentControllerInterface
 {
+    private $performCleanup = true;
+
     /**
      * Init constructor.
      */
@@ -36,7 +39,7 @@ class Init extends Command implements EnvironmentControllerInterface
         $this->getEnvironment()->setDatabaseSettings(new DatabaseSettings());
 
         $this->setName('init');
-        $this->setDescription('Initialize voyage in the current working directory');
+        $this->setDescription('Initialize Voyage in the current working directory');
 
         parent::__construct();
         $this->addCommandOptions();
@@ -91,7 +94,7 @@ class Init extends Command implements EnvironmentControllerInterface
     {
         try {
             $initializer = new Initializer($this);
-            $initializer->run();
+            $initializer->run($this->performCleanup);
             unset($initializer);
         } catch (\Exception $exception) {
             $this->fatalError($exception->getMessage());
@@ -104,10 +107,23 @@ class Init extends Command implements EnvironmentControllerInterface
     private function checkIfAlreadyInitialized()
     {
         if ($this->getConfiguration()->isVoyageDirExist()) {
-            if (true !== $this->getInput()->getOption('force')) {
-                $this->fatalError('Voyage has been already initialized in the current directory. Use --force or -f option to overwrite current Voyage data and settings.');
+            // Check if current environment is set.
+            $currentEnvironment = new CurrentEnvironment();
+            $currentEnvironment->setSender($this);
+            $env = $currentEnvironment->getEnvironment(false);
+            unset($currentEnvironment);
+
+            if (!is_null($env)) {
+                $this->info('Environment file exists.');
+
+                if (true !== $this->getInput()->getOption('force')) {
+                    $this->fatalError('Voyage has been already initialized in the current directory. Use --force or -f option to overwrite current Voyage data and settings.');
+                } else {
+                    $this->writeln('<options=reverse>Voyage has been already initialized in the current directory. Existing data and settings will be overwritten because --force parameter is present (it\'s not late yet to press Ctrl+C to stop execution).</>');
+                }
             } else {
-                $this->writeln('<options=reverse>Voyage has been already initialized in the current directory. Existing data and settings will be overwritten because --force parameter is present (it\'s not late yet to press Ctrl+C to stop execution).</>');
+                $this->info('Environment file doesn\'t exist. Setting up a new environment without overwriting existing migrations.');
+                $this->performCleanup = false;
             }
         }
     }

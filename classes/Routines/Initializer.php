@@ -10,6 +10,7 @@ namespace Voyage\Routines;
 use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
 use Voyage\Configuration\Ignore;
+use Voyage\Core\Migrations;
 
 /**
  * Class Initializer
@@ -39,14 +40,19 @@ class Initializer
 
     /**
      * Run initializer.
+     * @param bool $performCleanup
      */
-    public function run()
+    public function run($performCleanup = true)
     {
         $this->checkIntegrity();
 
         // Initialize in filesystem
         $fileSystemRoutines = new FileSystemRoutines($this->sender);
-        $fileSystemRoutines->clean(); // Remove .voyage directory and all configs if it exists.
+
+        if ($performCleanup) {
+            $fileSystemRoutines->clean(); // Remove .voyage directory and all configs if it exists.
+        }
+
         $fileSystemRoutines->createDirectories(); // Create voyage directories.
         $fileSystemRoutines->createConfigFiles(); // Create Voyage directory and configuration files.
         unset($fileSystemRoutines);
@@ -57,10 +63,13 @@ class Initializer
         $databaseRoutines->createTable(); // Create voyage migrations table.
         unset($databaseRoutines);
 
-        $this->showSuccessMessage();
+        $this->showSuccessMessage($performCleanup);
     }
 
-    private function showSuccessMessage()
+    /**
+     * @param bool $performCleanup
+     */
+    private function showSuccessMessage($performCleanup = true)
     {
         $ignoreConfig = new Ignore();
         $ignoreConfigPath = $ignoreConfig->getFilePath();
@@ -68,12 +77,31 @@ class Initializer
 
         $message = PHP_EOL;
         $message .= '<options=bold>Next Steps:</>' . PHP_EOL;
+
+        // Check if migration files exist
         $message .= " 1) Now you should add replacement variables to your environment file which is located at: <comment>" . $this->sender->getEnvironment()->getPathToEnvironmentConfig() . "</comment>" . PHP_EOL;
-        $message .= " 2) Add/edit list of the tables which should be ignored in: <comment>" . $ignoreConfigPath . "</comment>" . PHP_EOL;
-        $message .= " 3) Run \"voyage make\" command to create your first migration with current database state." . PHP_EOL;
+
+        if ($performCleanup || !$this->migrationFilesExist()) {
+            $message .= " 2) Add/edit list of the tables which should be ignored in: <comment>" . $ignoreConfigPath . "</comment>" . PHP_EOL;
+            $message .= " 3) Run \"voyage make\" command to create your first migration with current database state." . PHP_EOL;
+        } else {
+            $message .= " 2) Run \"voyage list\" to view list of not applied migrations and then run \"voyage apply\" to apply them to the current environment." . PHP_EOL;
+        }
 
         $this->sender->info('Initialization successfully completed.');
         $this->sender->writeln($message);
+    }
+
+    /**
+     * @return bool
+     */
+    private function migrationFilesExist()
+    {
+        $migrations = new Migrations($this->sender);
+        $migrationsList = $migrations->getAllMigrationFiles();
+        unset($migrations);
+
+        return !empty($migrationsList);
     }
 
     /**

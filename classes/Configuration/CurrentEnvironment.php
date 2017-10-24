@@ -32,13 +32,18 @@ class CurrentEnvironment extends ConfigFile
     }
 
     /**
+     * @param bool $fatalIfNoEnvironment
      * @return \Voyage\Core\Environment
      */
-    public function getEnvironment()
+    public function getEnvironment($fatalIfNoEnvironment = true)
     {
         $environmentName = $this->getEnvironmentName();
         if (empty($environmentName)) {
-            $this->getSender()->fatalError("Current environment hasn't been set. Please, check settings in " . $this->getFilePath());
+            if ($fatalIfNoEnvironment) {
+                $this->getSender()->fatalError("Current environment hasn't been set. Please, check settings in " . $this->getFilePath());
+            } else {
+                return null;
+            }
         }
 
         try {
