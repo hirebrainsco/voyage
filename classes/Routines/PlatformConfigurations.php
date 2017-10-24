@@ -45,7 +45,7 @@ class PlatformConfigurations
      * @return PlatformConfiguration
      * @throws \Exception
      */
-    private function getConfigurationInstance($configurationName)
+    public function getConfigurationInstance($configurationName)
     {
         if (!isset($this->configurations[$configurationName])) {
             throw new \Exception("Configuration '" . $configurationName . "' doesn't exist!");

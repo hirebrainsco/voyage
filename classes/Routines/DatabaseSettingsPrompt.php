@@ -94,7 +94,6 @@ class DatabaseSettingsPrompt
 
         $configurations = new PlatformConfigurations();
         $platformInstance = $configurations->read($this->sender->getDatabaseSettings(), $configurationName);
-        unset($configurations);
 
         if (is_object($platformInstance)) {
             $platformName = $platformInstance->getName();
@@ -110,8 +109,12 @@ class DatabaseSettingsPrompt
                 $this->sender->report('');
                 $this->detectedPlatform = $platformInstance;
             }
+        } else if ($configurationName !== PlatformConfigurations::AutoDetect) {
+            $platformInstance = $configurations->getConfigurationInstance($configurationName);
+            $this->detectedPlatform = $platformInstance;
         }
 
+        unset($configurations);
     }
 
     /**
