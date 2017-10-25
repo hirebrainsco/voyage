@@ -13,4 +13,9 @@ interface EnvironmentControllerInterface extends InputOutputInterface, DatabaseC
      * @return Environment
      */
     public function getEnvironment();
+
+    /**
+     * @return \Symfony\Component\Console\Application
+     */
+    public function getApplication();
 }

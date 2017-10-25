@@ -53,7 +53,6 @@ abstract class Command extends \Symfony\Component\Console\Command\Command implem
         return $this->output;
     }
 
-
     /**
      * @return DatabaseSettings
      */
