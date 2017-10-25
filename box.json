@@ -1,5 +1,8 @@
 {
-  "files": ["./voyage"],
+  "files": [
+    "./voyage",
+    "./version"
+  ],
   "directories": ["./classes/", "./lib/", "./vendor/"],
   "main": "./voyage",
   "output": "voyage.phar",
