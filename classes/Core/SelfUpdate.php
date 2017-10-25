@@ -91,17 +91,17 @@ class SelfUpdate extends BaseEnvironmentSender
     private function checkVersion()
     {
         $this->getSender()->report('Retrieving version number.');
-        $latestVersion = @file_get_contents($this->getVersionUrl());
+        $latestVersion = trim(@file_get_contents($this->getVersionUrl()));
 
         if (empty($latestVersion)) {
             $this->getSender()->fatalError('Failed to get latest version number!');
         }
 
-        $currentVersion = $this->getSender()->getApplication()->getVersion();
+        $currentVersion = trim($this->getSender()->getApplication()->getVersion());
 
         $this->getSender()->report('Current version: ' . $currentVersion . PHP_EOL . 'Latest version: ' . $latestVersion);
         if ($currentVersion == $latestVersion) {
-            $this->getSender()->report('You have the most recent version of Voyage.');
+            $this->getSender()->info('You have the most recent version of Voyage.');
             exit();
         }
 
