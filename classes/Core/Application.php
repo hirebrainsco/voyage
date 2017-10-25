@@ -10,8 +10,6 @@ namespace Voyage\Core;
 class Application
 {
     const Name = 'Voyage (Database Migration Tool)';
-    const Version = 'beta-1.0.3';
-
     private $application = null;
 
     /**
@@ -40,7 +38,7 @@ class Application
     private function configureCommands()
     {
         $this->application->setName(self::Name);
-        $this->application->setVersion(self::Version);
+        $this->setVersion();
 
         $this->application->add(new \Voyage\Commands\Init());
         $this->application->add(new \Voyage\Commands\Status());
@@ -54,6 +52,18 @@ class Application
 
         $this->application->find('default')->setHidden(true);
         $this->application->setDefaultCommand('default');
+    }
+
+    private function setVersion()
+    {
+        $versionFilePath = __DIR__ . '/../../version';
+        $version = 'UNKNOWN';
+
+        if (file_exists($versionFilePath)) {
+            $version = file_get_contents($versionFilePath);
+        }
+
+        $this->application->setVersion($version);
     }
 }
 
