@@ -99,11 +99,9 @@ class SelfUpdate extends BaseEnvironmentSender
 
         $currentVersion = $this->getSender()->getApplication()->getVersion();
 
-        $this->getSender()->report('Current version: ' . $currentVersion);
-        $this->getSender()->report('Latest version: ' . $latestVersion);
-
+        $this->getSender()->report('Current version: ' . $currentVersion . PHP_EOL . 'Latest version: ' . $latestVersion);
         if ($currentVersion == $latestVersion) {
-            $this->getSender('You have the latest version of Voyage.');
+            $this->getSender()->report('You have the most recent version of Voyage.');
             exit();
         }
 
