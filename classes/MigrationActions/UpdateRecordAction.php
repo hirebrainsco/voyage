@@ -38,7 +38,7 @@ class UpdateRecordAction extends RecordAction
         $sql .= $this->getSqlWhere();
         $sql .= ';';
 
-        return $this->prepareTableNameForExport($sql);
+        return $this->prepareTableNameForExport($sql, 'UPDATE ');
     }
 
     /**
@@ -58,7 +58,7 @@ class UpdateRecordAction extends RecordAction
         $sql .= $this->getSqlWhere();
         $sql .= ';';
 
-        return $this->prepareTableNameForExport($sql);
+        return $this->prepareTableNameForExport($sql, 'UPDATE ');
     }
 
     /**

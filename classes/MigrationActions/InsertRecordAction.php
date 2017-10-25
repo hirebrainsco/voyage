@@ -46,7 +46,7 @@ class InsertRecordAction extends RecordAction
         }
 
         $sql .= ');';
-        return $this->prepareTableNameForExport($sql);
+        return $this->prepareTableNameForExport($sql, 'DELETE FROM ');
     }
 
     /**
@@ -81,7 +81,7 @@ class InsertRecordAction extends RecordAction
             $sql .= ';';
         }
 
-        return $this->prepareTableNameForExport($sql);
+        return $this->prepareTableNameForExport($sql, 'DELETE FROM ');
     }
 
     /**

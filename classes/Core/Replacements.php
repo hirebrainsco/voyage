@@ -282,9 +282,6 @@ class Replacements
         $values = trim($values);
         $sz = strlen($values);
         $result = [];
-        echo '-----------------------------' . PHP_EOL;
-        print_r($values);
-        echo PHP_EOL . '-----------------------------' . PHP_EOL;
         $key = '';
         $value = '';
         $valueStarted = false;

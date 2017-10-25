@@ -74,7 +74,7 @@ trait MigrationStatusRoutines
         $this->getSender()->report('<options=bold>Not Applied Migrations</>');
         $notAppliedMigrations = $this->migrations->getNotAppliedMigrations();
         if (empty($notAppliedMigrations)) {
-            $this->getSender()->report('- There\'re no unapplied migrations.');
+            $this->getSender()->report('- There\'re no not applied migrations.');
         } else {
             $i = 0;
             foreach ($notAppliedMigrations as $migration) {

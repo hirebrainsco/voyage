@@ -48,10 +48,11 @@ abstract class MigrationAction
 
     /**
      * @param $code
+     * @param string $prefix
      * @return string
      */
-    protected function prepareTableNameForExport($code)
+    protected function prepareTableNameForExport($code, $prefix = '')
     {
-        return str_replace('`' . $this->tableName . '`', '`{{:' . $this->tableName . ':}}`', $code);
+        return str_replace($prefix . '`' . $this->tableName . '`', $prefix . '`{{:' . $this->tableName . ':}}`', $code);
     }
 }

@@ -45,6 +45,6 @@ abstract class TableAction extends MigrationAction
         }
 
         $code = str_replace(Configuration::getInstance()->getTempTablePrefix(), '', $row['Create Table']);
-        return $this->prepareTableNameForExport($code) . ';' . PHP_EOL;
+        return $this->prepareTableNameForExport($code, 'CREATE TABLE ') . ';' . PHP_EOL;
     }
 }
