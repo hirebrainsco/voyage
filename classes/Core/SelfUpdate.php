@@ -77,7 +77,7 @@ class SelfUpdate extends BaseEnvironmentSender
     private function checkWritablePermissions()
     {
         $pathToPhar = $this->getPathToPhar();
-        if (false === $pathToPhar) {
+        if (empty($pathToPhar)) {
             $this->getSender()->fatalError('Executing "selfupdate" command outside of PHAR archive isn\'t allowed.');
         }
 
