@@ -108,21 +108,23 @@ class Replacements
             }
 
             if (false !== $serializedData) {
-                array_walk_recursive($serializedData, function (&$item, $key) use ($replacements, $pack) {
-                    if (is_string($item)) {
-                        foreach ($replacements as $replacement) {
-                            if ($pack) {
-                                $item = str_replace($replacement[1], $replacement[0], $item);
-                            } else {
-                                $item = str_replace($replacement[0], $replacement[1], $item);
+                if (is_array($serializedData)) {
+                    array_walk_recursive($serializedData, function (&$item, $key) use ($replacements, $pack) {
+                        if (is_string($item)) {
+                            foreach ($replacements as $replacement) {
+                                if ($pack) {
+                                    $item = str_replace($replacement[1], $replacement[0], $item);
+                                } else {
+                                    $item = str_replace($replacement[0], $replacement[1], $item);
+                                }
                             }
                         }
-                    }
-                });
+                    });
 
-                $value = serialize($serializedData);
-                if ($quoteEscaped) {
-                    $value = str_replace("'", "\'", $value);
+                    $value = serialize($serializedData);
+                    if ($quoteEscaped) {
+                        $value = str_replace("'", "\'", $value);
+                    }
                 }
             } else {
                 foreach ($replacements as $replacement) {
