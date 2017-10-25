@@ -71,6 +71,8 @@ class WordPress extends PlatformConfiguration
     {
         return [
             'options.option_name=*transient*',
+            'postmeta.meta_key=*_log_*',
+            'postmeta.meta_key=_deprecated*',
             '~aiowps_events',
             '~aiowps_failed_logins',
             '~aiowps_global_meta',
