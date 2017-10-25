@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "Compiling to PHAR..."
+mkdir -p ./bin/
 rm -f ./bin/voyage
 php box.phar build
 
