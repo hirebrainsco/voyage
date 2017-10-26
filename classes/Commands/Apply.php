@@ -55,6 +55,7 @@ class Apply extends Command implements EnvironmentControllerInterface
     protected function apply()
     {
         $migrations = new Migrations($this);
+        $allMigrations = $migrations->getAllMigrations();
         $notAppliedMigrations = $migrations->getNotAppliedMigrations();
 
         if (empty($notAppliedMigrations)) {
@@ -63,13 +64,65 @@ class Apply extends Command implements EnvironmentControllerInterface
         }
 
         Configuration::getInstance()->lock();
-        foreach ($notAppliedMigrations as $migrationId) {
-            $this->info($migrationId);
+
+        // Check if we need rollback
+        $rolledBackMigrationIds = $this->rollbackIfNeeded($allMigrations);
+        $notAppliedMigrations = $migrations->getNotAppliedMigrations();
+
+        if (empty($notAppliedMigrations)) {
+            $this->info('There\'re no not applied migrations.');
+            return;
+        }
+
+        foreach ($notAppliedMigrations as $migrationData) {
+            $migrationId = $migrationData['id'];
+            $canReport = !in_array($migrationId, $rolledBackMigrationIds);
+
+            if ($canReport) {
+                $this->info($migrationId);
+            }
+
             $migration = new Migration($this);
             $migration->setId($migrationId);
             $migration->apply();
-            $this->report('Applied successfully.');
-            $this->report('');
+            unset($migration);
+
+            if ($canReport) {
+                $this->report('Applied successfully.');
+                $this->report('');
+            }
         }
+    }
+
+    protected function rollbackIfNeeded(array $migrations)
+    {
+        foreach ($migrations as $migrationId => $migration) {
+            if (!$migration['applied']) {
+                break;
+            }
+
+            unset($migrations[$migrationId]);
+        }
+
+        if (empty($migrations)) {
+            return [];
+        }
+
+        $migrations = array_reverse($migrations, true);
+        $rolledBackMigrationIds = [];
+
+        foreach ($migrations as $migrationId => $migration) {
+            if (!$migration['applied']) {
+                continue;
+            }
+
+            $migration = new Migration($this);
+            $migration->setId($migrationId);
+            $migration->rollback(false, true);
+            unset($migration);
+            $rolledBackMigrationIds[] = $migrationId;
+        }
+
+        return $rolledBackMigrationIds;
     }
 }

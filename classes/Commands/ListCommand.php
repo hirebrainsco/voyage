@@ -73,7 +73,7 @@ class ListCommand extends Command implements EnvironmentControllerInterface
 
         $table = new Table($this->getOutput());
         $table->setHeaders([
-            'ID', 'Description', 'Date', 'Current Migration'
+            'ID', 'Description', 'Date', 'Status'
         ]);
 
         $tableStyle = new TableStyle();
@@ -84,35 +84,37 @@ class ListCommand extends Command implements EnvironmentControllerInterface
         $appliedMigrations = $migrations->getAppliedMigrations();
         $notAppliedMigrations = $migrations->getNotAppliedMigrations();
 
-        // Applied migrations
-        $sz = sizeof($appliedMigrations);
-        $i = 0;
-        foreach ($appliedMigrations as $migration) {
-            $totalItems++;
-            $table->addRow([
-                ($i == $sz - 1 ? '<fg=green>' : '') . $migration['id'] . ($i == $sz - 1 ? '</>' : ''),
-                $migration['name'],
-                date('d M Y', $migration['ts']),
-                $i == $sz - 1 ? '<-- Current --' : ' '
-            ]);
-            $i++;
-        }
+        $migrationsList = array_merge($appliedMigrations, $notAppliedMigrations);
+        ksort($migrationsList);
 
-        // Not applied migrations
+        $sz = sizeof($migrationsList);
         $migrationsPath = Configuration::getInstance()->getPathToMigrations();
-        foreach ($notAppliedMigrations as $migration) {
-            $totalItems++;
-            $parser = new MigrationFileParser($migrationsPath . '/' . $migration . '.mgr');
-            $description = $parser->getDescription();
-            $ts = $parser->getTimestamp();
 
-            $table->addRow([
-                '<fg=cyan>' . $migration . '</>',
-                $description,
-                $ts > 0 ? date('d M Y', $ts) : '',
-                ''
-            ]);
-            unset($parser);
+        foreach ($migrationsList as $migration) {
+            $totalItems++;
+
+            if ($migration['applied']) {
+                $isCurrent = isset($migration['current']) && $migration['current'] === true;
+                $table->addRow([
+                    ($isCurrent ? '<fg=green>' : '') . $migration['id'] . ($isCurrent ? '</>' : ''),
+                    $migration['name'],
+                    date('d M Y', $migration['ts']),
+                    $isCurrent ? '<-- Current --' : ' '
+                ]);
+            } else {
+                $totalItems++;
+                $parser = new MigrationFileParser($migrationsPath . '/' . $migration['id'] . '.mgr');
+                $description = $parser->getDescription();
+                $ts = $parser->getTimestamp();
+
+                $table->addRow([
+                    '<fg=cyan>' . $migration['id'] . '</>',
+                    '<fg=cyan>' . $description . '</>',
+                    '<fg=cyan>' . ($ts > 0 ? date('d M Y', $ts) : '') . '</>',
+                    '<fg=cyan>x-- Not applied --</>',
+                ]);
+                unset($parser);
+            }
         }
 
         if ($totalItems > 0) {

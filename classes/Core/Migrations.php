@@ -81,7 +81,7 @@ class Migrations extends BaseEnvironmentSender
         foreach ($all as $filePath) {
             $id = pathinfo($filePath, PATHINFO_FILENAME);
             if (!isset($applied[$id])) {
-                $notApplied[] = $id;
+                $notApplied[$id] = ['id' => $id, 'applied' => false];
             }
         }
 
@@ -147,10 +147,31 @@ class Migrations extends BaseEnvironmentSender
         $stmt = $this->getSender()->getDatabaseConnection()->query($sql);
 
         $migrations = [];
+        $lastId = '';
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $row['applied'] = true;
             $migrations[$row['id']] = $row;
+            $lastId = $row['id'];
+        }
+
+        if (!empty($lastId)) {
+            $migrations[$lastId]['current'] = true;
         }
 
         return $migrations;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllMigrations()
+    {
+        $notApplied = $this->getNotAppliedMigrations();
+        $applied = $this->getAppliedMigrations();
+
+        $result = array_merge($applied, $notApplied);
+        ksort($result);
+
+        return $result;
     }
 }
