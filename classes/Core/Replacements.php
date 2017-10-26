@@ -56,11 +56,11 @@ class Replacements
 
         // Parse fields
         $matches = [];
-        if (!preg_match("/INSERT INTO\s+`(.*)`\s+\((.*)\)\s+VALUES\s*\((.*)\)/i", $code, $matches)) {
+        if (!preg_match("/REPLACE INTO\s+`(.*)`\s+\((.*)\)\s+VALUES\s*\((.*)\)/i", $code, $matches)) {
             return $code;
         }
 
-        $query = 'INSERT INTO `' . $matches[1] . '` (' . $matches[2] . ') VALUES (';
+        $query = 'REPLACE INTO `' . $matches[1] . '` (' . $matches[2] . ') VALUES (';
 
         $values = $this->parseInsertValues($matches[3]);
         $sz = sizeof($values);

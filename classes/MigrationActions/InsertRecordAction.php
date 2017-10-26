@@ -46,7 +46,7 @@ class InsertRecordAction extends RecordAction
         }
 
         $sql .= ');';
-        return $this->prepareTableNameForExport($sql, 'INSERT INTO ');
+        return $this->prepareTableNameForExport($sql, 'REPLACE INTO ');
     }
 
     /**
@@ -98,7 +98,7 @@ class InsertRecordAction extends RecordAction
             return;
         }
 
-        self::$insertQueryTemplate = 'INSERT INTO `' . $this->tableName . '` (';
+        self::$insertQueryTemplate = 'REPLACE INTO `' . $this->tableName . '` (';
         parent::prepareStaticData();
 
         $i = 0;
