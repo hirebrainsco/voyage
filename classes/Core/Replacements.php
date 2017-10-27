@@ -50,7 +50,7 @@ class Replacements
      */
     private function replaceInsert($code)
     {
-        if (false === stripos($code, 'INSERT INTO ')) {
+        if (false === stripos($code, 'REPLACE INTO ')) {
             return $code;
         }
 
