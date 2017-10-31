@@ -55,7 +55,7 @@ class Application
         $this->application->setDefaultCommand('default');
     }
 
-    private function setVersion()
+    protected function setVersion()
     {
         $versionFilePath = __DIR__ . '/../../version';
         $version = 'UNKNOWN';
@@ -65,6 +65,7 @@ class Application
         }
 
         $this->application->setVersion($version);
+        return $version;
     }
 }
 

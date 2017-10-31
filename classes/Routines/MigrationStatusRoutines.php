@@ -77,7 +77,12 @@ trait MigrationStatusRoutines
             $this->getSender()->report('- There\'re no not applied migrations.');
         } else {
             $i = 0;
-            foreach ($notAppliedMigrations as $migration) {
+            foreach ($notAppliedMigrations as $migrationData) {
+                if ($migrationData['applied'] === true) {
+                    continue;
+                }
+
+                $migration = $migrationData['id'];
                 $i++;
                 $this->getSender()->report(' ' . $i . '. ' . $migration);
             }
