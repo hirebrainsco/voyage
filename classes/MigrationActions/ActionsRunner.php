@@ -109,8 +109,21 @@ class ActionsRunner
                 continue;
             }
 
-            $code = DatabaseRoutines::replaceTableNames($code, $prefix);
-            $this->runCode($code);
+            if (strpos($code, PHP_EOL) !== false) {
+                $lines = explode(PHP_EOL, $code);
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    if (empty($line)) {
+                        continue;
+                    }
+
+                    $code = DatabaseRoutines::replaceTableNames($line, $prefix);
+                    $this->runCode($code);
+                }
+            } else {
+                $code = DatabaseRoutines::replaceTableNames($code, $prefix);
+                $this->runCode($code);
+            }
         }
     }
 

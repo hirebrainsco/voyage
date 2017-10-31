@@ -45,7 +45,7 @@ class ChangeFieldAction extends FieldAction
 
         if ($sqlCurrent == $sqlOld) {
             if ($this->fieldData->key != $this->oldField->key) {
-                return $this->prepareTableNameForExport($this->getAlterIndex($this->fieldData));
+                return $this->prepareTableNameForExport($this->getAlterIndex($this->fieldData, $this->oldField));
             }
 
             return '';
@@ -64,7 +64,7 @@ class ChangeFieldAction extends FieldAction
 
         if ($sqlCurrent == $sqlOld) {
             if ($this->fieldData->key != $this->oldField->key) {
-                return $this->prepareTableNameForExport($this->getAlterIndex($this->oldField));
+                return $this->prepareTableNameForExport($this->getAlterIndex($this->oldField, $this->oldField));
             }
 
             return '';

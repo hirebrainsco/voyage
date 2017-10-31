@@ -35,24 +35,33 @@ abstract class FieldAction extends MigrationAction
 
     /**
      * @param FieldData $field
+     * @param FieldData|null $oldField
      * @return string
      */
-    protected function getAlterIndex(FieldData $field)
+    protected function getAlterIndex(FieldData $field, FieldData $oldField = null)
     {
-        $sql = 'ALTER TABLE `' . $this->tableName . '` ';
+        $sql = '';
+        if (!is_null($oldField) && !empty($oldField->key) && $field->key != $oldField->key) {
+            $sql .= 'ALTER TABLE `' . $this->tableName . '` DROP INDEX `' . $oldField->name . '`;' . PHP_EOL;
+        }
 
+        $sql .= 'ALTER TABLE `' . $this->tableName . '` ';
         if (empty($field->key)) {
             $sql .= 'DROP INDEX `' . $field->name . '`';
-        } else if ($field->key == 'MUL') {
-            if ($this->isTextOrBlobType($field)) {
-                $sql .= 'ADD FULLTEXT INDEX `' . $this->fieldData->name . '`(`' . $this->fieldData->name . '`)';
+        } else {
+            if ($field->key == 'MUL') {
+                if ($this->isTextOrBlobType($field)) {
+                    $sql .= 'ADD FULLTEXT INDEX `' . $this->fieldData->name . '`(`' . $this->fieldData->name . '`)';
+                } else {
+                    $sql .= 'ADD INDEX `' . $this->fieldData->name . '`(`' . $this->fieldData->name . '`)';
+                }
+            } else if ($field->key == 'PRI') {
+                $sql .= 'ADD PRIMARY KEY(`' . $this->fieldData->name . '`)';
+            } else if ($field->key == 'UNI') {
+                $sql .= 'ADD UNIQUE KEY(`' . $this->fieldData->name . '`)';
             } else {
-                $sql .= 'ADD INDEX `' . $this->fieldData->name . '`(`' . $this->fieldData->name . '`)';
+                return '';
             }
-        } else if ($field->key == 'PRI') {
-            $sql .= 'ADD PRIMARY KEY(`' . $this->fieldData->name . '`)';
-        } else if ($field->key == 'UNI') {
-            $sql .= 'ADD UNIQUE KEY(`' . $this->fieldData->name . '`)';
         }
 
         $sql .= ';';
