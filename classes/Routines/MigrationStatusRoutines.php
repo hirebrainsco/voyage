@@ -104,7 +104,7 @@ trait MigrationStatusRoutines
         if (empty($currentMigration)) {
             $this->getSender()->report('Current Migration: none');
         } else {
-            $this->getSender()->report(sprintf('Current Migration: <fg=cyan>%s</>', $currentMigration['id']));
+            $this->getSender()->report(sprintf('Current Migration: <fg=green>%s</>', $currentMigration['id']));
             $this->getSender()->report(sprintf('Created On: %s', date('d M Y', $currentMigration['ts'])));
             $this->getSender()->report('');
         }
