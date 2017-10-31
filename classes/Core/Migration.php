@@ -103,8 +103,8 @@ class Migration extends BaseEnvironmentSender
 
             return true;
         } catch (\Exception $exception) {
-            $this->getSender()->fatalError($exception->getMessage());
             $this->removeMigrationFile();
+            $this->getSender()->fatalError($exception->getMessage());
             return false;
         }
     }
