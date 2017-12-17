@@ -103,7 +103,7 @@ class InsertRecordAction extends RecordAction
 
         $i = 0;
         foreach (self::$fields as $field) {
-            self::$insertQueryTemplate .= $field->name;
+            self::$insertQueryTemplate .= '`' . $field->name . '`';
 
             if ($i < self::$totalFields - 1) {
                 self::$insertQueryTemplate .= ', ';

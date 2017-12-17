@@ -207,6 +207,7 @@ class Migration extends BaseEnvironmentSender
         foreach ($queries as $query) {
             $query = DatabaseRoutines::replaceTableNames($query);
             $query = $replacementsApplier->replace($query);
+
             $this->getSender()->getDatabaseConnection()->query($query);
         }
 

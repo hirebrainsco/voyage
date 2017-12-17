@@ -282,7 +282,7 @@ trait DataDifferenceWithPrimaryKey
         $sz = sizeof($fields);
 
         foreach ($fields as $field) {
-            $fieldsList .= $field->name;
+            $fieldsList .= '`' . $field->name . '`';
             if ($i < $sz - 1) {
                 $fieldsList .= ', ';
             }
