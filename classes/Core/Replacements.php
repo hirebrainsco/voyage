@@ -67,6 +67,11 @@ class Replacements
         $i = 0;
 
         foreach ($values as $value) {
+            global $yesEchoIt;
+            if ($yesEchoIt) {
+                print_r($value);
+            }
+
             $query .= self::prepareValue($value, $this->replacements, false);
 
             if ($i != $sz - 1) {
@@ -81,15 +86,21 @@ class Replacements
     }
 
     /**
-     * @param $value
+     * @param array|string $inValue
      * @param array $replacements
      * @param bool $pack
      * @return mixed|string
      */
-    public static function prepareValue($value, array $replacements, $pack = true)
+    public static function prepareValue($inValue, array $replacements, $pack = true)
     {
-        if (!is_string($value)) {
-            if (!$value) {
+        if (is_array($inValue)) {
+            $value = $inValue[0];
+        } else {
+            $value = $inValue;
+        }
+
+        if (!is_string($value) || $value === 'NULL' && !$inValue[1]) {
+            if (!$value || $value === 'NULL' && !$inValue[1]) {
                 return 'NULL';
             }
             return $value;
@@ -257,7 +268,7 @@ class Replacements
 
                 if ($chr == "," || $chr == "'" && $prevChar == "'" && $startedIndex == $i - 1 || $chr == "'" && $prevChar != "\\" && $prevChar != "'" && $nextChar != "'") {
                     $valueStarted = false;
-                    $result[] = $item;
+                    $result[] = [$item, $startedWithQuote];
                     $item = '';
                     continue;
                 }
@@ -267,7 +278,7 @@ class Replacements
         }
 
         if (!empty($item)) {
-            $result[] = $item;
+            $result[] = [$item, $startedWithQuote];
         }
 
         return $result;
@@ -318,7 +329,7 @@ class Replacements
                         $key = trim($key);
                         $valueStarted = false;
                         $assignOperator = false;
-                        $result[$key] = $value;
+                        $result[$key] = [$value, $startedWithQuote];
                         $value = '';
                         $key = '';
                         continue;
@@ -331,7 +342,7 @@ class Replacements
 
         if (!empty($value)) {
             $key = trim($key);
-            $result[$key] = $value;
+            $result[$key] = [$value, $startedWithQuote];
         }
 
         return $result;
@@ -384,7 +395,7 @@ class Replacements
                         $key = trim($key);
                         $valueStarted = false;
                         $assignOperator = false;
-                        $result[$key] = $value;
+                        $result[$key] = [$value, $startedWithQuote];
                         $value = '';
                         $key = '';
                         continue;
@@ -397,7 +408,7 @@ class Replacements
 
         if (!empty($value)) {
             $key = trim($key);
-            $result[$key] = $value;
+            $result[$key] = [$value, $startedWithQuote];
         }
 
         return $result;

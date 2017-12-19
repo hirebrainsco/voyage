@@ -95,7 +95,7 @@ class RecordAction extends MigrationAction
     }
 
     /**
-     * @param string $value
+     * @param $value
      * @return string
      */
     public function prepareValue($value)
