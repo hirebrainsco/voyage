@@ -204,13 +204,18 @@ class Migration extends BaseEnvironmentSender
         $this->getSender()->getDatabaseConnection()->setVariables();
 
         $replacementsApplier = new Replacements($this->getSender()->getEnvironment()->getReplacements());
+        $i = 0;
+        $total = sizeof($queries);
         foreach ($queries as $query) {
             $query = DatabaseRoutines::replaceTableNames($query);
             $query = $replacementsApplier->replace($query);
 
+            $i++;
+            $this->getSender()->reportProgress('Query: ' . $i . ' / ' . $total);
             $this->getSender()->getDatabaseConnection()->query($query);
         }
 
+        $this->getSender()->clearProgress();
         unset($replacementsApplier);
 
         if ($registerMigration) {
