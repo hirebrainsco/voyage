@@ -207,25 +207,12 @@ class Migration extends BaseEnvironmentSender
         $i = 0;
         $total = sizeof($queries);
         foreach ($queries as $query) {
-            if (strpos($query, '1471283052')) {
-                echo PHP_EOL;
-                echo '--------------------------------------------' . PHP_EOL;
-                echo $query;
-                echo PHP_EOL;
-            }
-
             $query = DatabaseRoutines::replaceTableNames($query);
             $query = $replacementsApplier->replace($query);
 
             $i++;
             $this->getSender()->reportProgress('Query: ' . $i . ' / ' . $total);
-
-            try {
-                $this->getSender()->getDatabaseConnection()->query($query);
-            } catch (\Exception $exception) {
-                echo PHP_EOL . $query . PHP_EOL;
-                echo PHP_EOL;
-            }
+            $this->getSender()->getDatabaseConnection()->query($query);
         }
 
         $this->getSender()->clearProgress();
