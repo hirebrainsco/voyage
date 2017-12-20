@@ -418,6 +418,8 @@ EOD;
         $this->getSender()->getDatabaseConnection()->setVariables();
         $prefix = Configuration::getInstance()->getTempTablePrefix();
 
+        $replacementsApplier = new Replacements($this->getSender()->getEnvironment()->getReplacements());
+
         $i = 0;
         $total = sizeof($contents);
         foreach ($contents as $item) {
@@ -425,6 +427,8 @@ EOD;
             $this->getSender()->reportProgress('Records: ' . $i . ' / ' . $total);
 
             $item = DatabaseRoutines::replaceTableNames($item, $prefix);
+            $item = $replacementsApplier->replace($item);
+
             $this->getSender()->getDatabaseConnection()->exec($item);
         }
 
