@@ -19,6 +19,7 @@ class Migrations extends BaseEnvironmentSender
      */
     public function push()
     {
+        $this->getSender()->report('Cleaning up temporary data.');
         $this->dropTemporaryTables();
 
         $migrations = $this->getAppliedMigrations();  // Get list of migrations that have been applied (from migrations table).
@@ -133,9 +134,12 @@ class Migrations extends BaseEnvironmentSender
         }
 
         foreach ($tables as $tableName) {
+            $this->getSender()->reportProgress('Temporary Table: `' . $tableName . '`');
             $sql = "DROP TABLE IF EXISTS `" . $tableName . "`";
             $this->getSender()->getDatabaseConnection()->exec($sql);
         }
+
+        $this->getSender()->clearProgress();
     }
 
     /**

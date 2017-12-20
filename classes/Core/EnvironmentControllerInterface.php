@@ -18,4 +18,11 @@ interface EnvironmentControllerInterface extends InputOutputInterface, DatabaseC
      * @return \Symfony\Component\Console\Application
      */
     public function getApplication();
+
+    public function clearProgress();
+
+    /**
+     * @param string $message
+     */
+    public function reportProgress($message);
 }

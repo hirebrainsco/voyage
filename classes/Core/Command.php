@@ -7,6 +7,7 @@
 
 namespace Voyage\Core;
 
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Voyage\Configuration\CurrentEnvironment;
@@ -38,6 +39,11 @@ abstract class Command extends \Symfony\Component\Console\Command\Command implem
     private $environment;
 
     /**
+     * @var ProgressBar
+     */
+    private $progressBar;
+
+    /**
      * @return InputInterface
      */
     public function getInput()
@@ -51,6 +57,15 @@ abstract class Command extends \Symfony\Component\Console\Command\Command implem
     public function getOutput()
     {
         return $this->output;
+    }
+
+    /**
+     * Initialize progress bar.
+     */
+    private function initializeProgressBar()
+    {
+        $this->progressBar = new ProgressBar($this->getOutput());
+        $this->progressBar->setFormat('%message%');
     }
 
     /**
@@ -95,6 +110,26 @@ abstract class Command extends \Symfony\Component\Console\Command\Command implem
     }
 
     /**
+     * Display progress message.
+     * @param $message
+     */
+    public function reportProgress($message)
+    {
+        $this->progressBar->setMessage($message);
+        $this->progressBar->display();
+    }
+
+    /**
+     * Clear progress bar.
+     */
+    public function clearProgress()
+    {
+        $this->progressBar->finish();
+        $this->progressBar->clear();
+        echo PHP_EOL;
+    }
+
+    /**
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null|void
@@ -108,6 +143,8 @@ abstract class Command extends \Symfony\Component\Console\Command\Command implem
         if (!is_object($this->input) || !is_object($this->output)) {
             throw new \Exception('I/O is not ready!');
         }
+
+        $this->initializeProgressBar();
     }
 
     /**

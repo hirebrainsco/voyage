@@ -29,8 +29,8 @@ trait DataDifferenceWithoutPrimaryKey
         $totalRecords = $bufferedRecords = 0;
 
         $oldTableName = Configuration::getInstance()->getTempTablePrefix() . $currentTable->name;
-        $fieldsList = implode(',', array_keys($fields));
-        $sql = 'SELECT \'current\' as `___action`, ' . $currentTable->name . '.* FROM ' . $currentTable->name . ' WHERE ROW(' . $fieldsList . ') NOT IN (SELECT * FROM ' . $oldTableName . ') UNION ALL SELECT \'old\' as `___action`, ' . $oldTableName . '.* FROM ' . $oldTableName . ' WHERE ROW(' . $fieldsList . ') NOT IN (SELECT * FROM ' . $currentTable->name . ')';
+        $fieldsList = '`' . implode('`,`', array_keys($fields)) . '`';
+        $sql = 'SELECT \'current\' as `___action`, `' . $currentTable->name . '`.* FROM `' . $currentTable->name . '` WHERE ROW(' . $fieldsList . ') NOT IN (SELECT * FROM `' . $oldTableName . '`) UNION ALL SELECT \'old\' as `___action`, `' . $oldTableName . '`.* FROM `' . $oldTableName . '` WHERE ROW(' . $fieldsList . ') NOT IN (SELECT * FROM `' . $currentTable->name . '`)';
         $stmt = $this->connection->query($sql);
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

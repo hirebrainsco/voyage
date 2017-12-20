@@ -119,7 +119,7 @@ class Migration extends BaseEnvironmentSender
             return false;
         }
 
-        $this->getSender()->report('Checking differences in data.');
+        $this->getSender()->report('Checking difference in data.');
 
         $difference = new DataDifference($this->getSender(), $comparisonTables, $this);
         $hasData = $difference->getDifference();
@@ -139,7 +139,7 @@ class Migration extends BaseEnvironmentSender
             return false;
         }
 
-        $this->getSender()->report('Checking differences in fields.');
+        $this->getSender()->report('Checking difference in fields.');
 
         $difference = new FieldsDifference($this->getSender(), $comparisonTables);
         $code = $difference->getDifferenceWithActions($fieldApplyActions);
@@ -308,7 +308,7 @@ class Migration extends BaseEnvironmentSender
             return false;
         }
 
-        $this->getSender()->report('Checking differences in a list of database tables.');
+        $this->getSender()->report('Checking difference in a list of database tables.');
         $difference = new TablesDifference($this->getSender(), $comparisonTables);
         $code = $difference->getDifference();
         unset($difference);
@@ -413,10 +413,17 @@ EOD;
         $this->getSender()->getDatabaseConnection()->setVariables();
         $prefix = Configuration::getInstance()->getTempTablePrefix();
 
+        $i = 0;
+        $total = sizeof($contents);
         foreach ($contents as $item) {
+            $i++;
+            $this->getSender()->reportProgress('Records: ' . $i . ' / ' . $total);
+
             $item = DatabaseRoutines::replaceTableNames($item, $prefix);
             $this->getSender()->getDatabaseConnection()->exec($item);
         }
+
+        $this->getSender()->clearProgress();
     }
 
     /**

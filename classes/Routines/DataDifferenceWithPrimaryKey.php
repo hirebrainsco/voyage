@@ -146,7 +146,13 @@ trait DataDifferenceWithPrimaryKey
 
         $fieldsList = $this->getCommaSeparatedFields($fields);
         $oldTableName = Configuration::getInstance()->getTempTablePrefix() . $table->name;
-        $sql = 'SELECT `' . $table->name . '`.* FROM `' . $table->name . '` WHERE ROW(' . $fieldsList . ') NOT IN (SELECT * FROM `' . $oldTableName . '`) AND `' . $table->name . '`.' . $primaryKey . ' IN (SELECT `' . $primaryKey . '` FROM `' . $oldTableName . '`);';
+
+        $rowWhere = $fieldsList;
+        if (sizeof($fields) > 1) {
+            $rowWhere = 'ROW(' . $rowWhere . ')';
+        }
+
+        $sql = 'SELECT `' . $table->name . '`.* FROM `' . $table->name . '` WHERE ' . $rowWhere . ' NOT IN (SELECT * FROM `' . $oldTableName . '`) AND `' . $table->name . '`.`' . $primaryKey . '` IN (SELECT `' . $primaryKey . '` FROM `' . $oldTableName . '`);';
         $stmt = $this->connection->query($sql);
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {

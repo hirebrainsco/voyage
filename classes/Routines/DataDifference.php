@@ -7,6 +7,7 @@
 
 namespace Voyage\Routines;
 
+use Symfony\Component\Console\Helper\ProgressBar;
 use Voyage\Configuration\Ignore;
 use Voyage\Core\EnvironmentControllerInterface;
 use Voyage\Core\Migration;
@@ -29,6 +30,11 @@ class DataDifference extends DifferenceRoutines
      * @var Migration
      */
     private $migration;
+
+    /**
+     * @var ProgressBar
+     */
+    private $progressBar;
 
     /**
      * DataDifference constructor.
@@ -61,6 +67,7 @@ class DataDifference extends DifferenceRoutines
                 continue;
             }
 
+            $this->environmentController->reportProgress('Comparing: `' . $table->name . '`');
 
             $ignore = new Ignore();
             $ignore->setSender($this->environmentController);
@@ -99,6 +106,7 @@ class DataDifference extends DifferenceRoutines
             }
         }
 
+        $this->environmentController->clearProgress();
         return $recordsCount > 0;
     }
 
