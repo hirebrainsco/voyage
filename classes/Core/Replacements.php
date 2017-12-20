@@ -266,6 +266,16 @@ class Replacements
                 $prevChar = $values[$i - 1];
                 $nextChar = $i < $sz - 1 ? $values[$i + 1] : '';
 
+                if ($chr == "'" && $prevChar == "'" && ($i - 1) > 0 && $values[$i - 2] == "\\") {
+                    // Previous character is escaped single quote
+                    $prevChar = '';
+                }
+
+                if ($chr == "'" && $prevChar == "\\" && ($i - 2) > 0 && $values[$i - 2] == "\\" && $values[$i - 3] != "\\") {
+                    // Previous character is escaped slash
+                    $prevChar = '';
+                }
+
                 if ($chr == "," || $chr == "'" && $prevChar == "'" && $startedIndex == $i - 1 || $chr == "'" && $prevChar != "\\" && $prevChar != "'" && $nextChar != "'") {
                     $valueStarted = false;
                     $result[] = [$item, $startedWithQuote];
