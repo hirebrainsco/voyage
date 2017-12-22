@@ -126,7 +126,6 @@ abstract class Command extends \Symfony\Component\Console\Command\Command implem
     {
         $this->progressBar->finish();
         $this->progressBar->clear();
-        echo PHP_EOL;
     }
 
     /**

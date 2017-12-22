@@ -167,6 +167,7 @@ class IgnoreDataValueRule
     /**
      * IgnoreDataValueRule constructor.
      * @param $rule
+     * @throws \Exception
      */
     public function __construct($rule)
     {
