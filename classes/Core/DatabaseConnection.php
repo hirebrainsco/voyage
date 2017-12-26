@@ -103,7 +103,7 @@ class DatabaseConnection
     private function connect()
     {
         try {
-//            error_reporting(0);
+            error_reporting(0);
             $this->pdo = new \PDO($this->getDsn(), $this->settings->getUsername(), $this->settings->getPassword());
             $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             $this->pdo->query('USE `' . $this->settings->getDatabaseName() . '`');
