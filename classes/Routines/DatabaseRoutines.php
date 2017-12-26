@@ -28,6 +28,20 @@ class DatabaseRoutines extends Routine
     }
 
     /**
+     * Drop database table.
+     * @param $tableName
+     */
+    public function dropTable($tableName)
+    {
+        if (empty($tableName)) {
+            return;
+        }
+
+        $sql = 'DROP TABLE IF EXISTS `' . $tableName . '`';
+        $this->getDatabaseConnection()->exec($sql);
+    }
+
+    /**
      * Create voyage table
      */
     public function createTable()

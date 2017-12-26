@@ -9,6 +9,7 @@ namespace Voyage\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Voyage\Core\Command;
 use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
@@ -63,6 +64,9 @@ class Apply extends Command implements EnvironmentControllerInterface
             return;
         }
 
+        // Check if we're applying for the first time
+        $this->checkFirstTimeImport($migrations);
+
         Configuration::getInstance()->lock();
 
         // Check if we need rollback
@@ -90,6 +94,40 @@ class Apply extends Command implements EnvironmentControllerInterface
             if ($canReport) {
                 $this->report('Applied successfully.');
                 $this->report('');
+            }
+        }
+    }
+
+    protected function checkFirstTimeImport(Migrations $migrations)
+    {
+        if ($migrations->isInitialImport()) {
+            $this->info('Initial data import. Checking if database contains tables that should be recreated from migration files.');
+            $tablesToRecreate = $migrations->getTablesToRecreateFromMigrations();
+
+            if (!empty($tablesToRecreate)) {
+                $message = PHP_EOL . '<options=bold>We\'ve found tables in database which must be recreated from migration files.</>' . PHP_EOL;
+                $message .= 'This usually happens if you create a full dump of a database on another server and then apply migrations.' . PHP_EOL . PHP_EOL;
+                $message .= 'Here is a list of those tables:' . PHP_EOL;
+
+                foreach ($tablesToRecreate as $tableName) {
+                    $message .= ' - ' . $tableName . PHP_EOL;
+                }
+
+                $message .= PHP_EOL . 'These tables needs to be dropped before we can apply them from migration files.' . PHP_EOL;
+                $this->report($message);
+
+                $helper = $this->getHelper('question');
+                $question = new ConfirmationQuestion('Press [Y/y] to drop these tables and continue; or any other key to stop execution.' . PHP_EOL, false);
+
+                if (!$helper->ask($this->getInput(), $this->getOutput(), $question)) {
+                    $this->report('Aborted by user.');
+                    exit();
+                }
+
+                $databaseRoutines = new DatabaseRoutines($this);
+                foreach ($tablesToRecreate as $tableName) {
+                    $databaseRoutines->dropTable($tableName);
+                }
             }
         }
     }

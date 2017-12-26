@@ -168,6 +168,54 @@ class Migrations extends BaseEnvironmentSender
     /**
      * @return array
      */
+    public function getTablesToRecreateFromMigrations()
+    {
+        $notAppliedMigrations = $this->getNotAppliedMigrations();
+        if (empty($notAppliedMigrations)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($notAppliedMigrations as $migrationData) {
+            $migrationId = $migrationData['id'];
+
+            $this->getSender()->reportProgress('Checking in ' . $migrationId);
+            $migration = new Migration($this->getSender());
+            $migration->setId($migrationId);
+            $applyQueries = $migration->getApplyQueries();
+
+            foreach ($applyQueries as $query) {
+                if (CreateTableQuery::isCreateTable($query)) {
+                    $queryParser = new CreateTableQuery($query);
+                    $tableName = $queryParser->getTableName();
+
+                    if (!empty($tableName)) {
+                        $result[] = $tableName;
+                    }
+                    unset($queryParser);
+                }
+            }
+
+            unset($migration);
+        }
+
+        $this->getSender()->clearProgress();
+        return $result;
+    }
+
+    /**
+     * Check whether this is initial data import ("voyage apply") or not.
+     * @return bool
+     */
+    public function isInitialImport()
+    {
+        $appliedMigrations = $this->getAppliedMigrations();
+        return empty($appliedMigrations);
+    }
+
+    /**
+     * @return array
+     */
     public function getAllMigrations()
     {
         $notApplied = $this->getNotAppliedMigrations();

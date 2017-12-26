@@ -228,6 +228,28 @@ class Migration extends BaseEnvironmentSender
     }
 
     /**
+     * Get a list of queries for apply action.
+     * @return array
+     */
+    public function getApplyQueries()
+    {
+        $result = [];
+        $parser = new MigrationFileParser($this->getFilePath());
+        $queries = $parser->getApply();
+        $this->getSender()->getDatabaseConnection()->setVariables();
+
+        $replacementsApplier = new Replacements($this->getSender()->getEnvironment()->getReplacements());
+        foreach ($queries as $query) {
+            $query = $replacementsApplier->replace(DatabaseRoutines::replaceTableNames($query));
+            $result[] = $query;
+        }
+
+        unset($replacementsApplier, $parser);
+
+        return $result;
+    }
+
+    /**
      * @param bool $removeMigrationFile
      * @param bool $unRegisterMigration
      * @throws \Exception
