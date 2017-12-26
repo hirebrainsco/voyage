@@ -107,6 +107,18 @@ class Ignore extends ConfigFile
                 }
 
                 $ignoreList['data'][$rule->getTableName()][] = $rule;
+            } else if (strpos($rule, '.') !== false) {
+                if (!isset($ignoreList['field'])) {
+                    $ignoreList['field'] = [];
+                }
+
+                $rule = new IgnoreDataFieldRule($rule);
+
+                if (!isset($ignoreList['field'][$rule->getTableName()])) {
+                    $ignoreList['field'][$rule->getTableName()] = [];
+                }
+
+                $ignoreList['field'][$rule->getTableName()][] = $rule->getFieldName();
             } else {
                 if (!isset($ignoreList['tables'])) {
                     $ignoreList['tables'] = [];
@@ -115,7 +127,6 @@ class Ignore extends ConfigFile
             }
         }
 
-        print_r($ignoreList);
         return $ignoreList;
     }
 
