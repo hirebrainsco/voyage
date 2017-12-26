@@ -151,6 +151,11 @@ class IgnoreDataValueRule
         $value = $row[$this->fieldName];
         switch ($this->checkValueRule) {
             case self::Contains:
+                if (empty($this->value)) {
+                    // Ignore all
+                    return true;
+                }
+
                 return strpos($value, $this->value) !== false;
 
             case self::StartsWith:
