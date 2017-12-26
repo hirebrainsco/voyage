@@ -100,7 +100,7 @@ class Ignore extends ConfigFile
                     $ignoreList['data'] = [];
                 }
 
-                $rule = new IgnoreDataValueRule($rule);
+                $rule = new IgnoreDataRowRule($rule);
 
                 if (!isset($ignoreList['data'][$rule->getTableName()])) {
                     $ignoreList['data'][$rule->getTableName()] = [];
@@ -115,6 +115,7 @@ class Ignore extends ConfigFile
             }
         }
 
+        print_r($ignoreList);
         return $ignoreList;
     }
 

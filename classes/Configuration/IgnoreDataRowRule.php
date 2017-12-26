@@ -8,10 +8,10 @@
 namespace Voyage\Configuration;
 
 /**
- * Class IgnoreDataValueRule
+ * Class IgnoreDataRowRule
  * @package Voyage\Configuration
  */
-class IgnoreDataValueRule
+class IgnoreDataRowRule
 {
     /* Check value rules (optimization) */
     const Equal = 0;
@@ -42,7 +42,7 @@ class IgnoreDataValueRule
     /**
      * @var int
      */
-    private $checkValueRule = IgnoreDataValueRule::Equal;
+    private $checkValueRule = IgnoreDataRowRule::Equal;
 
     /**
      * @param $rule
@@ -91,19 +91,19 @@ class IgnoreDataValueRule
     private function getCheckValueRuleFromValue($value)
     {
         if (empty($value)) {
-            return IgnoreDataValueRule::Equal;
+            return IgnoreDataRowRule::Equal;
         }
 
         $lastIndex = strlen($value) - 1;
         if ($value[0] == '*' && $value[$lastIndex] == '*') {
-            return IgnoreDataValueRule::Contains;
+            return IgnoreDataRowRule::Contains;
         } else if ($value[0] == '*') {
-            return IgnoreDataValueRule::EndsWith;
+            return IgnoreDataRowRule::EndsWith;
         } else if ($value[$lastIndex] == '*') {
-            return IgnoreDataValueRule::StartsWith;
+            return IgnoreDataRowRule::StartsWith;
         }
 
-        return IgnoreDataValueRule::Equal;
+        return IgnoreDataRowRule::Equal;
     }
 
     /**
@@ -170,7 +170,7 @@ class IgnoreDataValueRule
     }
 
     /**
-     * IgnoreDataValueRule constructor.
+     * IgnoreDataRowRule constructor.
      * @param $rule
      * @throws \Exception
      */

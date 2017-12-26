@@ -35,7 +35,7 @@ trait DataDifferenceWithPrimaryKey
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if (!empty($ignoreList)) {
                 /**
-                 * @var IgnoreDataValueRule $ignoreRule
+                 * @var IgnoreDataRowRule $ignoreRule
                  */
                 $shouldIgnore = false;
                 foreach ($ignoreList as $ignoreRule) {
@@ -91,7 +91,7 @@ trait DataDifferenceWithPrimaryKey
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if (!empty($ignoreList)) {
                 /**
-                 * @var IgnoreDataValueRule $ignoreRule
+                 * @var IgnoreDataRowRule $ignoreRule
                  */
                 $shouldIgnore = false;
                 foreach ($ignoreList as $ignoreRule) {
@@ -158,7 +158,7 @@ trait DataDifferenceWithPrimaryKey
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if (!empty($ignoreList)) {
                 /**
-                 * @var IgnoreDataValueRule $ignoreRule
+                 * @var IgnoreDataRowRule $ignoreRule
                  */
                 $shouldIgnore = false;
                 foreach ($ignoreList as $ignoreRule) {
@@ -223,7 +223,7 @@ trait DataDifferenceWithPrimaryKey
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             if (!empty($ignoreList)) {
                 /**
-                 * @var IgnoreDataValueRule $ignoreRule
+                 * @var IgnoreDataRowRule $ignoreRule
                  */
                 $shouldIgnore = false;
                 foreach ($ignoreList as $ignoreRule) {
