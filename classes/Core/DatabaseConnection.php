@@ -102,11 +102,15 @@ class DatabaseConnection
      */
     private function connect()
     {
-        $this->pdo = new \PDO($this->getDsn(), $this->settings->getUsername(), $this->settings->getPassword());
-        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $this->pdo->query('USE `' . $this->settings->getDatabaseName() . '`');
-
-        $this->connected = true;
+        try {
+            error_reporting(0);
+            $this->pdo = new \PDO($this->getDsn(), $this->settings->getUsername(), $this->settings->getPassword());
+            $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+            $this->pdo->query('USE `' . $this->settings->getDatabaseName() . '`');
+            $this->connected = true;
+        } catch (\Exception $e) {
+            throw $e;
+        }
     }
 
     /**
