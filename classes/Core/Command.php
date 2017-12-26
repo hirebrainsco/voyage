@@ -191,7 +191,7 @@ abstract class Command extends \Symfony\Component\Console\Command\Command implem
      */
     public function fatalError($message)
     {
-        $this->writeln(sprintf('<error>Fatal error: %s</error>', $message));
+        $this->writeln(PHP_EOL . sprintf('<error>Fatal error: %s</error>', $message));
         exit(1);
     }
 
