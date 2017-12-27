@@ -74,16 +74,22 @@ class DataDifference extends DifferenceRoutines
             $ignoreList = $ignore->getIgnoreList();
             unset($ignore);
 
-            $dataIgnoreList = [];
+            $rowsIgnoreList = [];
+            $fieldsIgnoreList = [];
+
             if (!empty($ignoreList) && isset($ignoreList['data']) && isset($ignoreList['data'][$table->name])) {
-                $dataIgnoreList = $ignoreList['data'][$table->name];
+                $rowsIgnoreList = $ignoreList['data'][$table->name];
+            }
+
+            if (!empty($ignoreList) && isset($ignoreList['field']) && isset($ignoreList['field'][$table->name])) {
+                $fieldsIgnoreList = $ignoreList['field'][$table->name];
             }
 
             unset($ignoreList);
 
             if (!isset($this->comparisonTables['old'][$table->name])) {
                 // Generate inserts for a new table
-                $recordsCount += $this->generateInsertsForNewTables($table, $dataIgnoreList);
+                $recordsCount += $this->generateInsertsForNewTables($table, $rowsIgnoreList);
             } else {
                 // Process existing tables
                 // Prepare for detection of changes in data
@@ -95,12 +101,12 @@ class DataDifference extends DifferenceRoutines
 
                 if (false === $primaryKey) {
                     // No primary key
-                    $recordsCount += $this->generateChangesWithoutPrimaryKey($table, $fields, $dataIgnoreList);
+                    $recordsCount += $this->generateChangesWithoutPrimaryKey($table, $fields, $rowsIgnoreList, $fieldsIgnoreList);
                 } else {
                     // Primary key exists
-                    $recordsCount += $this->generateInserts($table, $fields, $primaryKey, $dataIgnoreList);
-                    $recordsCount += $this->generateUpdates($table, $fields, $primaryKey, $dataIgnoreList);
-                    $recordsCount += $this->generateDeletes($table, $fields, $primaryKey, $dataIgnoreList);
+                    $recordsCount += $this->generateInserts($table, $fields, $primaryKey, $rowsIgnoreList, $fieldsIgnoreList);
+                    $recordsCount += $this->generateUpdates($table, $fields, $primaryKey, $rowsIgnoreList, $fieldsIgnoreList);
+                    $recordsCount += $this->generateDeletes($table, $fields, $primaryKey, $rowsIgnoreList);
                 }
 
             }

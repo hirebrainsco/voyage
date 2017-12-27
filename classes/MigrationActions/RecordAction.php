@@ -55,6 +55,27 @@ class RecordAction extends MigrationAction
     protected $row = [];
 
     /**
+     * @var array
+     */
+    protected $ignoreFields = [];
+
+    /**
+     * @return array
+     */
+    public function getIgnoreFields()
+    {
+        return $this->ignoreFields;
+    }
+
+    /**
+     * @param array $ignoreFields
+     */
+    public function setIgnoreFields(array $ignoreFields)
+    {
+        $this->ignoreFields = $ignoreFields;
+    }
+
+    /**
      * RecordAction constructor.
      * @param DatabaseConnection $connection
      * @param $tableName
@@ -68,6 +89,14 @@ class RecordAction extends MigrationAction
         $this->environment = $migration->getEnvironment();
         $this->sender = $migration->getSender();
         $this->row = $row;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canBeIgnored()
+    {
+        return false;
     }
 
     /**

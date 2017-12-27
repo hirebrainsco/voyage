@@ -20,10 +20,11 @@ trait DataDifferenceWithoutPrimaryKey
     /**
      * @param TableData $currentTable
      * @param array $fields
-     * @param array $ignoreList
+     * @param array $rowsIgnoreList
+     * @param array $fieldsIgnoreList
      * @return int
      */
-    protected function generateChangesWithoutPrimaryKey(TableData $currentTable, array $fields, array $ignoreList)
+    protected function generateChangesWithoutPrimaryKey(TableData $currentTable, array $fields, array $rowsIgnoreList, array $fieldsIgnoreList)
     {
         $buffer = [];
         $totalRecords = $bufferedRecords = 0;
@@ -34,12 +35,12 @@ trait DataDifferenceWithoutPrimaryKey
         $stmt = $this->connection->query($sql);
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if (!empty($ignoreList)) {
+            if (!empty($rowsIgnoreList)) {
                 /**
                  * @var IgnoreDataRowRule $ignoreRule
                  */
                 $shouldIgnore = false;
-                foreach ($ignoreList as $ignoreRule) {
+                foreach ($rowsIgnoreList as $ignoreRule) {
                     if ($ignoreRule->shouldIgnore($row)) {
                         $shouldIgnore = true;
                         break;

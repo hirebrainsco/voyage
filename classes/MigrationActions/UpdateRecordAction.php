@@ -21,6 +21,17 @@ class UpdateRecordAction extends RecordAction
      */
     private $oldRow = [];
 
+    public function canBeIgnored()
+    {
+        $this->prepareStaticData();
+        $dataToUpdate = $this->getDataToUpdate($this->row, $this->oldRow);
+        if (empty($dataToUpdate)) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * @return bool|string
      */
@@ -87,8 +98,11 @@ class UpdateRecordAction extends RecordAction
     private function getDataToUpdate(array $rowA, array $rowB)
     {
         $dataToUpdate = [];
-
         foreach ($rowA as $key => $value) {
+            if (in_array($key, $this->ignoreFields)) {
+                continue;
+            }
+
             $valueA = $this->prepareValue($value);
             $valueB = $this->prepareValue($rowB[$key]);
 

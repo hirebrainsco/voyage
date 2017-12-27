@@ -67,11 +67,6 @@ class Replacements
         $i = 0;
 
         foreach ($values as $value) {
-            global $yesEchoIt;
-            if ($yesEchoIt) {
-                print_r($value);
-            }
-
             $query .= self::prepareValue($value, $this->replacements, false);
 
             if ($i != $sz - 1) {

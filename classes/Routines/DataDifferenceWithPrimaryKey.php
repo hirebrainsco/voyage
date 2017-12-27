@@ -20,10 +20,11 @@ trait DataDifferenceWithPrimaryKey
      * @param TableData $currentTable
      * @param array $fields
      * @param $primaryKey
-     * @param array $ignoreList
+     * @param array $rowsIgnoreList
+     * @param array $fieldsIgnoreList
      * @return int
      */
-    protected function generateInserts(TableData $currentTable, array $fields, $primaryKey, array $ignoreList)
+    protected function generateInserts(TableData $currentTable, array $fields, $primaryKey, array $rowsIgnoreList, array $fieldsIgnoreList)
     {
         $buffer = [];
         $totalRecords = $bufferedRecords = 0;
@@ -33,12 +34,12 @@ trait DataDifferenceWithPrimaryKey
         $stmt = $this->connection->query($sql);
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if (!empty($ignoreList)) {
+            if (!empty($rowsIgnoreList)) {
                 /**
                  * @var IgnoreDataRowRule $ignoreRule
                  */
                 $shouldIgnore = false;
-                foreach ($ignoreList as $ignoreRule) {
+                foreach ($rowsIgnoreList as $ignoreRule) {
                     if ($ignoreRule->shouldIgnore($row)) {
                         $shouldIgnore = true;
                         break;
@@ -54,7 +55,6 @@ trait DataDifferenceWithPrimaryKey
             $bufferedRecords++;
 
             $buffer[] = new InsertRecordAction($this->connection, $currentTable->name, $row, $this->migration, false);
-
             if ($bufferedRecords >= DataDifference::BufferMaxRecords) {
                 $this->flushBuffer($buffer);
                 $bufferedRecords = 0;
@@ -132,10 +132,11 @@ trait DataDifferenceWithPrimaryKey
      * @param TableData $table
      * @param array $fields
      * @param $primaryKey
-     * @param array $ignoreList
+     * @param array $rowsIgnoreList
+     * @param array $fieldsIgnoreList
      * @return int
      */
-    protected function generateUpdates(TableData $table, array $fields, $primaryKey, array $ignoreList)
+    protected function generateUpdates(TableData $table, array $fields, $primaryKey, array $rowsIgnoreList, array $fieldsIgnoreList)
     {
         $buffer = [];
         $totalRecords = $bufferedRecords = 0;
@@ -156,12 +157,12 @@ trait DataDifferenceWithPrimaryKey
         $stmt = $this->connection->query($sql);
 
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if (!empty($ignoreList)) {
+            if (!empty($rowsIgnoreList)) {
                 /**
                  * @var IgnoreDataRowRule $ignoreRule
                  */
                 $shouldIgnore = false;
-                foreach ($ignoreList as $ignoreRule) {
+                foreach ($rowsIgnoreList as $ignoreRule) {
                     if ($ignoreRule->shouldIgnore($row)) {
                         $shouldIgnore = true;
                         break;
@@ -180,7 +181,16 @@ trait DataDifferenceWithPrimaryKey
             $oldRow = $oldRecsStmt->fetch(\PDO::FETCH_ASSOC);
             unset($oldRecsStmt);
 
-            $buffer[] = new UpdateRecordAction($this->connection, $table->name, $row, $oldRow, $this->migration);
+            $action = new UpdateRecordAction($this->connection, $table->name, $row, $oldRow, $this->migration);
+            if (!empty($fieldsIgnoreList)) {
+                $action->setIgnoreFields($fieldsIgnoreList);
+                if ($action->canBeIgnored()) {
+                    unset($action);
+                    continue;
+                }
+            }
+
+            $buffer[] = $action;
 
             if ($bufferedRecords >= DataDifference::BufferMaxRecords) {
                 $hasData = $this->flushBuffer($buffer);
