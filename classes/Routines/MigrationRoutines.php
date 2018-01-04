@@ -32,6 +32,15 @@ class MigrationRoutines extends Routine
     protected $databaseRoutines;
 
     /**
+     * Remove all migrations from database.
+     */
+    public function unRegisterAllMigrations()
+    {
+        $sql = 'DELETE FROM `' . Configuration::getInstance()->getMigrationsTableName() . '`';
+        $this->getSender()->getDatabaseConnection()->exec($sql);
+    }
+
+    /**
      * @return array
      */
     protected function getComparisonTables()

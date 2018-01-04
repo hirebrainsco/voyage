@@ -10,9 +10,12 @@ namespace Voyage\Commands;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Voyage\Core\Command;
+use Voyage\Core\Configuration;
 use Voyage\Core\EnvironmentControllerInterface;
 use Voyage\Core\Migration;
 use Voyage\Core\Migrations;
+use Voyage\Routines\DatabaseRoutines;
+use Voyage\Routines\MigrationRoutines;
 
 /**
  * Class Reset
@@ -26,7 +29,7 @@ class Reset extends Command implements EnvironmentControllerInterface
     public function __construct()
     {
         $this->setName('reset');
-        $this->setDescription('Reset database to the first migration.');
+        $this->setDescription('Reset database state to the first migration and then re-apply all migrations.');
 
         parent::__construct();
     }
@@ -46,34 +49,51 @@ class Reset extends Command implements EnvironmentControllerInterface
         }
     }
 
+    /**
+     * @param Migrations $migrations
+     */
+    protected function checkFirstTimeImport(Migrations $migrations)
+    {
+        if ($migrations->isInitialImport()) {
+            $tablesToRecreate = $migrations->getTablesToRecreateFromMigrations();
+
+            if (!empty($tablesToRecreate)) {
+                $databaseRoutines = new DatabaseRoutines($this);
+                foreach ($tablesToRecreate as $tableName) {
+                    $databaseRoutines->dropTable($tableName);
+                }
+            }
+        }
+    }
+
     private function reset()
     {
+        // Un-register all migrations
+        $migrationRoutines = new MigrationRoutines($this);
+        $migrationRoutines->unRegisterAllMigrations();
+
+        // Check if we're applying for the first time
         $migrations = new Migrations($this);
-        $appliedMigrations = $migrations->getAppliedMigrations();
-        unset($migrations);
+        $this->checkFirstTimeImport($migrations);
+        Configuration::getInstance()->lock();
 
-        if (empty($appliedMigrations)) {
-            throw new \Exception('There are no applied migrations.');
-        }
+        $notAppliedMigrations = $migrations->getNotAppliedMigrations();
 
-        $appliedMigrations = array_reverse($appliedMigrations);
+        if (!empty($notAppliedMigrations)) {
+            foreach ($notAppliedMigrations as $migrationData) {
+                $migrationId = $migrationData['id'];
+                $this->info($migrationId);
 
-        /**
-         * @var array $migrationData
-         */
-        $sz = sizeof($appliedMigrations);
-        foreach ($appliedMigrations as $migrationData) {
-            $migration = new Migration($this);
-            $migration->setId($migrationData['id']);
-            $migration->rollback($sz > 1, $sz > 1);
+                $migration = new Migration($this);
+                $migration->setId($migrationId);
+                $migration->apply();
+                unset($migration);
 
-            if ($sz <= 1) {
-                $migration->apply(false);
-                $this->info('Successfully reset to the first migration.');
-                break;
+                $this->report('Applied successfully.');
+                $this->report('');
             }
-
-            $sz--;
         }
+
+        $this->report('Reset has been successfully done.');
     }
 }
