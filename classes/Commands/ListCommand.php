@@ -92,18 +92,26 @@ class ListCommand extends Command implements EnvironmentControllerInterface
 
         foreach ($migrationsList as $migration) {
             $totalItems++;
+            $pathToMigrationFile = $migrationsPath . '/' . $migration['id'] . '.mgr';
 
             if ($migration['applied']) {
                 $isCurrent = isset($migration['current']) && $migration['current'] === true;
+                $migrationFileExists = file_exists($pathToMigrationFile);
+
+                $status = $isCurrent ? '<-- Current --' : ' ';
+                if (!$migrationFileExists) {
+                    $status = '<fg=red>x-- Not Found --</>';
+                }
+
                 $table->addRow([
                     ($isCurrent ? '<fg=green>' : '') . $migration['id'] . ($isCurrent ? '</>' : ''),
                     $migration['name'],
                     date('d M Y', $migration['ts']),
-                    $isCurrent ? '<-- Current --' : ' '
+                    $status
                 ]);
             } else {
                 $totalItems++;
-                $parser = new MigrationFileParser($migrationsPath . '/' . $migration['id'] . '.mgr');
+                $parser = new MigrationFileParser($pathToMigrationFile);
                 $description = $parser->getDescription();
                 $ts = $parser->getTimestamp();
 

@@ -26,7 +26,7 @@ class Reset extends Command implements EnvironmentControllerInterface
     public function __construct()
     {
         $this->setName('reset');
-        $this->setDescription('Reset database to it\'s initial state (first taken dump) and remove all next migrations.');
+        $this->setDescription('Reset database to the first migration.');
 
         parent::__construct();
     }
