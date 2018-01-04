@@ -87,8 +87,8 @@ class ListCommand extends Command implements EnvironmentControllerInterface
         $migrationsList = array_merge($appliedMigrations, $notAppliedMigrations);
         ksort($migrationsList);
 
-        $sz = sizeof($migrationsList);
         $migrationsPath = Configuration::getInstance()->getPathToMigrations();
+        $missingFiles = 0;
 
         foreach ($migrationsList as $migration) {
             $totalItems++;
@@ -97,6 +97,10 @@ class ListCommand extends Command implements EnvironmentControllerInterface
             if ($migration['applied']) {
                 $isCurrent = isset($migration['current']) && $migration['current'] === true;
                 $migrationFileExists = file_exists($pathToMigrationFile);
+
+                if (!$migrationFileExists) {
+                    $missingFiles++;
+                }
 
                 $status = $isCurrent ? '<-- Current --' : ' ';
                 if (!$migrationFileExists) {
@@ -128,8 +132,16 @@ class ListCommand extends Command implements EnvironmentControllerInterface
         if ($totalItems > 0) {
             $this->report('<options=bold>Applied Migrations</>');
             $table->render();
+
+            if ($missingFiles > 0) {
+                $this->report('');
+                $this->report('<error>Missing Migration Files</error>');
+                $this->report('Some migration files are missing. This usually can happen if you switch to a different version in GIT where some migrations are not available yet.');
+                $this->report('You should run "voyage reset", this command will rollback database to it\'s initial state and then will apply all available migration files.');
+                $this->report('');
+            }
         } else {
-            $this->report('There\'re no applied migrations. Run "voyage make" to create a first migration.');
+            $this->report('There\'re no applied migrations. Run "voyage make" to create the first migration.');
         }
         unset($migrations);
     }

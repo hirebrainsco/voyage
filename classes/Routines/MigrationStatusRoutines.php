@@ -29,7 +29,38 @@ trait MigrationStatusRoutines
         Configuration::getInstance()->lock();
         $this->showCurrentMigrationInfo();
         $this->showNotAppliedMigrations();
+        $this->checkMissingMigrations();
         $this->showCurrentStatus();
+    }
+
+    private function checkMissingMigrations()
+    {
+        $missingFiles = 0;
+
+        $migrations = new Migrations($this->getSender());
+        $appliedMigrations = $migrations->getAppliedMigrations();
+
+        if (empty($appliedMigrations)) {
+            return;
+        }
+
+        $migrationsPath = Configuration::getInstance()->getPathToMigrations();
+        foreach ($appliedMigrations as $migration) {
+            $pathToMigrationFile = $migrationsPath . '/' . $migration['id'] . '.mgr';
+            if (!file_exists($pathToMigrationFile)) {
+                $missingFiles++;
+            }
+        }
+
+        if ($missingFiles > 0) {
+            $this->getSender()->report('');
+            $this->getSender()->report('<error>Missing Migration Files</error>');
+            $this->getSender()->report('Some migration files are missing. This usually can happen if you switch to a different version in GIT where some migrations are not available yet.');
+            $this->getSender()->report('You should run "voyage reset", this command will rollback database to it\'s initial state and then will apply all available migration files.');
+            $this->getSender()->report('Run "voyage list" to view the list of missing migration files.');
+            $this->getSender()->report('');
+            exit(1);
+        }
     }
 
     /**
