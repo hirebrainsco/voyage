@@ -30,7 +30,7 @@
 > Create database migrations automatically
 
 * Create, apply, rollback database changes
-* Store database migrations in git
+* Version control / save to git your database changes
 * Replacement variables (works with serialized WordPress data)
 * Command-line tool (works well with Jenkins, TeamCity, Bamboo, Travis CI or any other build management system)
 * Backup / restore database

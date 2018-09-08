@@ -17,7 +17,47 @@
     body, .markdown-section code {
       font-size: 13px !important;
     }
+    .browser {
+      background: #0C344B;
+      border-radius: 10px;
+      position: relative;
+      padding-top: 20px;
+    }
+    .browser span.comment {
+      font-weight: normal;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .browser code {
+      margin: 0;
+      background: transparent !important;
+      color: #fff !important;
+      line-height: 22px;
+      font-weight: bold;
+      display: block;
+      padding: 20px !important;
+    }
+    .browser:before {
+      display: block;
+      position: absolute;
+      content: '';
+      top: 15px;
+      left: 15px;
+      width: .5em;
+      height: .5em;
+      border-radius: 50%;
+      background-color: #F5716B;
+      box-shadow: 0 0 0 2px #F5716B, 1.5em 0 0 2px #f4c20d, 3em 0 0 2px #3cba54;      
+    }
   </style>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-53735843-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-53735843-2');
+  </script>
 </head>
 <body>
   <div id="app"></div>
