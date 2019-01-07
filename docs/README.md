@@ -8,22 +8,18 @@ Among many other features, Voyage provides custom replacement variables, in case
 * [Configuration](configuration.md)
 
 <div class="browser">
-    <code>
-    <span class="comment"># Initialize voyage</span><br>
-    voyage init<br><br>
-
+<code>
+    <span class="comment"># Initialize voyage</span><br/>
+    voyage init<br/><br/>
     <span class="comment"># Check changes in database and generate migration</span><br>
     voyage make<br><br>
-
     <span class="comment"># List changes in database</span><br>
     voyage list<br><br>
-
     <span class="comment"># Apply changes to database</span><br>
     voyage apply<br><br>
-
     <span class="comment"># Rollback applied changes</span><br>
     voyage rollback
-    </code>
+</code>
 </div>
 
 * [Commands Reference](commands.md)

@@ -27,7 +27,8 @@
         </g>
     </g>
 </svg>
-> Create database migrations automatically
+
+**Create database migrations automatically**
 
 * Create, apply, rollback database changes
 * Version control / save to git your database changes
